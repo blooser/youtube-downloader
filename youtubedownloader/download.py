@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QThreadPool, QRunnable, QTimer, Qt, QStandardPaths, Slot, Signal
+from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QRunnable, QTimer, Qt, QStandardPaths, Slot, Signal
 
 import os.path
 import pathlib
@@ -134,6 +134,7 @@ class Download(QObject):
         self.url = predownload.url
         self.title = predownload.title
         self.uploader = predownload.uploader
+        self.duration = predownload.duration
         self.thumbnail = predownload.thumbnail
         self.download_options = predownload.download_options
 
@@ -362,7 +363,7 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.thumbnail
 
         elif role == 3:
-            return predownload.duration
+            return QDateTime.fromSecsSinceEpoch(int(predownload.duration)).toString("mm:ss")
 
         elif role == 4:
             return predownload.download_options.type
@@ -403,14 +404,15 @@ class DownloadModel(QAbstractListModel):
         return {
             0: b"title",
             1: b"uploader",
-            2: b"downloadedBytes",
-            3: b"totalBytes",
-            4: b"estimatedTime",
-            5: b"speed",
-            6: b"status",
-            7: b"thumbnail",
-            8: b"output_path",
-            9: b"type"
+            2: b"duration",
+            3: b"downloadedBytes",
+            4: b"totalBytes",
+            5: b"estimatedTime",
+            6: b"speed",
+            7: b"status",
+            8: b"thumbnail",
+            9: b"output_path",
+            10: b"type"
         }
 
     def clear(self):
@@ -456,27 +458,30 @@ class DownloadModel(QAbstractListModel):
             return download.uploader
 
         elif role == 2:
-            return download.progress.downloaded_bytes
+            return QDateTime.fromSecsSinceEpoch(int(download.duration)).toString("mm:ss")
 
         elif role == 3:
-            return download.progress.total_bytes
+            return download.progress.downloaded_bytes
 
         elif role == 4:
-            return download.progress.estimated_time
+            return download.progress.total_bytes
 
         elif role == 5:
-            return download.progress.speed
+            return download.progress.estimated_time
 
         elif role == 6:
-            return download.progress.status
+            return download.progress.speed
 
         elif role == 7:
-            return download.thumbnail
+            return download.progress.status
 
         elif role == 8:
-            return download.download_options.output_path
+            return download.thumbnail
 
         elif role == 9:
+            return download.download_options.output_path
+
+        elif role == 10:
             return download.download_options.type
 
         return None

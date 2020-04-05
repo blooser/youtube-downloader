@@ -2,14 +2,16 @@ import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
 import "../../items" as Items
+import "../link" as Link
 import ".." as Components
 
 Rectangle {
     id: root
 
     property alias thumbnailUrl: thumbnail.source
-    property alias linkTitle: link.title
-    property alias linkUploader: link.uploader
+    property alias linkTitle: link.titleText
+    property alias linkUploader: link.uploaderText
+    property alias linkDuration: link.durationText
     property alias selectedFormat: selectedFormat.format
 
     signal remove()
@@ -43,7 +45,7 @@ Rectangle {
             Layout.preferredHeight: 86
         }
 
-        Components.Link {
+        Link.LinkInfo {
             id: link
 
             Layout.fillWidth: true

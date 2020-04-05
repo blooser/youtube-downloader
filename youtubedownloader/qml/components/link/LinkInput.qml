@@ -1,7 +1,7 @@
 import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
-import "../items" as Items
+import "../../items" as Items
 
 Item {
     id: root

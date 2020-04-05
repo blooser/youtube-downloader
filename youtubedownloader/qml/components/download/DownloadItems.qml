@@ -28,6 +28,8 @@ Item {
             thumbnailSrc: thumbnail
             titleText: title
             uploaderText: uploader
+            linkDuration: duration
+
             selectedFormat: type
 
             onOpen: Qt.openUrlExternally(paths.cleanPath("%1/%2.%3").arg(output_path).arg(title).arg(type))

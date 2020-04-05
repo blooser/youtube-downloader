@@ -25,7 +25,7 @@ Item {
 
             Behavior on opacity {
                 OpacityAnimator {
-                    duration: 250
+                    duration: Theme.Animation.quick
                 }
             }
         }
@@ -37,6 +37,7 @@ Item {
             Layout.fillHeight: true
 
             clip: true
+            spacing: Theme.Margins.tiny
             model: predownloadModel
 
             delegate: PreDownloadItem {
@@ -44,6 +45,8 @@ Item {
 
                 linkTitle: title
                 linkUploader: uploader
+                linkDuration: duration
+
                 thumbnailUrl: thumbnail
                 selectedFormat: type
 

@@ -6,6 +6,7 @@ import "items" as Items
 import "components" as Components
 import "components/predownload" as PreDownload
 import "components/download" as Download
+import "components/link" as Link
 
 ApplicationWindow {
     id: root
@@ -27,7 +28,7 @@ ApplicationWindow {
             margins: Theme.Margins.normal
         }
 
-        Components.LinkInput {
+        Link.LinkInput {
             Layout.fillWidth: true
 
             onAddLink: downloadManager.predownload(link, downloadOptions.options)

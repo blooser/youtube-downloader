@@ -2,14 +2,17 @@ import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
 import "../../items" as Items
+import "../link" as  Link
 import ".." as Components
 
 Items.YDProgressBar {
     id: root
 
     property alias thumbnailSrc: thumbnail.source
-    property alias titleText: link.title
-    property alias uploaderText: link.uploader
+    property alias titleText: link.titleText
+    property alias uploaderText: link.uploaderText
+    property alias linkDuration: link.durationText
+
     property alias selectedFormat: selectedFormat.format
 
     signal remove()
@@ -22,6 +25,7 @@ Items.YDProgressBar {
         id: mainLayout
 
         z: root.z + 1
+        spacing: Theme.Margins.normal
 
         anchors {
             fill: parent
@@ -36,7 +40,7 @@ Items.YDProgressBar {
             Layout.preferredHeight: 86
         }
 
-        Components.Link {
+        Link.LinkInfo {
             id: link
 
             Layout.fillWidth: true
