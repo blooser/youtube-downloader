@@ -1,8 +1,7 @@
 import QtQuick 2.14
-import QtQuick.Layouts 1.12
 
 import "../dynamic" as Dynamic
-import "../../items" as Items
+import ".." as Components
 
 Item {
     id: root
@@ -15,12 +14,12 @@ Item {
 
         anchors.fill: parent
 
-        main: DownloadItems {
+        main: PreDownloadItems {
 
         }
 
         second: null
 
-        when: (downloadModel.rowCount() === 0)
+        when: (predownloadModel.rowCount() === 0)
     }
 }

@@ -27,5 +27,7 @@
               "main.py",
               "logger.py",
               "qml/components/predownload/PreDownloadItems.qml",
-              "qml/items/YDSplitView.qml"]
+              "qml/components/predownload/PreDownloadView.qml",
+              "qml/items/YDSplitView.qml",
+              "qml/components/dynamic/Changer.qml"]
 }
