@@ -4,7 +4,6 @@ import QtQuick.Controls 2.14
 
 import "items" as Items
 import "components" as Components
-import "components/predownload" as PreDownload
 import "components/download" as Download
 import "components/link" as Link
 
@@ -40,19 +39,9 @@ ApplicationWindow {
 
         }
 
-        Items.YDSplitView {
+        Components.DownloadsView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-
-            orientation: Qt.Vertical
-
-            PreDownload.PreDownloadItems {
-
-            }
-
-            Download.DownloadView {
-
-            }
         }
     }
 

@@ -7,20 +7,12 @@ import "../../items" as Items
 Item {
     id: root
 
-    implicitWidth: changer.implicitWidth
-    implicitHeight: changer.implicitHeight
+    implicitWidth: item.implicitWidth
+    implicitHeight: item.implicitHeight
 
-    Dynamic.Changer {
-        id: changer
 
+    DownloadItems {
+        id: item
         anchors.fill: parent
-
-        main: DownloadItems {
-
-        }
-
-        second: null
-
-        when: (downloadModel.rowCount() === 0)
     }
 }

@@ -6,20 +6,12 @@ import ".." as Components
 Item {
     id: root
 
-    implicitWidth: changer.implicitWidth
-    implicitHeight: changer.implicitHeight
+    implicitWidth: items.implicitWidth
+    implicitHeight: items.implicitHeight
 
-    Dynamic.Changer {
-        id: changer
+    PreDownloadItems {
+        id: items
 
         anchors.fill: parent
-
-        main: PreDownloadItems {
-
-        }
-
-        second: null
-
-        when: (predownloadModel.rowCount() === 0)
     }
 }

@@ -29,5 +29,6 @@
               "qml/components/predownload/PreDownloadItems.qml",
               "qml/components/predownload/PreDownloadView.qml",
               "qml/items/YDSplitView.qml",
+              "qml/components/DownloadsView.qml",
               "qml/components/dynamic/Changer.qml"]
 }
