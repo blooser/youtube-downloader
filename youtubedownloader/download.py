@@ -222,7 +222,7 @@ class DownloadTask(QRunnable):
         self.download_post_process = DownloadPostProcess()
         self.post_process_file = str()
         self.post_process_timer = QTimer()
-        self.post_process_timer.setInterval(500)
+        self.post_process_timer.setInterval(250)
         self.post_process_timer.setSingleShot(True)
         self.post_process_timer.timeout.connect(lambda: self.download_post_process.track(self.post_process_file))
 
@@ -235,6 +235,7 @@ class DownloadTask(QRunnable):
         if self.options.need_post_process() and data["status"] == "finished":
             self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.type))
             self.communication.start.emit()
+            self.communication.progress.emit({"status": "Converting to {0}".format(self.options.type)})
 
     def run(self):
         with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:

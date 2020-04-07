@@ -25,6 +25,7 @@ Item {
             value: downloadedBytes
             to: totalBytes
 
+            statusText: status
             thumbnailSrc: thumbnail
             titleText: title
             uploaderText: uploader
