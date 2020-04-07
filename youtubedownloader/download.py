@@ -38,23 +38,27 @@ class DownloadProgress(object):
         if "filename" in data:
             self.filename = data["filename"]
 
-    def __getstate__(self):
+    @staticmethod
+    def pack(download_progress):
         return {
-            "status": self.status,
-            "downloaded_bytes": self.downloaded_bytes,
-            "total_bytes": self.total_bytes,
-            "estimated_time": self.estimated_time,
-            "speed": self.speed,
-            "filename": self.filename
+            "status": download_progress.status,
+            "downloaded_bytes": download_progress.downloaded_bytes,
+            "total_bytes": download_progress.total_bytes,
+            "estimated_time": download_progress.estimated_time,
+            "speed": download_progress.speed,
+            "filename": download_progress.filename
         }
 
-    def __setstate__(self, data):
-        self.status = data["status"]
-        self.downloaded_bytes = data["downloaded_bytes"]
-        self.total_bytes = data["total_bytes"]
-        self.estimated_time = data["estimated_time"]
-        self.speed = data["speed"]
-        self.filename = data["filename"]
+    @staticmethod
+    def unpack(data):
+        download_progress = DownloadProgress()
+        download_progress.status = data["status"]
+        download_progress.downloaded_bytes = data["downloaded_bytes"]
+        download_progress.total_bytes = data["total_bytes"]
+        download_progress.estimated_time = data["estimated_time"]
+        download_progress.speed = data["speed"]
+        download_progress.filename = data["filename"]
+        return download_progress
 
 
 class DownloadOptions(QObject):
@@ -110,15 +114,17 @@ class DownloadOptions(QObject):
 
         return {}
 
-    def __getstate__(self):
+    @staticmethod
+    def pack(download_options):
         return {
-            "type": self.type,
-            "output_path": self.output_path
+            "type": download_options.type,
+            "output_path": download_options.output_path
         }
 
-    def __setstate__(self, data):
-        self.type = data["type"]
-        self.output_path = data["output_path"]
+    @staticmethod
+    def unpack(data):
+        download_options = DownloadOptions(data)
+        return download_options
 
 
 class DownloadCommunication(QObject):
@@ -156,8 +162,8 @@ class Download(QObject):
             "title": self.title,
             "uploader": self.uploader,
             "thumbnail": self.thumbnail,
-            "download_options": self.download_options.__getstate__(),
-            "progress": self.progress.__getstate__()
+            "download_options": DownloadOptions.pack(self.download_options),
+            "progress": DownloadProgress.pack(self.progress)
         }
 
     def __setstate__(self, data):
@@ -166,11 +172,8 @@ class Download(QObject):
         self.title = data["title"]
         self.uploader = data["uploader"]
         self.thumbnail = data["thumbnail"]
-
-        self.download_options = DownloadOptions(data["download_options"])
-
-        self.progress = DownloadProgress()
-        self.progress.__setstate__(data["progress"])
+        self.download_options = DownloadOptions.unpack(data["download_options"])
+        self.progress = DownloadProgress.unpack(data["progress"])
 
 
 class DownloadPostProcess(QObject):
@@ -270,7 +273,7 @@ class PreDownload(object):
             "uploader": self.uploader,
             "thumbnail": self.thumbnail,
             "duration": self.duration,
-            "download_options": self.download_options.__getstate__()
+            "download_options": DownloadOptions.pack(self.download_options)
         }
 
     def __setstate__(self, data):
@@ -280,14 +283,12 @@ class PreDownload(object):
         self.uploader = data["uploader"]
         self.thumbnail = data["thumbnail"]
         self.duration = data["duration"]
-
-        self.download_options = DownloadOptions(data["download_options"])
-
+        self.download_options = DownloadOptions.unpack(data["download_options"])
         self.communication = DownloadCommunication()
 
 
 class PreDownloadModel(QAbstractListModel):
-    PREDOWNLOADS_FILE = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "YDpredownloads"
+    PREDOWNLOADS_FILE = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.ydpredownloads"
     COLUMNS = ("title", "uploader", "thumbnail", "duration", "type")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
@@ -373,7 +374,7 @@ class PreDownloadModel(QAbstractListModel):
 
 
 class DownloadModel(QAbstractListModel):
-    DOWNLOADS_FILE = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/YDdownloads"
+    DOWNLOADS_FILE = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.yddownloads"
     COLUMNS = ("status", "bytes", "total", "estimated time", "speed", "title")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
