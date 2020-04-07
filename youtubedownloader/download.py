@@ -257,7 +257,7 @@ class PreDownload(object):
         self.title = info["title"]
         self.uploader = info["uploader"]
         self.thumbnail = info["thumbnail"]
-        self.duration = info["duration"]
+        self.duration = QDateTime.fromSecsSinceEpoch(int(info["duration"])).toString("mm:ss")
 
         self.communication.updated.emit(str(self.id))
 
@@ -363,7 +363,7 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.thumbnail
 
         elif role == 3:
-            return QDateTime.fromSecsSinceEpoch(int(predownload.duration)).toString("mm:ss")
+            return predownload.duration
 
         elif role == 4:
             return predownload.download_options.type
@@ -458,7 +458,7 @@ class DownloadModel(QAbstractListModel):
             return download.uploader
 
         elif role == 2:
-            return QDateTime.fromSecsSinceEpoch(int(download.duration)).toString("mm:ss")
+            return download.duration
 
         elif role == 3:
             return download.progress.downloaded_bytes
