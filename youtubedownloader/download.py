@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QRunnable, QTimer, Qt, QStandardPaths, Slot, Signal
+from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QRunnable, QTimer, Qt, QStandardPaths, Slot, Signal, Property
 
 import os.path
 import pathlib
@@ -10,14 +10,37 @@ import youtube_dl
 
 from logger import create_logger
 
-class DownloadProgress(object):
+class DownloadProgress(QObject):
+    changed = Signal()
+
     def __init__(self):
+        super(DownloadProgress, self).__init__(None)
         self.status = str("Starting")
         self.downloaded_bytes = str("0")
         self.total_bytes = str("0")
         self.estimated_time = str("00:00")
         self.speed = str("0 MiB/s")
         self.filename = str("Unknown")
+
+    @Property(str, notify=changed)
+    def downloadStatus(self):
+        return self.status
+
+    @Property(int, notify=changed)
+    def downloadedBytes(self):
+        return int(self.downloaded_bytes)
+
+    @Property(int, notify=changed)
+    def totalBytes(self):
+        return int(self.total_bytes)
+
+    @Property(str, notify=changed)
+    def estimatedTime(self):
+        return self.estimated_time
+
+    @Property(str, notify=changed)
+    def downloadSpeed(self):
+        return self.speed
 
     def update(self, data):
         if "status" in data:
@@ -37,6 +60,8 @@ class DownloadProgress(object):
 
         if "filename" in data:
             self.filename = data["filename"]
+
+        self.changed.emit()
 
     @staticmethod
     def pack(download_progress):
@@ -407,14 +432,10 @@ class DownloadModel(QAbstractListModel):
             0: b"title",
             1: b"uploader",
             2: b"duration",
-            3: b"downloadedBytes",
-            4: b"totalBytes",
-            5: b"estimatedTime",
-            6: b"speed",
-            7: b"status",
-            8: b"thumbnail",
-            9: b"output_path",
-            10: b"type"
+            3: b"progress",
+            4: b"thumbnail",
+            5: b"output_path",
+            6: b"type"
         }
 
     def clear(self):
@@ -463,27 +484,15 @@ class DownloadModel(QAbstractListModel):
             return download.duration
 
         elif role == 3:
-            return download.progress.downloaded_bytes
+            return download.progress
 
         elif role == 4:
-            return download.progress.total_bytes
-
-        elif role == 5:
-            return download.progress.estimated_time
-
-        elif role == 6:
-            return download.progress.speed
-
-        elif role == 7:
-            return download.progress.status
-
-        elif role == 8:
             return download.thumbnail
 
-        elif role == 9:
+        elif role == 5:
             return download.download_options.output_path
 
-        elif role == 10:
+        elif role == 6:
             return download.download_options.type
 
         return None

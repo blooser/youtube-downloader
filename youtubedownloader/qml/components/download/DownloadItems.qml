@@ -22,10 +22,10 @@ Item {
             width: downloadItems.width
 
             from: 0
-            value: downloadedBytes
-            to: totalBytes
+            value: progress.downloadedBytes
+            to: progress.totalBytes
 
-            statusText: status
+            statusText: progress.downloadStatus
             thumbnailSrc: thumbnail
             titleText: title
             uploaderText: uploader
