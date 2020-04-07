@@ -61,7 +61,7 @@ class DownloadProgress(QObject):
         if "filename" in data:
             self.filename = data["filename"]
 
-        self.changed.emit()
+        self.changed.emit() # TODO: Maybe separated signl for each property?
 
     @staticmethod
     def pack(download_progress):
@@ -250,7 +250,7 @@ class DownloadTask(QRunnable):
         self.download_post_process = DownloadPostProcess()
         self.post_process_file = str()
         self.post_process_timer = QTimer()
-        self.post_process_timer.setInterval(250)
+        self.post_process_timer.setInterval(250) # TODO: Check interval time depends on file size
         self.post_process_timer.setSingleShot(True)
         self.post_process_timer.timeout.connect(lambda: self.download_post_process.track(self.post_process_file))
 
@@ -400,7 +400,7 @@ class PreDownloadModel(QAbstractListModel):
 
 class DownloadModel(QAbstractListModel):
     DOWNLOADS_FILE = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.yddownloads"
-    COLUMNS = ("status", "bytes", "total", "estimated time", "speed", "title")
+    COLUMNS = ("title", "uploader", "duration", "progress", "thumbnail", "output_path", "type")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 

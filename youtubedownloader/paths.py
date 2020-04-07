@@ -23,5 +23,3 @@ class Paths(QObject):
     def cleanPath(self, path):
         return path.replace(Paths.FILE_PREFIX, "")
 
-
-
