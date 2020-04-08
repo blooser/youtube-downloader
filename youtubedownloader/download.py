@@ -110,7 +110,7 @@ class DownloadOptions(QObject):
             "format": "bestaudio/best"
         }
 
-        self.post_process_file_size = -1 # Fill be filled in DownloadOptions
+        self.post_process_file_size = -1 # Will be filled in DownloadOptions
 
     def to_ydl_opts(self):
         template = self.ydl_opts
