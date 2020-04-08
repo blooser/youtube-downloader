@@ -98,10 +98,7 @@ class DownloadOptions(QObject):
         }
 
     MP4_TEMPLATE = {
-        "postprocessors": [{
-            "key": "FFmpegVideoConvertor",
-            "preferredformat": "mp4"
-        }]
+       "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
     }
 
     WEBM_TEMPLATE = {}
@@ -122,7 +119,7 @@ class DownloadOptions(QObject):
         return template
 
     def need_post_process(self):
-        return self.type in ["mp3", "mp4"]
+        return self.type in ["mp3"]
 
     def output_template(self):
         return {
@@ -302,7 +299,7 @@ class PreDownload(object):
         self.communication.updated.emit(str(self.id))
 
         if self.download_options.need_post_process():
-            self.download_options.post_process_file_size = ((192 * int(info["duration"]))/8) * 1000
+            self.download_options.post_process_file_size = ((192 * int(info["duration"]))/8) * 1000 # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
 
     def __getstate__(self):
         return {
