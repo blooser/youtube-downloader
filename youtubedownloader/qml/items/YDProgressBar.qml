@@ -22,4 +22,8 @@ ProgressBar {
             radius: Theme.Margins.tiny
         }
     }
+
+    Behavior on value {
+        NumberAnimation { duration: Theme.Animation.quick }
+    }
 }

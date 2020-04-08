@@ -61,7 +61,7 @@ class DownloadProgress(QObject):
         if "filename" in data:
             self.filename = data["filename"]
 
-        self.changed.emit() # TODO: Maybe separated signl for each property?
+        self.changed.emit() # TODO: Maybe separated signal for each property?
 
     @staticmethod
     def pack(download_progress):
@@ -112,6 +112,8 @@ class DownloadOptions(QObject):
         self.ydl_opts = {
             "format": "bestaudio/best"
         }
+
+        self.post_process_file_size = -1 # Fill be filled in DownloadOptions
 
     def to_ydl_opts(self):
         template = self.ydl_opts
@@ -203,6 +205,8 @@ class Download(QObject):
 
 class DownloadPostProcess(QObject):
     bytes_processed = Signal(int)
+    started = Signal()
+    finished = Signal()
 
     def __init__(self):
         super(DownloadPostProcess, self).__init__(None)
@@ -215,12 +219,16 @@ class DownloadPostProcess(QObject):
     def track(self, url):
         track_success = self.file_watcher.addPath(url)
         self.logger.info("Track {file} success={success}".format(file=url, success=track_success))
+        self.started.emit()
 
     @Slot(str)
     def read_bytes(self, path):
         bytes = QFileInfo(path).size()
         self.bytes_processed.emit(bytes)
         self.logger.debug("Read {bytes} bytes".format(bytes=bytes))
+
+        if bytes >= self.total_bytes:
+            self.finished.emit()
 
 
 class PreDownloadTask(QRunnable):
@@ -250,20 +258,23 @@ class DownloadTask(QRunnable):
         self.download_post_process = DownloadPostProcess()
         self.post_process_file = str()
         self.post_process_timer = QTimer()
-        self.post_process_timer.setInterval(250) # TODO: Check interval time depends on file size
+        self.post_process_timer.setInterval(250)
         self.post_process_timer.setSingleShot(True)
         self.post_process_timer.timeout.connect(lambda: self.download_post_process.track(self.post_process_file))
 
         self.communication.start.connect(self.post_process_timer.start)
         self.download_post_process.bytes_processed.connect(lambda bytes: self.communication.progress.emit({"downloaded_bytes": bytes}))
+        self.download_post_process.finished.connect(lambda: self.communication.progress.emit({"status": "finished"}))
+        self.download_post_process.started.connect(lambda: self.communication.progress.emit({"status": "Converting to {0}".format(self.options.type),
+                                                                                             "total_bytes": self.options.post_process_file_size}))
 
     def process(self, data):
         self.communication.progress.emit(data)
 
         if self.options.need_post_process() and data["status"] == "finished":
             self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.type))
+            self.download_post_process.total_bytes = self.options.post_process_file_size
             self.communication.start.emit()
-            self.communication.progress.emit({"status": "Converting to {0}".format(self.options.type)})
 
     def run(self):
         with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
@@ -289,6 +300,9 @@ class PreDownload(object):
         self.duration = QDateTime.fromSecsSinceEpoch(int(info["duration"])).toString("mm:ss")
 
         self.communication.updated.emit(str(self.id))
+
+        if self.download_options.need_post_process():
+            self.download_options.post_process_file_size = ((192 * int(info["duration"]))/8) * 1000
 
     def __getstate__(self):
         return {
