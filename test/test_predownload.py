@@ -38,7 +38,7 @@ class PreDownloadTest(unittest.TestCase):
         self.assertEqual(unpickled_predownload.title, data["title"])    
         self.assertEqual(unpickled_predownload.uploader, data["uploader"])
         self.assertEqual(unpickled_predownload.thumbnail, data["thumbnail"])
-        self.assertEqual(unpickled_predownload.duration, data["duration"])
+        self.assertEqual(unpickled_predownload.duration, "01:40")
         self.assertEqual(unpickled_predownload.download_options.type, "mp3")
         self.assertEqual(unpickled_predownload.download_options.output_path, "/foo/bar/path")
         
