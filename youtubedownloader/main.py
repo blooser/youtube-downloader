@@ -6,13 +6,14 @@ from PySide2.QtQuick import QQuickView
 from PySide2.QtCore import Qt, QUrl, QResource
 from PySide2.QtWidgets import QApplication
 
-from download import DownloadManager
-from dialog_manager import DialogManager
-from resources import Resources
-from theme import Theme
-from paths import Paths
+from .download import DownloadManager
+from .dialog_manager import DialogManager
+from .resources import Resources
+from .theme import Theme
+from .paths import Paths
 
-if __name__ == "__main__":
+
+def start_yddownloader():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     app = QApplication(sys.argv)
@@ -39,3 +40,4 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     sys.exit(app.exec_())
+

@@ -17,6 +17,10 @@ from .dialog_manager import (
     DialogManager
 )
 
+from .settings import (
+    Settings
+)
+
 from .theme import (
     Theme
 )
@@ -24,3 +28,8 @@ from .theme import (
 from .resources import (
     Resources
 )
+
+from .main import (
+    start_yddownloader
+)
+

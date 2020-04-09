@@ -2,10 +2,8 @@ from PySide2.QtCore import QObject, Qt, QStandardPaths, Slot, Signal, Property
 
 import sys, os, pathlib
 
-sys.path.insert(1, os.path.dirname(os.path.dirname(__file__)))
-
-from paths import Paths
-from logger import create_logger
+from ..paths import Paths
+from ..logger import create_logger
 
 class Resources(QObject):
     CORE_PATH = os.path.dirname(__file__)

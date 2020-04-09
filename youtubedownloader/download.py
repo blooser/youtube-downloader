@@ -8,7 +8,7 @@ import pathlib
 import pickle
 import youtube_dl
 
-from logger import create_logger
+from .logger import create_logger
 
 class DownloadProgress(QObject):
     changed = Signal()
@@ -421,9 +421,9 @@ class DownloadModel(QAbstractListModel):
 
         self.config_path = config_path if config_path is not None else DownloadModel.DOWNLOADS_FILE
 
-        if os.path.isfile(self.config_path):
-            with open(self.config_path, "rb") as f:
-                self.downloads = pickle.load(f)
+        #if os.path.isfile(self.config_path):
+        #    with open(self.config_path, "rb") as f:
+         #       self.downloads = pickle.load(f)
 
     def __del__(self):
          with open(self.config_path, "wb") as f:
