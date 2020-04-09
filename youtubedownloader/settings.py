@@ -13,6 +13,7 @@ class Settings(QObject):
 
         self.settings_path = Settings.CONFIG_PATH if settings_path == None else settings_path
 
+        # TODO: Add default values
         self.output_path = None
         self.type = None
 
