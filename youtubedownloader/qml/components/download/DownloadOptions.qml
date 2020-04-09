@@ -10,8 +10,8 @@ Item {
     id: root
 
     property var options: {
-        "type": format.format,
-        "output_path": outputPath.text
+        "type": Settings.selectedType,
+        "output_path": Settings.outputPath
     }
 
     implicitWidth: mainLayout.implicitWidth
@@ -32,9 +32,9 @@ Item {
             id: outputPath
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignRight
-            text: paths.cleanPath(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
+            text: Settings.outputPath
             onClicked: dialogManager.open_dialog("SelectDirectoryDialog", {"folder": StandardPaths.writableLocation(StandardPaths.DownloadLocation)}, function(selectedFolder){
-                text = paths.cleanPath(selectedFolder)
+                Settings.outputPath = paths.cleanPath(selectedFolder)
             })
         }
     }

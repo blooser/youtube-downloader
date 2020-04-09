@@ -7,14 +7,13 @@ import "../items" as Items
 Item {
     id: root
 
-    property string format: "webm"
-
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
     ButtonGroup {
         id: buttonGroup
         buttons: mainLayout.children
+        onClicked: Settings.selectedType = button.text
     }
 
     RowLayout {
@@ -23,25 +22,21 @@ Item {
         spacing: Theme.Margins.tiny
 
         Items.YDButton {
-            checked: true
+            checked: (text === Settings.selectedType)
             checkable: true
             text: qsTr("webm")
-
-            onClicked: format = text
         }
 
         Items.YDButton {
+           checked: (text === Settings.selectedType)
            checkable: true
            text: qsTr("mp4")
-
-           onClicked: format = text
         }
 
         Items.YDButton {
+            checked: (text === Settings.selectedType)
             checkable: true
             text: qsTr("mp3")
-
-            onClicked: format = text
         }
     }
 }

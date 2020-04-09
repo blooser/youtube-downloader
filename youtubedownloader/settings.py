@@ -40,12 +40,14 @@ class Settings(QObject):
 
     def set_output_path(self, output_path):
         self.output_path = output_path
+        self.output_path_changed.emit(self.output_path)
 
     def read_type(self):
         return self.type
 
     def set_type(self, type):
         self.type = type
+        self.type_changed.emit(self.type)
 
     outputPath = Property(str, read_output_path, set_output_path, notify=output_path_changed)
     selectedType = Property(str, read_type, set_type, notify=type_changed)

@@ -11,6 +11,7 @@ from .dialog_manager import DialogManager
 from .resources import Resources
 from .theme import Theme
 from .paths import Paths
+from .settings import Settings
 
 
 def start_yddownloader():
@@ -22,6 +23,7 @@ def start_yddownloader():
     app.setOrganizationName("blooser")
 
     download_manager = DownloadManager()
+    settings = Settings()
     dialog_manager = DialogManager()
     resources = Resources()
     paths = Paths()
@@ -30,6 +32,7 @@ def start_yddownloader():
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty("Theme", Theme)
     engine.rootContext().setContextProperty("Resources", resources)
+    engine.rootContext().setContextProperty("Settings", settings)
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("paths", paths)
