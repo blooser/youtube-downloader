@@ -21,7 +21,7 @@ class DialogManager(QObject):
 
     @Slot(str, "QVariantMap" ,"QVariant")
     def open_dialog(self, dialog, properties, callback):
-        self.logger.info("Creating {dialog}".format(dialog))
+        self.logger.info("Creating {dialog}".format(dialog=dialog))
         self.open.emit(self.dialogs[dialog], properties, callback)
 
     @Slot(str)

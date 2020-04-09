@@ -33,16 +33,9 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignRight
             text: paths.cleanPath(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
-            onClicked: folderDialog.open()
+            onClicked: dialogManager.open_dialog("SelectDirectoryDialog", {"folder": StandardPaths.writableLocation(StandardPaths.DownloadLocation)}, function(selectedFolder){
+                text = paths.cleanPath(selectedFolder)
+            })
         }
-    }
-
-    FolderDialog {
-        id: folderDialog
-        title: qsTr("Download path")
-        currentFolder: StandardPaths.writableLocation(StandardPaths.DownloadLocation)
-        options: FolderDialog.ReadOnly | FolderDialog.ShowDirsOnly
-        folder: outputPath.text
-        onAccepted: outputPath.text = paths.cleanPath(folder)
     }
 }

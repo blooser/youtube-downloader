@@ -60,7 +60,7 @@ ApplicationWindow {
         function open(url, properties, callback) {
             var component = Qt.createComponent(url)
             if (component.status === Component.Error) {
-                console.warn("Failed to create", url)
+                console.warn("Failed to create", url, component.errorString())
                 return
             }
 
