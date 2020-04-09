@@ -12,6 +12,10 @@ from youtubedownloader import Settings
 class SettingsTest(unittest.TestCase):
     def setUp(self):
         self.config_path = "testsettings"
+            
+    def tearDown(self):
+        if os.path.isfile(self.config_path):
+            os.remove(self.config_path)
 
     def test_settingsStoresData(self):
         settings1 = Settings(self.config_path)
