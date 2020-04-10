@@ -17,41 +17,48 @@ class DownloadTest(unittest.TestCase):
             "output_path": "/foo/bar/path"
         }
     
-    def test_downloadSerialization(self):
-        download_data = {
-            "status": "Finished",
-            "downloaded_bytes": 500,
-            "total_bytes": 1000,
-            "_eta_str": "00:25",
-            "_speed_str": "25 MiB/s",
-            "filename": "test"
+    def test_downloadInitializesByPreDownload(self):
+        info = {
+                "title": "test1",
+                "uploader": "admin",
+                "thumbnail": "None",
+                "duration": 60
         }
-
-        tmp_filename = "download_test_pickle"
-        predownload = PreDownload(self.yt_url,  self.options)
-        download = Download(predownload)
-        download.progress.update(download_data)
-
-        with open(tmp_filename, "wb") as f:
-            pickle.dump(download, f)
-
-        self.assertTrue(os.path.isfile(tmp_filename))
-
-        with open(tmp_filename, "rb") as f:
-            unpickled_download = pickle.load(f)
         
-        self.assertEqual(download.id, unpickled_download.id)
-        self.assertEqual(download.url, unpickled_download.url)
-        self.assertEqual(download.progress.status, unpickled_download.progress.status)
-        self.assertEqual(download.progress.downloaded_bytes, unpickled_download.progress.downloaded_bytes)
-        self.assertEqual(download.progress.total_bytes, unpickled_download.progress.total_bytes)
-        self.assertEqual(download.progress.estimated_time, unpickled_download.progress.estimated_time)
-        self.assertEqual(download.progress.speed, unpickled_download.progress.speed)
-        self.assertEqual(download.progress.filename, unpickled_download.progress.filename)
-       
-        os.remove(tmp_filename) 
-        self.assertFalse(os.path.isfile(tmp_filename))
-
+        predownload = PreDownload(self.yt_url, self.options)
+        predownload.collect_info(info)
+        
+        download = Download.fromPreDownload(predownload)
+        self.assertEqual(download.url, predownload.url)
+        self.assertEqual(download.download_options, predownload.download_options)
+        self.assertEqual(download.title, predownload.title)
+        self.assertEqual(download.uploader, predownload.uploader)
+        self.assertEqual(download.thumbnail, predownload.thumbnail)
+        
+    def test_downloadPackAndUnpackData(self):
+        data = {
+                "id": 23123,
+                "url": "https://foo.bar.test",
+                "title": "test",
+                "uploader": "test1",
+                "thumbnail": "None",
+                "download_options": self.options
+        }
+        
+        download = Download(data)
+        packed = Download.pack(download)
+        expected_keys = ["id", "url", "title", "uploader", "thumbnail", "download_options", "progress"]
+        for key in packed.keys():
+            self.assertTrue(key in expected_keys)
+            
+        unpacked = Download.unpack(packed)
+        self.assertEqual(unpacked.id, download.id)    
+        self.assertEqual(unpacked.url, download.url)    
+        self.assertEqual(unpacked.title, download.title)    
+        self.assertEqual(unpacked.uploader, download.uploader)    
+        self.assertEqual(unpacked.thumbnail, download.thumbnail)    
+        self.assertEqual(unpacked.download_options, download.download_options)    
+            
 
 if __name__ == "__main__":
     unittest.main()

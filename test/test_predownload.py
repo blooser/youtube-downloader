@@ -10,7 +10,7 @@ from youtubedownloader import PreDownload
 
 class PreDownloadTest(unittest.TestCase):
     
-    def test_preDownloadSerialization(self):
+    def test_predownloadPackAndUnpack(self):
         data = {
                 "title": "TestTitle",
                 "uploader": "anonymous",
@@ -23,28 +23,24 @@ class PreDownloadTest(unittest.TestCase):
                 "output_path": "/foo/bar/path"
         }
         
-        tmp_filename = "predownload_test_pickle"
         predownload = PreDownload("https://www.youtube.com/watch?v=3L65PG_eZFg", options)
         predownload.collect_info(data)
         
-        with open(tmp_filename, "wb") as f:
-            pickle.dump(predownload, f)
+        packed = PreDownload.pack(predownload)
+        self.assertTrue(isinstance(packed, dict))
+        expected_keys = ["id", "url", "title", "uploader", "thumbnail", "duration", "download_options"]
+        for key in packed.keys():
+            self.assertTrue(key in expected_keys)
 
-        self.assertTrue(os.path.isfile(tmp_filename))
-
-        with open(tmp_filename, "rb") as f:
-            unpickled_predownload = pickle.load(f)
+        unpacked = PreDownload.unpack(packed)
+        self.assertEqual(predownload.id, unpacked.id)
+        self.assertEqual(predownload.url, unpacked.url)
+        self.assertEqual(predownload.title, unpacked.title)
+        self.assertEqual(predownload.uploader, unpacked.uploader)
+        self.assertEqual(predownload.thumbnail, unpacked.thumbnail)
+        self.assertEqual(predownload.duration, unpacked.duration)
+        self.assertEqual(predownload.download_options, unpacked.download_options)
         
-        self.assertEqual(unpickled_predownload.title, data["title"])    
-        self.assertEqual(unpickled_predownload.uploader, data["uploader"])
-        self.assertEqual(unpickled_predownload.thumbnail, data["thumbnail"])
-        self.assertEqual(unpickled_predownload.duration, "01:40")
-        self.assertEqual(unpickled_predownload.download_options.type, "mp3")
-        self.assertEqual(unpickled_predownload.download_options.output_path, "/foo/bar/path")
-        
-        os.remove(tmp_filename) 
-        self.assertFalse(os.path.isfile(tmp_filename))
-
 
 if __name__ == "__main__":
     unittest.main()

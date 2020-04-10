@@ -32,7 +32,7 @@ class DownloadDataTest(unittest.TestCase):
         download_data = DownloadProgress()
         download_data.update(dict())
 
-        self.assertEqual(download_data.status, "Unknown")
+        self.assertEqual(download_data.status, "Starting")
         self.assertEqual(download_data.downloaded_bytes, "0")
         self.assertEqual(download_data.total_bytes, "0")
         self.assertEqual(download_data.estimated_time, "00:00")

@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QRunnable, QTimer, Qt, QStandardPaths, Slot, Signal, Property
+from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QRunnable, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
 
 import os.path
 import pathlib
@@ -9,6 +9,7 @@ import pickle
 import youtube_dl
 
 from .logger import create_logger
+from .settings import Settings
 
 class DownloadProgress(QObject):
     changed = Signal()
@@ -112,6 +113,9 @@ class DownloadOptions(QObject):
 
         self.post_process_file_size = -1 # Will be filled in DownloadOptions
 
+    def __eq__(self, other):
+        return self.type == other.type and self.output_path == other.output_path
+
     def to_ydl_opts(self):
         template = self.ydl_opts
         template.update(self.output_template())
@@ -158,15 +162,14 @@ class DownloadCommunication(QObject):
 
 
 class Download(QObject):
-    def __init__(self, predownload):
+    def __init__(self, data):
         super(Download, self).__init__(None)
-        self.id = predownload.id
-        self.url = predownload.url
-        self.title = predownload.title
-        self.uploader = predownload.uploader
-        self.duration = predownload.duration
-        self.thumbnail = predownload.thumbnail
-        self.download_options = predownload.download_options
+        self.id = data["id"]
+        self.url = data["url"]
+        self.title = data["title"]
+        self.uploader = data["uploader"]
+        self.thumbnail = data["thumbnail"]
+        self.download_options = DownloadOptions.unpack(data["download_options"])
 
         self.progress = DownloadProgress()
         self.communication = DownloadCommunication()
@@ -179,26 +182,27 @@ class Download(QObject):
     def __eq__(self, other):
         return self.id == other.id
 
-    def __getstate__(self):
+    @staticmethod
+    def pack(download):
         return {
-            "id": self.id,
-            "url": self.url,
-            "title": self.title,
-            "uploader": self.uploader,
-            "thumbnail": self.thumbnail,
-            "download_options": DownloadOptions.pack(self.download_options),
-            "progress": DownloadProgress.pack(self.progress)
+            "id": download.id,
+            "url": download.url,
+            "title": download.title,
+            "uploader": download.uploader,
+            "thumbnail": download.thumbnail,
+            "download_options": DownloadOptions.pack(download.download_options),
+            "progress": DownloadProgress.pack(download.progress)
         }
 
-    def __setstate__(self, data):
-        self.id = data["id"]
-        self.url = data["url"]
-        self.title = data["title"]
-        self.uploader = data["uploader"]
-        self.thumbnail = data["thumbnail"]
-        self.download_options = DownloadOptions.unpack(data["download_options"])
-        self.progress = DownloadProgress.unpack(data["progress"])
+    @staticmethod
+    def unpack(data):
+        download = Download(data)
+        download.progress = DownloadProgress.unpack(data["progress"])
+        return download
 
+    @classmethod
+    def fromPreDownload(cls, predownload):
+        return cls(PreDownload.pack(predownload))
 
 class DownloadPostProcess(QObject):
     bytes_processed = Signal(int)
@@ -301,30 +305,30 @@ class PreDownload(object):
         if self.download_options.need_post_process():
             self.download_options.post_process_file_size = ((192 * int(info["duration"]))/8) * 1000 # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
 
-    def __getstate__(self):
+    @staticmethod
+    def pack(predownload):
         return {
-            "id": self.id,
-            "url": self.url,
-            "title": self.title,
-            "uploader": self.uploader,
-            "thumbnail": self.thumbnail,
-            "duration": self.duration,
-            "download_options": DownloadOptions.pack(self.download_options)
+            "id": predownload.id,
+            "url": predownload.url,
+            "title": predownload.title,
+            "uploader": predownload.uploader,
+            "thumbnail": predownload.thumbnail,
+            "duration": predownload.duration,
+            "download_options": DownloadOptions.pack(predownload.download_options)
         }
 
-    def __setstate__(self, data):
-        self.id = data["id"]
-        self.url = data["url"]
-        self.title = data["title"]
-        self.uploader = data["uploader"]
-        self.thumbnail = data["thumbnail"]
-        self.duration = data["duration"]
-        self.download_options = DownloadOptions.unpack(data["download_options"])
-        self.communication = DownloadCommunication()
+    @staticmethod
+    def unpack(data):
+        predownload = PreDownload(data["url"], data["download_options"])
+        predownload.id = data["id"]
+        predownload.title = data["title"]
+        predownload.uploader = data["uploader"]
+        predownload.thumbnail = data["thumbnail"]
+        predownload.duration = data["duration"]
+        return predownload
 
 
 class PreDownloadModel(QAbstractListModel):
-    PREDOWNLOADS_FILE = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.ydpredownloads"
     COLUMNS = ("title", "uploader", "thumbnail", "duration", "type")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
@@ -333,15 +337,30 @@ class PreDownloadModel(QAbstractListModel):
         super(PreDownloadModel, self).__init__(None)
         self.predownloads = []
 
-        self.config_path = config_path if config_path is not None else PreDownloadModel.PREDOWNLOADS_FILE
+        self.config_path = config_path if config_path is not None else Settings.CONFIG_PATH
 
-        if os.path.isfile(self.config_path):
-            with open(self.config_path, "rb") as f:
-                self.predownloads = pickle.load(f)
+        self.load()
 
     def __del__(self):
-        with open(self.config_path, "wb") as f:
-            pickle.dump(self.predownloads, f)
+        self.save()
+
+    def save(self):
+        settings = QSettings(self.config_path, QSettings.NativeFormat)
+
+        settings.beginWriteArray("predownloads")
+        for i in range(len(self.predownloads)):
+            settings.setArrayIndex(i)
+            settings.setValue("predownload", PreDownload.pack(self.predownloads[i]))
+        settings.endArray()
+
+    def load(self):
+        settings = QSettings(self.config_path, QSettings.NativeFormat)
+
+        size = settings.beginReadArray("predownloads")
+        for i in range(size):
+            settings.setArrayIndex(i)
+            self.predownloads.append(PreDownload.unpack(settings.value("predownload")))
+        settings.endArray()
 
     def rowCount(self, index=QModelIndex()):
         return len(self.predownloads)
@@ -410,7 +429,6 @@ class PreDownloadModel(QAbstractListModel):
 
 
 class DownloadModel(QAbstractListModel):
-    DOWNLOADS_FILE = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.yddownloads"
     COLUMNS = ("title", "uploader", "duration", "progress", "thumbnail", "output_path", "type")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
@@ -419,15 +437,30 @@ class DownloadModel(QAbstractListModel):
         super(DownloadModel, self).__init__(None)
         self.downloads = []
 
-        self.config_path = config_path if config_path is not None else DownloadModel.DOWNLOADS_FILE
+        self.config_path = config_path if config_path is not None else Settings.CONFIG_PATH
 
-        #if os.path.isfile(self.config_path):
-        #    with open(self.config_path, "rb") as f:
-         #       self.downloads = pickle.load(f)
+        self.load()
 
     def __del__(self):
-         with open(self.config_path, "wb") as f:
-            pickle.dump(self.downloads, f)
+        self.save()
+
+    def save(self):
+        settings = QSettings(self.config_path, QSettings.NativeFormat)
+
+        settings.beginWriteArray("downloads")
+        for i in range(len(self.downloads)):
+            settings.setArrayIndex(i)
+            settings.setValue("download", Download.pack(self.downloads[i]))
+        settings.endArray()
+
+    def load(self):
+        settings = QSettings(self.config_path, QSettings.NativeFormat)
+
+        size = settings.beginReadArray("downloads")
+        for i in range(size):
+            settings.setArrayIndex(i)
+            self.downloads.append(Download.unpack(settings.value("download")))
+        settings.endArray()
 
     def rowCount(self, index=QModelIndex()):
         return len(self.downloads)
@@ -529,7 +562,7 @@ class DownloadManager(QThreadPool):
         self.logger.info("Starting download {items} items".format(items=len(self.predownload_model.predownloads)))
 
         for predownload in self.predownload_model.predownloads:
-            download = Download(predownload)
+            download = Download.fromPreDownload(predownload)
             download_task = DownloadTask(download.url, download.download_options)
             download_task.communication.progress.connect(download.update)
             self.download_model.add_download(download)
