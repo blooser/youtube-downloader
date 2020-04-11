@@ -297,6 +297,7 @@ class DownloadTask(QRunnable):
 
 class PreDownload(object):
     def __init__(self, url, options):
+        self.ready = False
         self.id = hash(url)
         self.url = url
         self.title = str()
@@ -308,6 +309,7 @@ class PreDownload(object):
 
     @Slot(dict)
     def collect_info(self, info):
+        self.ready = True
         self.title = info["title"]
         self.uploader = info["uploader"]
         self.thumbnail = info["thumbnail"]
@@ -321,6 +323,7 @@ class PreDownload(object):
     @staticmethod
     def pack(predownload):
         return {
+            "ready": predownload.ready,
             "id": predownload.id,
             "url": predownload.url,
             "title": predownload.title,
@@ -333,6 +336,7 @@ class PreDownload(object):
     @staticmethod
     def unpack(data):
         predownload = PreDownload(data["url"], data["download_options"])
+        predownload.ready = bool(data["ready"])
         predownload.id = data["id"]
         predownload.title = data["title"]
         predownload.uploader = data["uploader"]
@@ -342,7 +346,7 @@ class PreDownload(object):
 
 
 class PreDownloadModel(QAbstractListModel):
-    COLUMNS = ("title", "uploader", "thumbnail", "duration", "options")
+    COLUMNS = ("ready", "title", "uploader", "thumbnail", "duration", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -380,11 +384,12 @@ class PreDownloadModel(QAbstractListModel):
 
     def roleNames(self, index=QModelIndex()):
         return {
-            0: b"title",
-            1: b"uploader",
-            2: b"thumbnail",
-            3: b"duration",
-            4: b"options"
+            0: b"ready",
+            1: b"title",
+            2: b"uploader",
+            3: b"thumbnail",
+            4: b"duration",
+            5: b"options"
         }
 
     def index(self, row, column, parent):
@@ -424,18 +429,21 @@ class PreDownloadModel(QAbstractListModel):
         predownload = self.predownloads[index.row()]
 
         if role == 0:
-            return predownload.title
+            return predownload.ready
 
         elif role == 1:
-            return predownload.uploader
+            return predownload.title
 
         elif role == 2:
-            return predownload.thumbnail
+            return predownload.uploader
 
         elif role == 3:
-            return QDateTime.fromSecsSinceEpoch(int(predownload.duration)).toString("mm:ss")
+            return predownload.thumbnail
 
         elif role == 4:
+            return QDateTime.fromSecsSinceEpoch(int(predownload.duration)).toString("mm:ss")
+
+        elif role == 5:
             return predownload.download_options
 
         return None
