@@ -33,7 +33,7 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignRight
             text: Settings.outputPath
-            onClicked: dialogManager.open_dialog("SelectDirectoryDialog", {"folder": StandardPaths.writableLocation(StandardPaths.DownloadLocation)}, function(selectedFolder){
+            onClicked: dialogManager.open_dialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
                 Settings.outputPath = paths.cleanPath(selectedFolder)
             })
         }
