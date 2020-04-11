@@ -43,13 +43,19 @@ class Settings(QObject):
         return self.input_link
 
     def set_input_link(self, input_link):
+        if self.input_link == input_link:
+            return
+
         self.input_link = input_link
-        self.input_link_changed.emit()
+        self.input_link_changed.emit(self.input_link)
 
     def read_output_path(self):
         return self.output_path
 
     def set_output_path(self, output_path):
+        if self.output_path == output_path:
+            return
+
         self.output_path = output_path
         self.output_path_changed.emit(self.output_path)
 
@@ -57,6 +63,9 @@ class Settings(QObject):
         return self.type
 
     def set_type(self, type):
+        if self.type == type:
+            return
+
         self.type = type
         self.type_changed.emit(self.type)
 
