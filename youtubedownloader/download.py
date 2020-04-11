@@ -178,7 +178,7 @@ class Download(QObject):
     @Slot(dict)
     def update(self, data):
         self.progress.update(data)
-        self.communication.updated.emit(str(self.id))
+        self.communication.updated.emit(str(self.id)) # PySide2's Signal doesn't handle such big number, to avoid Overflowing we use string
 
     def __eq__(self, other):
         return self.id == other.id
@@ -381,7 +381,7 @@ class PreDownloadModel(QAbstractListModel):
         return self.createIndex(row, column, parent)
 
     def refresh(self, id):
-        id = int(id) # PySide2's Signal doesn't handle such big number, to avoid Overflowing we use string
+        id = int(id)
         for row, predownload in enumerate(self.predownloads):
             if predownload.id == id:
                 self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
@@ -562,7 +562,7 @@ class DownloadManager(QThreadPool):
 
     @Slot()
     def download(self):
-        self.logger.info("Download {items} items".format(items=len(self.predownload_model.predownloads)))
+        self.logger.info("Downloading {items} items".format(items=len(self.predownload_model.predownloads)))
 
         for predownload in self.predownload_model.predownloads:
             download = Download.fromPreDownload(predownload)
