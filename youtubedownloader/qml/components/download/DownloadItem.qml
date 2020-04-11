@@ -14,7 +14,7 @@ Items.YDProgressBar {
     property alias uploaderText: link.uploaderText
     property alias linkDuration: link.durationText
 
-    property alias selectedFormat: selectedFormat.format
+    property alias selectedFormat: selectedFormat.text
 
     signal remove()
     signal open()
@@ -51,11 +51,11 @@ Items.YDProgressBar {
             id: status
         }
 
-        Components.SelectedFormat {
+        Components.TileText {
             id: selectedFormat
 
-            Layout.preferredWidth: 50
-            Layout.preferredHeight: 35
+            Layout.preferredWidth: 65
+
         }
 
         Items.YDImageButton {
