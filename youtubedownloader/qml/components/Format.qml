@@ -21,22 +21,14 @@ Item {
 
         spacing: Theme.Margins.tiny
 
-        Items.YDButton {
-            checked: (text === Settings.selectedType)
-            checkable: true
-            text: qsTr("webm")
-        }
+        Repeater {
+            model: ["webm", "mp4", "mp3"]
 
-        Items.YDButton {
-           checked: (text === Settings.selectedType)
-           checkable: true
-           text: qsTr("mp4")
-        }
-
-        Items.YDButton {
-            checked: (text === Settings.selectedType)
-            checkable: true
-            text: qsTr("mp3")
+            Items.YDButton {
+                checked: (text === Settings.selectedType)
+                checkable: true
+                text: modelData
+            }
         }
     }
 }
