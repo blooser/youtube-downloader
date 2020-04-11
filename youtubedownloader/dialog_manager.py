@@ -1,9 +1,8 @@
 from PySide2.QtCore import QObject, Qt, QStandardPaths, Slot, Signal, Property
 
-from .paths import Paths
-
 import sys, os, pathlib
 
+from .paths import Paths
 from .logger import create_logger
 
 class DialogManager(QObject):
