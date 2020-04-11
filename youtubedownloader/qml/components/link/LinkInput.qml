@@ -21,6 +21,12 @@ Item {
 
             Layout.fillWidth: true
             placeholderText: qsTr("Enter your link")
+
+            onTextEdited: Settings.inputLink = text
+
+            Component.onCompleted: {
+                text = Settings.inputLink
+            }
         }
 
         Items.YDImageButton {
@@ -32,6 +38,7 @@ Item {
             onClicked: {
                 root.addLink(link.text)
                 link.clear()
+                Settings.inputLink = ""
             }
         }
     }
