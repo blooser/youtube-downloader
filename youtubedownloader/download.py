@@ -386,7 +386,7 @@ class PreDownloadModel(QAbstractListModel):
 
     def add_predownload(self, predownload):
         self.beginInsertRows(QModelIndex(), len(self.predownloads), len(self.predownloads))
-        predownload.communication.updated.connect(self.refresh)
+        predownload.communication.updated.connect(self.refresh, Qt.QueuedConnection)
         self.predownloads.append(predownload)
         self.endInsertRows()
 
@@ -553,7 +553,7 @@ class DownloadManager(QThreadPool):
     def predownload(self, url, options):
         predownload = PreDownload(url, options)
         predownload_task = PreDownloadTask(url)
-        predownload_task.communication.progress.connect(predownload.collect_info)
+        predownload_task.communication.progress.connect(predownload.collect_info, Qt.QueuedConnection)
         self.predownload_model.add_predownload(predownload)
         self.start(predownload_task)
 
@@ -564,7 +564,7 @@ class DownloadManager(QThreadPool):
         for predownload in self.predownload_model.predownloads:
             download = Download.fromPreDownload(predownload)
             download_task = DownloadTask(download.url, download.download_options)
-            download_task.communication.progress.connect(download.update)
+            download_task.communication.progress.connect(download.update, Qt.QueuedConnection)
             self.download_model.add_download(download)
             self.start(download_task)
 
