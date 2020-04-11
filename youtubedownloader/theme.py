@@ -21,7 +21,8 @@ Theme = {
 
     "Visible": {
         "on": 1.0,
-        "off": 0.0
+        "off": 0.0,
+        "disabled": 0.4
     },
 
     "Size": {
