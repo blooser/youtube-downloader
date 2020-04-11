@@ -15,9 +15,8 @@ class Settings(QObject):
         self.settings_path = Settings.CONFIG_PATH if settings_path == None else settings_path
 
         self.input_link = str()
-        # TODO: Add default values
-        self.output_path = None
-        self.type = None
+        self.output_path = QStandardPaths.writableLocation(QStandardPaths.DownloadLocation)
+        self.type = "webm"
 
         self.load()
 
