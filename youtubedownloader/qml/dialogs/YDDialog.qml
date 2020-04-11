@@ -2,6 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 
 import "../components" as Components
+import "../items" as Items
 
 Dialog {
     id: root
@@ -34,6 +35,11 @@ Dialog {
         implicitHeight: 400
         color: Theme.Colors.base
         radius: Theme.Margins.tiny
+    }
+
+    footer: DialogButtonBox {
+        delegate: Items.YDButton {}
+        background: null
     }
 
     enter: Transition {
