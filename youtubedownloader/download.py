@@ -169,6 +169,7 @@ class Download(QObject):
         self.title = data["title"]
         self.uploader = data["uploader"]
         self.thumbnail = data["thumbnail"]
+        self.duration = data["duration"]
         self.download_options = DownloadOptions.unpack(data["download_options"])
 
         self.progress = DownloadProgress()
@@ -190,6 +191,7 @@ class Download(QObject):
             "title": download.title,
             "uploader": download.uploader,
             "thumbnail": download.thumbnail,
+            "duration": download.duration,
             "download_options": DownloadOptions.pack(download.download_options),
             "progress": DownloadProgress.pack(download.progress)
         }
