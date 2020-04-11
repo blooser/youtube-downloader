@@ -10,7 +10,7 @@ class PreDownloadTest(unittest.TestCase):
     
     def setUp(self):
         self.options = {
-                "type": "mp3",
+                "file_format": "mp3",
                 "output_path": "/foo/bar/path"
         }
     

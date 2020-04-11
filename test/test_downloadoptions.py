@@ -12,7 +12,7 @@ class DownloadOptionsTest(unittest.TestCase):
     
     def test_downloadOptionsCreatesValidOuttmpl(self):
         options = {
-                "type": "mp3",
+                "file_format": "mp3",
                 "output_path": "/foo/bar/path/output"
         }
         

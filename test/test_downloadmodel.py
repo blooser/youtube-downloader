@@ -11,7 +11,7 @@ class DownloadModelTest(unittest.TestCase):
         self.config_path = "downloadmodelconfig"
         
         self.options = {
-                "type": "mp3",
+                "file_format": "mp3",
                 "output_path": "/foo/bar/path"
         }
         

@@ -13,7 +13,7 @@ class DownloadTest(unittest.TestCase):
         self.yt_url = "https://www.youtube.com/watch?v=_mVW8tgGY_w"
         
         self.options = {
-            "type": "mp3",
+            "file_format": "mp3",
             "output_path": "/foo/bar/path"
         }
     

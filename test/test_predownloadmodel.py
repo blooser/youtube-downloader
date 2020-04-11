@@ -11,7 +11,7 @@ class PreDownloadModelTest(unittest.TestCase):
         self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "predownloadmodelconfig")
         
         self.options = {
-                "type": "mp3",
+                "file_format": "mp3",
                 "output_path": "/foo/bar/path"
         }
         

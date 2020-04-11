@@ -19,7 +19,7 @@ class PreDownloadTest(unittest.TestCase):
         }
         
         options = {
-                "type": "mp3",
+                "file_format": "mp3",
                 "output_path": "/foo/bar/path"
         }
         
@@ -28,12 +28,13 @@ class PreDownloadTest(unittest.TestCase):
         
         packed = PreDownload.pack(predownload)
         self.assertTrue(isinstance(packed, dict))
-        expected_keys = ["id", "url", "title", "uploader", "thumbnail", "duration", "download_options"]
+        expected_keys = ["ready", "id", "url", "title", "uploader", "thumbnail", "duration", "download_options"]
         for key in packed.keys():
             self.assertTrue(key in expected_keys)
 
         unpacked = PreDownload.unpack(packed)
         self.assertEqual(predownload.id, unpacked.id)
+        self.assertEqual(predownload.ready, unpacked.ready)
         self.assertEqual(predownload.url, unpacked.url)
         self.assertEqual(predownload.title, unpacked.title)
         self.assertEqual(predownload.uploader, unpacked.uploader)
