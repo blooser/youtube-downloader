@@ -8,7 +8,7 @@ import ".." as Components
 Items.YDProgressBar {
     id: root
 
-    property alias statusText: status.text
+    property alias statusText: downloadStatus.status
     property alias thumbnailSrc: thumbnail.source
     property alias titleText: link.titleText
     property alias uploaderText: link.uploaderText
@@ -47,8 +47,8 @@ Items.YDProgressBar {
             Layout.fillWidth: true
         }
 
-        Items.YDText {
-            id: status
+        DownloadStatus {
+            id: downloadStatus
         }
 
         Components.TileText {
