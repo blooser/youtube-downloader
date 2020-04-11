@@ -6,14 +6,14 @@ Button {
 
     contentItem: YDText {
         text: root.text
-        opacity: root.enabled ? 1 : 0
+        opacity: root.enabled ? Theme.Visible.on : Theme.Visible.disabled
     }
 
     background: Rectangle {
         implicitWidth: 100
         implicitHeight: 40
 
-        opacity: root.enabled ? 1 : 0
+        opacity: root.enabled ? Theme.Visible.on : Theme.Visible.disabled
         color: root.checked ? Theme.Colors.highlight : Theme.Colors.second
 
         border {

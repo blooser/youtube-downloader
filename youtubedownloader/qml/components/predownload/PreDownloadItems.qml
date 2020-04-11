@@ -22,6 +22,8 @@ Item {
             text: qsTr("Download %1 items").arg(preDownloadItems.count)
             opacity: preDownloadItems.count ? 1 : 0
 
+            enabled: (preDownloadItems.itemsNotReady === 0)
+
             onClicked: downloadManager.download()
 
             Behavior on opacity {
@@ -34,6 +36,8 @@ Item {
         ListView {
             id: preDownloadItems
 
+            property int itemsNotReady: 0
+
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -43,6 +47,10 @@ Item {
 
             delegate: Dynamic.Changer {
                 width: preDownloadItems.width
+
+                property bool predownloadIsReady: ready
+
+                onPredownloadIsReadyChanged: preDownloadItems.itemsNotReady -= 1
 
                 main: PreDownloadItemCollectingInfoIndicator {}
 
@@ -59,7 +67,9 @@ Item {
                     })
                 }
 
-                when: ready
+                when: predownloadIsReady
+
+                Component.onCompleted: preDownloadItems.itemsNotReady += 1 // When added first of all the predownload need to collect info from server
             }
         }
     }
