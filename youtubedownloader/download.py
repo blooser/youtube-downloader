@@ -261,7 +261,7 @@ class DownloadTask(QRunnable):
         self.download_post_process = DownloadPostProcess()
         self.post_process_file = str()
         self.post_process_timer = QTimer()
-        self.post_process_timer.setInterval(250)
+        self.post_process_timer.setInterval(500)
         self.post_process_timer.setSingleShot(True)
         self.post_process_timer.timeout.connect(lambda: self.download_post_process.track(self.post_process_file))
 
@@ -300,12 +300,13 @@ class PreDownload(object):
         self.title = info["title"]
         self.uploader = info["uploader"]
         self.thumbnail = info["thumbnail"]
-        self.duration = QDateTime.fromSecsSinceEpoch(int(info["duration"])).toString("mm:ss")
+        self.duration = int(info["duration"])
 
         self.communication.updated.emit(str(self.id))
 
         if self.download_options.need_post_process():
-            self.download_options.post_process_file_size = ((192 * int(info["duration"]))/8) * 1000 # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
+            self.download_options.post_process_file_size = ((192 * self.duration)/8) * 1000 # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
+
 
     @staticmethod
     def pack(predownload):
@@ -422,7 +423,7 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.thumbnail
 
         elif role == 3:
-            return predownload.duration
+            return QDateTime.fromSecsSinceEpoch(int(predownload.duration)).toString("mm:ss")
 
         elif role == 4:
             return predownload.download_options.type
@@ -527,7 +528,7 @@ class DownloadModel(QAbstractListModel):
             return download.uploader
 
         elif role == 2:
-            return download.duration
+            return QDateTime.fromSecsSinceEpoch(download.duration).toString("mm:ss")
 
         elif role == 3:
             return download.progress
