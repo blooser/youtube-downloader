@@ -31,9 +31,9 @@ Item {
             uploaderText: uploader
             linkDuration: duration
 
-            selectedFormat: type
+            selectedFormat: options.downloadFormat
 
-            onOpen: Qt.openUrlExternally(paths.cleanPath("%1/%2.%3").arg(output_path).arg(title).arg(type))
+            onOpen: Qt.openUrlExternally(paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(title).arg(options.downloadFormat))
             onRemove: downloadModel.remove_download(index)
         }
     }

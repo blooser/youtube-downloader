@@ -104,7 +104,10 @@ class DownloadOptions(QObject):
 
     WEBM_TEMPLATE = {}
 
+    changed = Signal(str)
+
     def __init__(self, options):
+        super(DownloadOptions, self).__init__(None)
         self.type = options["type"]
         self.output_path = options["output_path"]
         self.ydl_opts = {
@@ -115,6 +118,14 @@ class DownloadOptions(QObject):
 
     def __eq__(self, other):
         return self.type == other.type and self.output_path == other.output_path
+
+    @Property(str, notify=changed)
+    def downloadFormat(self):
+        return self.type
+
+    @Property(str, notify=changed)
+    def outputPath(self):
+        return self.output_path
 
     def to_ydl_opts(self):
         template = self.ydl_opts
@@ -307,7 +318,6 @@ class PreDownload(object):
         if self.download_options.need_post_process():
             self.download_options.post_process_file_size = ((192 * self.duration)/8) * 1000 # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
 
-
     @staticmethod
     def pack(predownload):
         return {
@@ -374,7 +384,7 @@ class PreDownloadModel(QAbstractListModel):
             1: b"uploader",
             2: b"thumbnail",
             3: b"duration",
-            4: b"type"
+            4: b"options"
         }
 
     def index(self, row, column, parent):
@@ -426,7 +436,7 @@ class PreDownloadModel(QAbstractListModel):
             return QDateTime.fromSecsSinceEpoch(int(predownload.duration)).toString("mm:ss")
 
         elif role == 4:
-            return predownload.download_options.type
+            return predownload.download_options
 
         return None
 
@@ -481,8 +491,7 @@ class DownloadModel(QAbstractListModel):
             2: b"duration",
             3: b"progress",
             4: b"thumbnail",
-            5: b"output_path",
-            6: b"type"
+            5: b"options"
         }
 
     def clear(self):
@@ -537,10 +546,7 @@ class DownloadModel(QAbstractListModel):
             return download.thumbnail
 
         elif role == 5:
-            return download.download_options.output_path
-
-        elif role == 6:
-            return download.download_options.type
+            return download.download_options
 
         return None
 

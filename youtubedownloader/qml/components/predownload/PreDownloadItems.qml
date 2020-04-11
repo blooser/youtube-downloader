@@ -48,7 +48,7 @@ Item {
                 linkDuration: duration
 
                 thumbnailUrl: thumbnail
-                selectedFormat: type
+                selectedFormat: options.downloadFormat
 
                 onRemove: predownloadModel.remove_predownload(index)
             }
