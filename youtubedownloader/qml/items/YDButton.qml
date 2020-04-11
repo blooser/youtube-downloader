@@ -22,5 +22,9 @@ Button {
         }
 
         radius: Theme.Margins.tiny
+
+        Behavior on color {
+            ColorAnimation { duration: Theme.Animation.quick }
+        }
     }
 }
