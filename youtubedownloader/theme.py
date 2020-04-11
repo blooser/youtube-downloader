@@ -38,5 +38,9 @@ Theme = {
         "tiny": 14,
         "small": 16,
         "normal": 18,
+    },
+
+    "String": {
+        "empty": ""
     }
 }

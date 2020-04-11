@@ -38,7 +38,7 @@ Item {
             onClicked: {
                 root.addLink(link.text)
                 link.clear()
-                Settings.inputLink = ""
+                Settings.inputLink = Theme.String.empty
             }
         }
     }
