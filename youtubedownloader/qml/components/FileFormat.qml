@@ -22,7 +22,7 @@ Item {
         spacing: Theme.Margins.tiny
 
         Repeater {
-            model: ["webm", "mp4", "mp3"]
+            model: Settings.fileFormats
 
             Items.YDButton {
                 checked: (text === Settings.fileFormat)
