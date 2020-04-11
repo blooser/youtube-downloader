@@ -35,15 +35,18 @@ class DownloadOptionsTest(unittest.TestCase):
         
     def test_downloadOptionsPackAndUnpack(self):
             download_options = DownloadOptions(self.options)
+            download_options.post_process_file_size = 650
             
             packed = DownloadOptions.pack(download_options)
-            expected_keys = ["file_format", "output_path"]
+            expected_keys = ["file_format", "output_path", "post_process_file_size"]
             for key in packed.keys():
                 self.assertTrue(key in expected_keys)
                 
             unpacked = DownloadOptions.unpack(packed)
             self.assertEqual(unpacked.file_format, download_options.file_format)
             self.assertEqual(unpacked.output_path, download_options.output_path)
+            self.assertEqual(unpacked.post_process_file_size, download_options.post_process_file_size)
+
         
 if __name__ == "__main__":
     unittest.main()

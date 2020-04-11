@@ -114,7 +114,7 @@ class DownloadOptions(QObject):
             "format": "bestaudio/best"
         }
 
-        self.post_process_file_size = -1 # Will be filled in DownloadOptions
+        self.post_process_file_size = int(options["post_process_file_size"]) if "post_process_file_size" in options else 0
 
     def __eq__(self, other):
         return self.file_format == other.file_format and self.output_path == other.output_path
@@ -126,6 +126,9 @@ class DownloadOptions(QObject):
     @Property(str, notify=changed)
     def outputPath(self):
         return self.output_path
+
+    def calc_post_process_file_size(self, duration):
+        self.post_process_file_size = (((192 * duration)/8) * 1000)
 
     def to_ydl_opts(self):
         template = self.ydl_opts
@@ -157,7 +160,8 @@ class DownloadOptions(QObject):
     def pack(download_options):
         return {
             "file_format": download_options.file_format,
-            "output_path": download_options.output_path
+            "output_path": download_options.output_path,
+            "post_process_file_size": download_options.post_process_file_size
         }
 
     @staticmethod
@@ -227,6 +231,7 @@ class DownloadPostProcess(QObject):
 
         self.file_watcher = QFileSystemWatcher()
         self.file_watcher.fileChanged.connect(self.read_bytes)
+        self.total_bytes = None
 
         self.logger = create_logger(__name__)
 
@@ -270,6 +275,7 @@ class DownloadTask(QRunnable):
         self.communication = DownloadCommunication()
 
         self.download_post_process = DownloadPostProcess()
+        self.download_post_process.total_bytes = self.options.post_process_file_size
         self.post_process_file = str()
         self.post_process_timer = QTimer()
         self.post_process_timer.setInterval(500)
@@ -287,7 +293,6 @@ class DownloadTask(QRunnable):
 
         if self.options.need_post_process() and data["status"] == "finished":
             self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.file_format))
-            self.download_post_process.total_bytes = self.options.post_process_file_size
             self.communication.start.emit()
 
     def run(self):
@@ -318,7 +323,7 @@ class PreDownload(object):
         self.communication.updated.emit(str(self.id))
 
         if self.download_options.need_post_process():
-            self.download_options.post_process_file_size = ((192 * self.duration)/8) * 1000 # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
+            self.download_options.calc_post_process_file_size(self.duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
 
     @staticmethod
     def pack(predownload):
