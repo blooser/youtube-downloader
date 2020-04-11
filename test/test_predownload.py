@@ -10,21 +10,25 @@ from youtubedownloader import PreDownload
 
 class PreDownloadTest(unittest.TestCase):
     
-    def test_predownloadPackAndUnpack(self):
-        data = {
+    def setUp(self):
+        self.yt_url = "https://www.youtube.com/watch?v=3L65PG_eZFg"
+        
+        self.data = {
                 "title": "TestTitle",
                 "uploader": "anonymous",
                 "thumbnail": "Empty",
                 "duration": 100
         }
         
-        options = {
+        self.options = {
                 "file_format": "mp3",
                 "output_path": "/foo/bar/path"
         }
-        
-        predownload = PreDownload("https://www.youtube.com/watch?v=3L65PG_eZFg", options)
-        predownload.collect_info(data)
+    
+    
+    def test_predownloadPackAndUnpack(self):
+        predownload = PreDownload(self.yt_url, self.options)
+        predownload.collect_info(self.data)
         
         packed = PreDownload.pack(predownload)
         self.assertTrue(isinstance(packed, dict))

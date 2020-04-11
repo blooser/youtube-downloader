@@ -22,10 +22,10 @@ class PreDownloadTest(unittest.TestCase):
 
         predownload_task.run()
 
-        self.assertTrue(predownload.title)
-        self.assertTrue(predownload.uploader)
+        self.assertEqual(predownload.title, "Fall Out Boy - Centuries (LEXIM Remix)")
+        self.assertEqual(predownload.uploader, "Trap Boost")
         self.assertTrue(predownload.thumbnail)
-        self.assertTrue(predownload.duration)
+        self.assertEqual(predownload.duration, 262)
 
 
 if __name__ == "__main__":

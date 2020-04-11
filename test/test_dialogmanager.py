@@ -13,3 +13,10 @@ class DialogManagerTest(unittest.TestCase):
         dialog_manager = DialogManager()
         
         self.assertEqual(len(dialog_manager.dialogs), 3)
+        
+        expected_dialogs = ["ConfirmDialog", "SelectDirectoryDialog", "YDDialog"]
+        for key in dialog_manager.dialogs.keys():
+            self.assertTrue(key in expected_dialogs)
+            
+            dialog = dialog_manager.dialogs[key]
+            self.assertTrue(dialog.startswith("file:"))

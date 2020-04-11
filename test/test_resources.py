@@ -19,6 +19,9 @@ class ResourcesTest(unittest.TestCase):
         expected_keys = ["download", "delete", "plus", "folder"]
         for key in icons.keys():
                 self.assertTrue(key in expected_keys)
+                
+                icon = icons[key]
+                self.assertTrue(icon.startswith("file:"))
         
 if __name__ == "__main__":
     unittest.main()

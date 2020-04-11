@@ -16,6 +16,21 @@ class DownloadTest(unittest.TestCase):
             "file_format": "mp3",
             "output_path": "/foo/bar/path"
         }
+        
+        self.data = {
+                "id": 23123,
+                "url": "https://foo.bar.test",
+                "title": "test",
+                "uploader": "test1",
+                "thumbnail": "None",
+                "duration": 60,
+                "download_options": self.options
+        }
+            
+    def test_downloadEqOperator(self):
+                download1 = Download(self.data)
+                download2 = Download(self.data)
+                self.assertEqual(download1, download2)
     
     def test_downloadInitializesByPreDownload(self):
         info = {
@@ -36,17 +51,7 @@ class DownloadTest(unittest.TestCase):
         self.assertEqual(download.thumbnail, predownload.thumbnail)
         
     def test_downloadPackAndUnpackData(self):
-        data = {
-                "id": 23123,
-                "url": "https://foo.bar.test",
-                "title": "test",
-                "uploader": "test1",
-                "thumbnail": "None",
-                "duration": 60,
-                "download_options": self.options
-        }
-        
-        download = Download(data)
+        download = Download(self.data)
         packed = Download.pack(download)
         expected_keys = ["id", "url", "title", "uploader", "thumbnail", "duration", "download_options", "progress"]
         for key in packed.keys():
