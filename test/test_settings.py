@@ -19,10 +19,12 @@ class SettingsTest(unittest.TestCase):
 
     def test_settingsStoresData(self):
         settings1 = Settings(self.config_path)
+        settings1.input_link = "link"
         settings1.type = "mp4"
         settings1.output_path = "/foo/bar/path1"
         del settings1
         
         settings2 = Settings(self.config_path)
+        self.assertEqual(settings2.input_link, "link")
         self.assertEqual(settings2.type, "mp4")
         self.assertEqual(settings2.output_path, "/foo/bar/path1")
