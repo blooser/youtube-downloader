@@ -1,11 +1,15 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
 
+import "../components" as Components
+
 Dialog {
     id: root
 
     property string dialog: "Unknown"
     property var callback: null
+
+    property alias headerText: dialogHeader.text
 
     modal: true
     focus: true
@@ -19,6 +23,10 @@ Dialog {
         Behavior on opacity {
             OpacityAnimator { duration: 250 }
         }
+    }
+
+    header: Components.DialogHeader {
+        id: dialogHeader
     }
 
     background: Rectangle {

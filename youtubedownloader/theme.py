@@ -38,6 +38,7 @@ Theme = {
         "tiny": 14,
         "small": 16,
         "normal": 18,
+        "big": 22
     },
 
     "String": {
