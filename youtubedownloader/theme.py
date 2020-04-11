@@ -32,7 +32,8 @@ Theme = {
     },
 
     "Animation": {
-        "quick": 250
+        "quick": 250,
+        "medium": 500
     },
 
     "FontSize": {

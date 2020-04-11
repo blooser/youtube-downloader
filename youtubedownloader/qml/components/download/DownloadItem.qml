@@ -55,27 +55,13 @@ Items.YDProgressBar {
             id: selectedFormat
 
             Layout.preferredWidth: 65
-
         }
 
-        Items.YDImageButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
-            Layout.alignment: Qt.AlignRight
+        DownloadButtons {
+            enabled: (statusText === "finished")
 
-            imageSource: Resources.icons.folder
-
-            onClicked: root.open()
-        }
-
-        Items.YDImageButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
-            Layout.alignment: Qt.AlignRight
-
-            imageSource: Resources.icons.delete
-
-            onClicked: root.remove()
+            onOpen: root.open()
+            onRemove: root.remove()
         }
     }
 }
