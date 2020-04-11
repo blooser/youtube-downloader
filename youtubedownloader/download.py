@@ -108,7 +108,7 @@ class DownloadOptions(QObject):
 
     def __init__(self, options):
         super(DownloadOptions, self).__init__(None)
-        self.type = options["type"]
+        self.file_format = options["file_format"]
         self.output_path = options["output_path"]
         self.ydl_opts = {
             "format": "bestaudio/best"
@@ -117,11 +117,11 @@ class DownloadOptions(QObject):
         self.post_process_file_size = -1 # Will be filled in DownloadOptions
 
     def __eq__(self, other):
-        return self.type == other.type and self.output_path == other.output_path
+        return self.file_format == other.file_format and self.output_path == other.output_path
 
     @Property(str, notify=changed)
-    def downloadFormat(self):
-        return self.type
+    def fileFormat(self):
+        return self.file_format
 
     @Property(str, notify=changed)
     def outputPath(self):
@@ -134,7 +134,7 @@ class DownloadOptions(QObject):
         return template
 
     def need_post_process(self):
-        return self.type in ["mp3"]
+        return self.file_format in ["mp3"]
 
     def output_template(self):
         return {
@@ -142,13 +142,13 @@ class DownloadOptions(QObject):
         }
 
     def post_processors(self):
-        if "mp3" in self.type:
+        if "mp3" in self.file_format:
             return DownloadOptions.MP3_TEMPLATE
 
-        elif "mp4" in self.type:
+        elif "mp4" in self.file_format:
             return DownloadOptions.MP4_TEMPLATE
 
-        elif "webm" in self.type:
+        elif "webm" in self.file_format:
             return DownloadOptions.WEBM_TEMPLATE
 
         return {}
@@ -156,7 +156,7 @@ class DownloadOptions(QObject):
     @staticmethod
     def pack(download_options):
         return {
-            "type": download_options.type,
+            "file_format": download_options.file_format,
             "output_path": download_options.output_path
         }
 
@@ -279,14 +279,14 @@ class DownloadTask(QRunnable):
         self.communication.start.connect(self.post_process_timer.start)
         self.download_post_process.bytes_processed.connect(lambda bytes: self.communication.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
         self.download_post_process.finished.connect(lambda: self.communication.progress.emit({"status": "finished"}), Qt.QueuedConnection)
-        self.download_post_process.started.connect(lambda: self.communication.progress.emit({"status": "Converting to {0}".format(self.options.type),
+        self.download_post_process.started.connect(lambda: self.communication.progress.emit({"status": "Converting to {0}".format(self.options.file_format),
                                                                                              "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
 
     def process(self, data):
         self.communication.progress.emit(data)
 
         if self.options.need_post_process() and data["status"] == "finished":
-            self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.type))
+            self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.file_format))
             self.download_post_process.total_bytes = self.options.post_process_file_size
             self.communication.start.emit()
 
@@ -342,7 +342,7 @@ class PreDownload(object):
 
 
 class PreDownloadModel(QAbstractListModel):
-    COLUMNS = ("title", "uploader", "thumbnail", "duration", "type")
+    COLUMNS = ("title", "uploader", "thumbnail", "duration", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -442,7 +442,7 @@ class PreDownloadModel(QAbstractListModel):
 
 
 class DownloadModel(QAbstractListModel):
-    COLUMNS = ("title", "uploader", "duration", "progress", "thumbnail", "output_path", "type")
+    COLUMNS = ("title", "uploader", "duration", "progress", "thumbnail", "output_path", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 

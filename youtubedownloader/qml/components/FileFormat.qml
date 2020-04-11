@@ -13,7 +13,7 @@ Item {
     ButtonGroup {
         id: buttonGroup
         buttons: mainLayout.children
-        onClicked: Settings.selectedType = button.text
+        onClicked: Settings.fileFormat = button.text
     }
 
     RowLayout {
@@ -25,7 +25,7 @@ Item {
             model: ["webm", "mp4", "mp3"]
 
             Items.YDButton {
-                checked: (text === Settings.selectedType)
+                checked: (text === Settings.fileFormat)
                 checkable: true
                 text: modelData
             }

@@ -7,7 +7,7 @@ class Settings(QObject):
 
     input_link_changed = Signal(str)
     output_path_changed = Signal(str)
-    type_changed = Signal(str)
+    file_format_changed = Signal(str)
 
     def __init__(self, settings_path=None):
         super(Settings, self).__init__(None)
@@ -16,7 +16,7 @@ class Settings(QObject):
 
         self.input_link = str()
         self.output_path = QStandardPaths.writableLocation(QStandardPaths.DownloadLocation)
-        self.type = "webm"
+        self.file_format = "webm"
 
         self.load()
 
@@ -28,7 +28,7 @@ class Settings(QObject):
         settings.beginGroup("Settings")
         self.input_link = settings.value("input_link")
         self.output_path = settings.value("output_path")
-        self.type = settings.value("type")
+        self.file_format = settings.value("file_format")
         settings.endGroup()
 
     def save(self):
@@ -36,7 +36,7 @@ class Settings(QObject):
         settings.beginGroup("Settings")
         settings.setValue("input_link", self.input_link)
         settings.setValue("output_path", self.output_path)
-        settings.setValue("type", self.type)
+        settings.setValue("file_format", self.file_format)
         settings.endGroup()
 
     def read_input_link(self):
@@ -59,16 +59,16 @@ class Settings(QObject):
         self.output_path = output_path
         self.output_path_changed.emit(self.output_path)
 
-    def read_type(self):
-        return self.type
+    def read_file_format(self):
+        return self.file_format
 
-    def set_type(self, type):
-        if self.type == type:
+    def set_file_format(self, file_format):
+        if self.file_format == file_format:
             return
 
-        self.type = type
-        self.type_changed.emit(self.type)
+        self.file_format = file_format
+        self.file_format_changed.emit(self.file_format)
 
     inputLink = Property(str, read_input_link, set_input_link, notify=input_link_changed)
     outputPath = Property(str, read_output_path, set_output_path, notify=output_path_changed)
-    selectedType = Property(str, read_type, set_type, notify=type_changed)
+    fileFormat = Property(str, read_file_format, set_file_format, notify=file_format_changed)

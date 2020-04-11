@@ -10,7 +10,7 @@ Item {
     id: root
 
     property var options: {
-        "type": Settings.selectedType,
+        "file_format": Settings.fileFormat,
         "output_path": Settings.outputPath
     }
 
@@ -22,9 +22,7 @@ Item {
 
         anchors.fill: parent
 
-        Components.Format {
-            id: format
-
+        Components.FileFormat {
             Layout.alignment: Qt.AlignLeft
         }
 
