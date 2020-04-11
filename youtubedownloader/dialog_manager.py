@@ -25,5 +25,5 @@ class DialogManager(QObject):
 
     @Slot(str)
     def close_dialog(self, dialog):
-        self.logger.info("Closing {dialog}".format(dialog))
+        self.logger.info("Closing {dialog}".format(dialog=dialog))
         self.close.emit(dialog)

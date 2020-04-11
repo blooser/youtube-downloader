@@ -34,7 +34,9 @@ Item {
             selectedFormat: options.fileFormat
 
             onOpen: Qt.openUrlExternally(paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(title).arg(options.fileFormat))
-            onRemove: downloadModel.remove_download(index)
+            onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b>?".arg(title))}, function(){
+                downloadModel.remove_download(index)
+            })
         }
     }
 }

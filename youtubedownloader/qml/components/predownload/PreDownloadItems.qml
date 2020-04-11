@@ -50,7 +50,9 @@ Item {
                 thumbnailUrl: thumbnail
                 selectedFormat: options.fileFormat
 
-                onRemove: predownloadModel.remove_predownload(index)
+                onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b>".arg(title))}, function(){
+                    predownloadModel.remove_predownload(index)
+                })
             }
         }
     }
