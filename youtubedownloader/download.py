@@ -266,10 +266,10 @@ class DownloadTask(QRunnable):
         self.post_process_timer.timeout.connect(lambda: self.download_post_process.track(self.post_process_file))
 
         self.communication.start.connect(self.post_process_timer.start)
-        self.download_post_process.bytes_processed.connect(lambda bytes: self.communication.progress.emit({"downloaded_bytes": bytes}))
-        self.download_post_process.finished.connect(lambda: self.communication.progress.emit({"status": "finished"}))
+        self.download_post_process.bytes_processed.connect(lambda bytes: self.communication.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
+        self.download_post_process.finished.connect(lambda: self.communication.progress.emit({"status": "finished"}), Qt.QueuedConnection)
         self.download_post_process.started.connect(lambda: self.communication.progress.emit({"status": "Converting to {0}".format(self.options.type),
-                                                                                             "total_bytes": self.options.post_process_file_size}))
+                                                                                             "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
 
     def process(self, data):
         self.communication.progress.emit(data)
