@@ -559,7 +559,7 @@ class DownloadManager(QThreadPool):
 
     @Slot()
     def download(self):
-        self.logger.info("Starting download {items} items".format(items=len(self.predownload_model.predownloads)))
+        self.logger.info("Download {items} items".format(items=len(self.predownload_model.predownloads)))
 
         for predownload in self.predownload_model.predownloads:
             download = Download.fromPreDownload(predownload)
