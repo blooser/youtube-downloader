@@ -9,6 +9,9 @@ Flipable {
 
     property string status
 
+    implicitWidth: frontText.implicitWidth
+    implicitHeight: frontText.implicitHeight
+
     onStatusChanged: {
         if (flipped) {
             frontText.text = status
@@ -39,14 +42,18 @@ Flipable {
         axis.z: 0
     }
 
+    state: "front"
+
     states: [
         State {
+            name: "front"
             when: flipped
             PropertyChanges { target: rotation; angle: 180 }
             PropertyChanges { target: root; implicitWidth: backText.implicitWidth; implicitHeight: backText.implicitHeight }
         },
 
         State {
+            name: "back"
             when: !flipped
             PropertyChanges { target: root; implicitWidth: frontText.implicitWidth; implicitHeight: frontText.implicitHeight }
         }
