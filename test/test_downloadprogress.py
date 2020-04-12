@@ -6,7 +6,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from youtubedownloader import DownloadProgress
 
+
 class DownloaProgressTest(unittest.TestCase):
+
     def setUp(self):
         self.data = {
            "status": "Finished",

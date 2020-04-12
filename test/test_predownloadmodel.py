@@ -6,8 +6,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from youtubedownloader import PreDownload, PreDownloadModel, DownloadOptions
 
+
 class PreDownloadModelTest(unittest.TestCase):
-    
     
     def setUp(self):
         self.yt_url = "https://www.youtube.com/watch?v=3L65PG_eZFg"

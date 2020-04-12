@@ -10,6 +10,7 @@ from youtubedownloader import Settings
 
 
 class SettingsTest(unittest.TestCase):
+
     def setUp(self):
         self.config_path = "testsettings"
             
