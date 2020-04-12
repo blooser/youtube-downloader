@@ -38,6 +38,20 @@ Item {
             SplitView.preferredHeight: root.height/2
         }
     }
+
+    state: "empty"
+
+    states: [
+        State {
+            name: "empty"
+            when: (predownloadModel.size === Theme.Capacity.empty && downloadModel.size === Theme.Capacity.empty)
+            PropertyChanges { target: root; opacity: Theme.Visible.off }
+        }
+    ]
+
+    transitions: Transition {
+        OpacityAnimator { duration: Theme.Animation.quick }
+    }
 }
 
 
