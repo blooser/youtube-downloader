@@ -28,7 +28,8 @@ Item {
                 regularExpression: /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/gm
             }
 
-            onEditingFinished: addButton.clicked()
+            Keys.onEnterPressed: addButton.clicked()
+            Keys.onReturnPressed: addButton.clicked()
 
             Component.onCompleted: {
                 text = Settings.inputLink
