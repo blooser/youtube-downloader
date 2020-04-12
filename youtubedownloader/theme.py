@@ -45,5 +45,9 @@ Theme = {
 
     "String": {
         "empty": ""
+    },
+
+    "Capacity": {
+        "empty": 0
     }
 }
