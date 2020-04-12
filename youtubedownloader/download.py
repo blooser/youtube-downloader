@@ -355,6 +355,8 @@ class PreDownloadModel(QAbstractListModel):
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
+    sizeChanged = Signal(int)
+
     def __init__(self, config_path=None):
         super(PreDownloadModel, self).__init__(None)
         self.predownloads = []
@@ -363,8 +365,15 @@ class PreDownloadModel(QAbstractListModel):
 
         self.load()
 
+        self.rowsInserted.connect(lambda: self.sizeChanged.emit(len(self.predownloads)))
+        self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.predownloads)))
+
     def __del__(self):
         self.save()
+
+    @Property(int, notify=sizeChanged)
+    def size(self):
+        return len(self.predownloads)
 
     def save(self):
         settings = QSettings(self.config_path, QSettings.NativeFormat)
@@ -459,6 +468,8 @@ class DownloadModel(QAbstractListModel):
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
+    sizeChanged = Signal(int)
+
     def __init__(self, config_path=None):
         super(DownloadModel, self).__init__(None)
         self.downloads = []
@@ -467,8 +478,15 @@ class DownloadModel(QAbstractListModel):
 
         self.load()
 
+        self.rowsInserted.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
+        self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
+
     def __del__(self):
         self.save()
+
+    @Property(int, notify=sizeChanged)
+    def size(self):
+        return len(self.downloads)
 
     def save(self):
         settings = QSettings(self.config_path, QSettings.NativeFormat)
