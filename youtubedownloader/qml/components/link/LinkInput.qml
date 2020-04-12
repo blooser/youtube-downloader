@@ -20,9 +20,15 @@ Item {
             id: link
 
             Layout.fillWidth: true
-            placeholderText: qsTr("Enter your link")
+            placeholderText: qsTr("Enter youtube link")
 
             onTextEdited: Settings.inputLink = text
+
+            validator: RegularExpressionValidator {
+                regularExpression: /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/gm
+            }
+
+            onEditingFinished: addButton.clicked()
 
             Component.onCompleted: {
                 text = Settings.inputLink
@@ -30,8 +36,12 @@ Item {
         }
 
         Items.YDImageButton {
+            id: addButton
+
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
+
+            enabled: link.acceptableInput
 
             imageSource: Resources.icons.plus
 
