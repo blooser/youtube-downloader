@@ -34,7 +34,7 @@ class DownloaProgressTest(unittest.TestCase):
         download_progress = DownloadProgress()
         download_progress.update(dict())
 
-        self.assertEqual(download_progress.status, "Starting")
+        self.assertEqual(download_progress.status, "queued")
         self.assertEqual(download_progress.downloaded_bytes, "0")
         self.assertEqual(download_progress.total_bytes, "0")
         self.assertEqual(download_progress.estimated_time, "00:00")

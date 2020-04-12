@@ -16,7 +16,7 @@ class DownloadProgress(QObject):
 
     def __init__(self):
         super(DownloadProgress, self).__init__(None)
-        self.status = str("Starting")
+        self.status = str("queued")
         self.downloaded_bytes = str("0")
         self.total_bytes = str("0")
         self.estimated_time = str("00:00")
