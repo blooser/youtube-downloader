@@ -10,5 +10,7 @@ FileDialog {
     selectExisting: true
     selectFolder: true
 
+    title: qsTr("Select directory")
+
     onAccepted: callback(folder)
 }
