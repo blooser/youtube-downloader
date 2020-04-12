@@ -69,7 +69,7 @@ Item {
 
                 when: predownloadIsReady
 
-                Component.onCompleted: preDownloadItems.itemsNotReady += 1 // When added first of all the predownload need to collect info from server
+                Component.onCompleted: preDownloadItems.itemsNotReady += 1 // #NOTE When added first of all the predownload need to collect info from server
             }
         }
     }
