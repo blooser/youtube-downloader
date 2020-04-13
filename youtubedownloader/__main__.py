@@ -14,7 +14,8 @@ from .paths import Paths
 from .settings import Settings
 
 
-def start_yddownloader():
+# TODO: Remove this function
+def yd_run():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     app = QApplication(sys.argv)

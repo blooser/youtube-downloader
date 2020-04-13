@@ -1,3 +1,5 @@
+__version__ = "0.0.1"
+
 from .download import (
     PreDownload,
     PreDownloadTask,
@@ -29,7 +31,5 @@ from .resources import (
     Resources
 )
 
-from .main import (
-    start_yddownloader
-)
-
+# NOTE: Necessary for Qt Creator, at this moment
+from .__main__ import yd_run

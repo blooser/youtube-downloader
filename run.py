@@ -1,3 +1,3 @@
-from youtubedownloader import start_yddownloader
+from youtubedownloader import yd_run
 
-start_yddownloader()
+yd_run()
