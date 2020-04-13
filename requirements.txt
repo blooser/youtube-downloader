@@ -1,0 +1,4 @@
+logger==1.4
+PySide2==5.14.1
+shiboken2==5.14.1
+youtube-dl==2020.3.24
