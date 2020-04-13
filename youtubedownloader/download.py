@@ -490,7 +490,7 @@ class DownloadModel(QAbstractListModel):
         return len(self.downloads)
 
     def save(self):
-        settings = QSettings(self.config_path, QSettings.NativeFormat)
+        settings = QSettings(self.config_path)
 
         settings.beginWriteArray("downloads")
         for i in range(len(self.downloads)):
@@ -499,7 +499,7 @@ class DownloadModel(QAbstractListModel):
         settings.endArray()
 
     def load(self):
-        settings = QSettings(self.config_path, QSettings.NativeFormat)
+        settings = QSettings(self.config_path)
 
         size = settings.beginReadArray("downloads")
         for i in range(size):
