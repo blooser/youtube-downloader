@@ -15,7 +15,6 @@ class Resources(QObject):
         self.icon_paths = Paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
         self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
 
-    def get_icons(self):
+    @Property("QVariantMap", constant=True)
+    def icons(self):
         return self.icon_paths
-
-    icons = Property("QVariantMap", get_icons, constant=True)
