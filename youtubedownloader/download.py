@@ -36,54 +36,84 @@ class PreDownloadTask(QThread):
         self.collected_info.emit(info)
 
 
-class PreDownload(object):
-    def __init__(self, url, options):
-        self.ready = False
-        self.id = hash(url)
-        self.url = url
+class PreDownloadData(object):
+    def __init__(self):
         self.title = str()
         self.uploader = str()
         self.thumbnail = str()
         self.duration = str()
-        self.download_options = DownloadOptions(options)
-        self.communication = DownloadCommunication()
 
-    @Slot(dict)
     def collect_info(self, info):
-        print("info", type(info))
-        self.ready = True
         self.title = info["title"]
         self.uploader = info["uploader"]
         self.thumbnail = info["thumbnail"]
         self.duration = int(info["duration"])
 
-        self.communication.updated.emit(str(self.id))
-
-        if self.download_options.need_post_process():
-            self.download_options.calc_post_process_file_size(self.duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
-
     @staticmethod
-    def pack(predownload):
+    def pack(predownloaddata):
         return {
-            "ready": predownload.ready,
-            "id": predownload.id,
-            "url": predownload.url,
-            "title": predownload.title,
-            "uploader": predownload.uploader,
-            "thumbnail": predownload.thumbnail,
-            "duration": predownload.duration,
-            "download_options": DownloadOptions.pack(predownload.download_options)
+            "title": predownloaddata.title,
+            "uploader": predownloaddata.uploader,
+            "thumbnail": predownloaddata.thumbnail,
+            "duration": predownloaddata.duration,
         }
 
     @staticmethod
     def unpack(data):
-        predownload = PreDownload(data["url"], data["download_options"])
-        predownload.ready = bool(data["ready"])
-        predownload.id = data["id"]
-        predownload.title = data["title"]
-        predownload.uploader = data["uploader"]
-        predownload.thumbnail = data["thumbnail"]
-        predownload.duration = data["duration"]
+        predownloaddata = PreDownloadData()
+        predownloaddata.title = data["title"]
+        predownloaddata.uploader = data["uploader"]
+        predownloaddata.thumbnail = data["thumbnail"]
+        predownloaddata.duration = data["duration"]
+        return predownloaddata
+
+
+class PreDownload(QObject):
+    readyToDownload = Signal(str)
+
+    def __init__(self, url, options):
+        super(PreDownload, self).__init__(None)
+
+        self.ready = False
+        self.id = hash(url)
+        self.url = url
+        self.options = DownloadOptions(options)
+
+        self.data = PreDownloadData()
+        self.task = PreDownloadTask(self.url)
+
+        self.task.collected_info.connect(self.prepare_data)
+        self.task.finished.connect(self.setReady)
+
+    def collect_info(self):
+        self.task.start()
+
+    @Slot()
+    def setReady(self):
+        self.ready = True
+        self.readyToDownload.emit(str(self.id))
+
+    @Slot()
+    def prepare_data(self, info):
+        self.data.collect_info(info)
+
+        if self.options.need_post_process():
+            self.options.calc_post_process_file_size(self.data.duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
+
+    @staticmethod
+    def pack(predownload):
+        return {
+            "url": predownload.url,
+            "ready": predownload.ready,
+            "data": PreDownloadData.pack(predownload.data),
+            "options": DownloadOptions.pack(predownload.options)
+        }
+
+    @staticmethod
+    def unpack(data):
+        predownload = PreDownload(data["url"], data["options"])
+        predownload.ready = data["ready"]
+        predownload.data = PreDownloadData.unpack(data["data"])
         return predownload
 
 
@@ -155,7 +185,7 @@ class PreDownloadModel(QAbstractListModel):
 
     def add_predownload(self, predownload):
         self.beginInsertRows(QModelIndex(), len(self.predownloads), len(self.predownloads))
-        predownload.communication.updated.connect(self.refresh, Qt.QueuedConnection)
+        predownload.readyToDownload.connect(self.refresh, Qt.QueuedConnection)
         self.predownloads.append(predownload)
         self.endInsertRows()
 
@@ -183,19 +213,19 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.ready
 
         elif role == 1:
-            return predownload.title
+            return predownload.data.title
 
         elif role == 2:
-            return predownload.uploader
+            return predownload.data.uploader
 
         elif role == 3:
-            return predownload.thumbnail
+            return predownload.data.thumbnail
 
         elif role == 4:
-            return QDateTime.fromSecsSinceEpoch(int(predownload.duration)).toString("mm:ss")
+            return QDateTime.fromSecsSinceEpoch(int(predownload.data.duration)).toString("mm:ss")
 
         elif role == 5:
-            return predownload.download_options
+            return predownload.options
 
         return None
 
@@ -485,13 +515,14 @@ class DownloadModel(QAbstractListModel):
 
         self.config_path = config_path if config_path is not None else Settings.CONFIG_PATH
 
-        self.load()
+        #self.load()
 
         self.rowsInserted.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
         self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
 
     def __del__(self):
-        self.save()
+        pass
+        #self.save()
 
     @Property(int, notify=sizeChanged)
     def size(self):
@@ -598,17 +629,13 @@ class DownloadManager(QObject):
         self.download_model = DownloadModel()
         self.logger = create_logger(__name__)
 
-        self.predownloads = []
 
     @Slot(str, "QVariantMap")
     def predownload(self, url, options):
         predownload = PreDownload(url, options)
-        predownload_task = PreDownloadTask(url)
-        predownload_task.collected_info.connect(predownload.collect_info, Qt.DirectConnection)
         self.predownload_model.add_predownload(predownload)
+        predownload.collect_info()
 
-        self.predownloads.append(predownload_task)
-        predownload_task.start()
 
     @Slot()
     def download(self):
