@@ -6,14 +6,12 @@ import pickle
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import PreDownload
+from youtubedownloader import PreDownloadData
 
 
 class PreDownloadDataTest(unittest.TestCase):
     
-    def setUp(self):
-        self.yt_url = "https://www.youtube.com/watch?v=3L65PG_eZFg"
-        
+    def setUp(self):        
         self.data = {
                 "title": "TestTitle",
                 "uploader": "anonymous",
@@ -21,32 +19,23 @@ class PreDownloadDataTest(unittest.TestCase):
                 "duration": 100
         }
         
-        self.options = {
-                "file_format": "mp3",
-                "output_path": "/foo/bar/path"
-        }
-    
-    
     def test_predownloadDataPackAndUnpack(self):
-        predownload = PreDownload(self.yt_url, self.options)
-        predownload.collect_info(self.data)
+        predownload_data = PreDownloadData()
+        predownload_data.collect_info(self.data)
         
-        packed = PreDownload.pack(predownload)
+        packed = PreDownloadData.pack(predownload_data)
         self.assertTrue(isinstance(packed, dict))
-        expected_keys = ["ready", "id", "url", "title", "uploader", "thumbnail", "duration", "download_options"]
+        
+        expected_keys = ["title", "uploader", "thumbnail", "duration"]
         for key in packed.keys():
             self.assertTrue(key in expected_keys)
-
-        unpacked = PreDownload.unpack(packed)
-        self.assertEqual(predownload.id, unpacked.id)
-        self.assertEqual(predownload.ready, unpacked.ready)
-        self.assertEqual(predownload.url, unpacked.url)
-        self.assertEqual(predownload.title, unpacked.title)
-        self.assertEqual(predownload.uploader, unpacked.uploader)
-        self.assertEqual(predownload.thumbnail, unpacked.thumbnail)
-        self.assertEqual(predownload.duration, unpacked.duration)
-        self.assertEqual(predownload.download_options, unpacked.download_options)
         
+        unpacked = PreDownloadData.unpack(packed)
+        self.assertEqual(unpacked.title, predownload_data.title)
+        self.assertEqual(unpacked.uploader, predownload_data.uploader)
+        self.assertEqual(unpacked.thumbnail, predownload_data.thumbnail)
+        self.assertEqual(unpacked.duration, predownload_data.duration)
+
 
 if __name__ == "__main__":
     unittest.main()
