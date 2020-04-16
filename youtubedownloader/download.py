@@ -562,7 +562,7 @@ class DownloadModel(QAbstractListModel):
     def __del__(self):
         for download in self.downloads:
             download.pause()
-            download.wait()
+            download.wait() # TODO: Upgrade wait to max the one longest thread's wait of all threads, not sum of all
 
         self.save()
 
