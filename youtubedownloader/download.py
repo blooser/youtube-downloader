@@ -450,6 +450,8 @@ class DownloadData(object):
 
 
 class Download(QObject):
+    updated = Signal(str)
+
     def __init__(self, url, options, data):
         super(Download, self).__init__(None)
         self.id = hash(url)
@@ -461,6 +463,11 @@ class Download(QObject):
         self.task = DownloadTask(self.url, self.options)
 
         self.task.progress.connect(self.progress.update)
+
+    @Slot(str)
+    def update(self, progress):
+        self.progress.update(progress)
+        self.updated.emit(str(self.id))
 
     @staticmethod
     def pack(download):
@@ -579,8 +586,9 @@ class DownloadModel(QAbstractListModel):
     def index(self, row, column, parent):
         return self.createIndex(row, column, None)
 
+    @Slot(str) # PySide2's Signal doesn't handle such big number, to avoid overflowing we use string
     def refresh(self, id):
-        id = int(id) # PySide2's Signal doesn't handle such big number, to avoid overflowing we use string
+        id = int(id)
         for row, download in enumerate(self.downloads):
             if download.id == id:
                 self.dataChanged.emit(self.index(row, DownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, DownloadModel.LAST_COLUMN, QModelIndex()))
@@ -588,7 +596,7 @@ class DownloadModel(QAbstractListModel):
 
     def add_download(self, download):
         self.beginInsertRows(QModelIndex(), len(self.downloads), len(self.downloads))
-        download.communication.updated.connect(self.refresh, Qt.QueuedConnection)
+        download.updated.connect(self.refresh, Qt.QueuedConnection)
         self.downloads.append(download)
         self.endInsertRows()
 
