@@ -616,22 +616,22 @@ class DownloadModel(QAbstractListModel):
         download = self.downloads[index.row()]
 
         if role == 0:
-            return download.title
+            return download.data.title
 
         elif role == 1:
-            return download.uploader
+            return download.data.uploader
 
         elif role == 2:
-            return QDateTime.fromSecsSinceEpoch(download.duration).toString("mm:ss")
+            return QDateTime.fromSecsSinceEpoch(download.data.duration).toString("mm:ss")
 
         elif role == 3:
             return download.progress
 
         elif role == 4:
-            return download.thumbnail
+            return download.data.thumbnail
 
         elif role == 5:
-            return download.download_options
+            return download.options
 
         return None
 
