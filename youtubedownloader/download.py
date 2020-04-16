@@ -85,6 +85,11 @@ class PreDownload(QObject):
         self.task.collected_info.connect(self.prepare_data)
         self.task.finished.connect(self.setReady)
 
+    def __del__(self):
+        if self.task.isRunning():
+            self.task.terminate()
+            self.task.wait()
+
     def collect_info(self):
         self.task.start()
 
@@ -400,6 +405,8 @@ class DownloadTask(QThread):
         self.options = options
         self.ydl_opts = self.options.to_ydl_opts()
 
+        self.paused = False
+
         self.ydl_opts["progress_hooks"] = [self.process]
 
         # TODO: Use Operating System's filesystem events to handle when to start post process tracking
@@ -417,6 +424,9 @@ class DownloadTask(QThread):
         self.download_post_process.started.connect(lambda: self.progress.emit({"status": "Converting to {0}".format(self.options.file_format),
                                                                                          "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
     def process(self, data):
+        if self.paused:
+            raise ValueError()
+
         self.progress.emit(data)
 
         if self.options.need_post_process() and data["status"] == "finished":
@@ -466,6 +476,15 @@ class Download(QObject):
 
     def start(self):
         self.task.start()
+
+    def pause(self):
+        if self.task.isRunning():
+            self.progress.status = "paused"
+            self.task.paused = True
+
+    def wait(self):
+        while self.task.isRunning():
+            continue
 
     @Slot(str)
     def update(self, progress):
@@ -540,6 +559,10 @@ class DownloadModel(QAbstractListModel):
         self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
 
     def __del__(self):
+        for download in self.downloads:
+            download.pause()
+            download.wait()
+
         self.save()
 
     @Property(int, notify=sizeChanged)
