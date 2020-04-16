@@ -464,6 +464,9 @@ class Download(QObject):
 
         self.task.progress.connect(self.progress.update)
 
+    def start(self):
+        self.task.start()
+
     @Slot(str)
     def update(self, progress):
         self.progress.update(progress)
@@ -480,7 +483,9 @@ class Download(QObject):
 
     @staticmethod
     def unpack(data):
-        return Download(data["url"], data["options"], data["data"])
+        download =  Download(data["url"], data["options"], data["data"])
+        download.progress = DownloadProgress.unpack(data["progress"])
+        return download
 
     @classmethod
     def fromPreDownload(cls, predownload):
@@ -643,13 +648,11 @@ class DownloadManager(QObject):
         self.download_model = DownloadModel()
         self.logger = create_logger(__name__)
 
-
     @Slot(str, "QVariantMap")
     def predownload(self, url, options):
         predownload = PreDownload(url, options)
         self.predownload_model.add_predownload(predownload)
         predownload.collect_info()
-
 
     @Slot()
     def download(self):
@@ -658,6 +661,7 @@ class DownloadManager(QObject):
         for predownload in self.predownload_model.predownloads:
             download = Download.fromPreDownload(predownload)
             self.download_model.add_download(download)
+            download.start()
 
         self.predownload_model.clear()
 
