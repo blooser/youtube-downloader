@@ -427,11 +427,12 @@ class DownloadTask(QThread):
         if self.paused:
             raise ValueError()
 
-        self.progress.emit(data)
-
         if self.options.need_post_process() and data["status"] == "finished":
             self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.file_format))
             self.post_process_started.emit()
+
+        else:
+            self.progress.emit(data)
 
     def run(self):
         with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
