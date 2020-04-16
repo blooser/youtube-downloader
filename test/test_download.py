@@ -6,7 +6,7 @@ import pickle
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import Download
+from youtubedownloader import Download, PreDownload
 
 
 class DownloadTest(unittest.TestCase):
@@ -42,4 +42,24 @@ class DownloadTest(unittest.TestCase):
         self.assertEqual(unpacked.data.uploader, download.data.uploader)
         self.assertEqual(unpacked.data.thumbnail, download.data.thumbnail)
         self.assertEqual(unpacked.data.duration, download.data.duration)
+        
+                    
+    def test_downloadInitializesByPreDownload(self):
+        data = {
+                "title": "test1",
+                "uploader": "admin",
+                "thumbnail": "None",
+                "duration": 60
+        }
+        
+        predownload = PreDownload(self.url, self.options)
+        predownload.data.collect_info(data)
+        
+        download = Download.fromPreDownload(predownload)
+        self.assertEqual(download.url, predownload.url)
+        self.assertEqual(download.options, predownload.options)
+        self.assertEqual(download.data.title, predownload.data.title)
+        self.assertEqual(download.data.uploader, predownload.data.uploader)
+        self.assertEqual(download.data.thumbnail, predownload.data.thumbnail)
+        self.assertEqual(download.data.duration, predownload.data.duration)
         

@@ -428,9 +428,8 @@ class DownloadTask(QThread):
             ydl.download([self.url])
 
 
-class DownloadData(QObject):
+class DownloadData(object):
     def __init__(self, data):
-        super(DownloadData, self).__init__(None)
         self.title = data["title"]
         self.uploader = data["uploader"]
         self.thumbnail = data["thumbnail"]
@@ -447,7 +446,7 @@ class DownloadData(QObject):
 
     @staticmethod
     def unpack(data):
-        return Download(data)
+        return DownloadData(data)
 
 
 class Download(QObject):
