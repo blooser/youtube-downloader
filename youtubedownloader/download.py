@@ -12,13 +12,6 @@ from .logger import create_logger
 from .settings import Settings
 
 
-class DownloadCommunication(QObject):
-    updated = Signal(str)
-    progress = Signal(dict)
-    start = Signal()
-    collected_info = Signal(dict)
-
-
 class PreDownloadTask(QThread):
     collected_info = Signal(dict)
 
