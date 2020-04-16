@@ -6,7 +6,7 @@ import pickle
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import PreDownload
+from youtubedownloader import PreDownload, DownloadOptions
 
 class PreDownloadTest(unittest.TestCase):
 
@@ -17,7 +17,7 @@ class PreDownloadTest(unittest.TestCase):
                 "output_path": "/foo/bar/path1"
         }
         
-        self.info = {
+        self.data = {
                 "title": "Test",
                 "uploader": "Me",
                 "thumbnail": "/foo/bar/path1",
@@ -27,7 +27,7 @@ class PreDownloadTest(unittest.TestCase):
     def test_preDownloadPackAndUnpack(self):
         predownload = PreDownload(self.url, self.options)
         predownload.ready = True
-        predownload.data.collect_info(self.info)
+        predownload.data.collect_info(self.data)
         
         packed = PreDownload.pack(predownload)
         self.assertTrue(isinstance(packed, dict))
@@ -38,8 +38,8 @@ class PreDownloadTest(unittest.TestCase):
         unpacked = PreDownload.unpack(packed)
         self.assertEqual(unpacked.url, self.url)
         self.assertEqual(unpacked.ready, True)
-        self.assertEqual(unpacked.options, self.options)
-        self.assertEqual(unpacked.info.title, self.options["title"])
-        self.assertEqual(unpacked.info.uploader, self.options["uploader"])
-        self.assertEqual(unpacked.info.thumbnail, self.options["thumbnail"])
-        self.assertEqual(unpacked.info.duration, self.options["duration"])
+        self.assertEqual(unpacked.options, DownloadOptions(self.options))
+        self.assertEqual(unpacked.data.title, self.data["title"])
+        self.assertEqual(unpacked.data.uploader, self.data["uploader"])
+        self.assertEqual(unpacked.data.thumbnail, self.data["thumbnail"])
+        self.assertEqual(unpacked.data.duration, self.data["duration"])

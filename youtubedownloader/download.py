@@ -262,6 +262,7 @@ class DownloadProgress(QObject):
     def downloadSpeed(self):
         return self.speed
 
+    @Slot(dict)
     def update(self, data):
         if "status" in data:
             self.status = data["status"]
@@ -427,50 +428,57 @@ class DownloadTask(QThread):
             ydl.download([self.url])
 
 
-class Download(QObject):
+class DownloadData(QObject):
     def __init__(self, data):
-        super(Download, self).__init__(None)
-        self.id = data["id"]
-        self.url = data["url"]
+        super(DownloadData, self).__init__(None)
         self.title = data["title"]
         self.uploader = data["uploader"]
         self.thumbnail = data["thumbnail"]
         self.duration = data["duration"]
-        self.download_options = DownloadOptions.unpack(data["download_options"])
-
-        self.progress = DownloadProgress()
-        self.communication = DownloadCommunication()
-
-    def __eq__(self, other):
-        return self.id == other.id
-
-    @Slot(dict)
-    def update(self, data):
-        self.progress.update(data)
-        self.communication.updated.emit(str(self.id)) # PySide2's Signal doesn't handle such big number, to avoid Overflowing we use string
 
     @staticmethod
     def pack(download):
         return {
-            "id": download.id,
-            "url": download.url,
             "title": download.title,
             "uploader": download.uploader,
             "thumbnail": download.thumbnail,
             "duration": download.duration,
-            "download_options": DownloadOptions.pack(download.download_options),
-            "progress": DownloadProgress.pack(download.progress)
         }
 
     @staticmethod
     def unpack(data):
-        download = Download(data)
-        download.progress = DownloadProgress.unpack(data["progress"])
-        return download
+        return Download(data)
+
+
+class Download(QObject):
+    def __init__(self, url, options, data):
+        super(Download, self).__init__(None)
+        self.id = hash(url)
+        self.url = url
+
+        self.options = DownloadOptions(options)
+        self.data = DownloadData(data)
+        self.progress = DownloadProgress()
+        self.task = DownloadTask(self.url, self.options)
+
+        self.task.progress.connect(self.progress.update)
+
+    @staticmethod
+    def pack(download):
+        return {
+            "url": download.url,
+            "options": DownloadOptions.pack(download.options),
+            "data": DownloadData.pack(download.data),
+            "progress": DownloadProgress.pack(download.progress),
+        }
+
+    @staticmethod
+    def unpack(data):
+        return Download(data["url"], data["options"], data["data"])
 
     @classmethod
     def fromPreDownload(cls, predownload):
-        return cls(PreDownload.pack(predownload))
+        return Download(predownload.url, DownloadOptions.pack(predownload.options), PreDownloadData.pack(predownload.data))
 
 
 class DownloadPostProcess(QObject):
@@ -515,14 +523,13 @@ class DownloadModel(QAbstractListModel):
 
         self.config_path = config_path if config_path is not None else Settings.CONFIG_PATH
 
-        #self.load()
+        self.load()
 
         self.rowsInserted.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
         self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
 
     def __del__(self):
-        pass
-        #self.save()
+        self.save()
 
     @Property(int, notify=sizeChanged)
     def size(self):
@@ -643,10 +650,7 @@ class DownloadManager(QObject):
 
         for predownload in self.predownload_model.predownloads:
             download = Download.fromPreDownload(predownload)
-            download_task = DownloadTask(download.url, download.download_options)
-            download_task.progress.connect(download.update, Qt.DirectConnection)
             self.download_model.add_download(download)
-            download_task.start()
 
         self.predownload_model.clear()
 

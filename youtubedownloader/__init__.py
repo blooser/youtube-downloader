@@ -6,6 +6,7 @@ from .download import (
     PreDownloadTask,
     PreDownloadModel,
     Download,
+    DownloadData,
     DownloadOptions,
     DownloadProgress,
     DownloadModel,
