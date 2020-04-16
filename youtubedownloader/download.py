@@ -26,6 +26,9 @@ class PreDownloadTask(QThread):
         super(PreDownloadTask, self).__init__(None)
         self.url = url
 
+    def __eq__(self, other):
+        return self.url == other.url
+
     def run(self):
         with youtube_dl.YoutubeDL() as ydl:
             info = ydl.extract_info(self.url, download=False)
