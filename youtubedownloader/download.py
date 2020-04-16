@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QRunnable, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
+from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
 
 import os.path
 import pathlib
@@ -16,19 +16,21 @@ class DownloadCommunication(QObject):
     updated = Signal(str)
     progress = Signal(dict)
     start = Signal()
+    collected_info = Signal(dict)
 
 
-class PreDownloadTask(QRunnable):
+class PreDownloadTask(QThread):
+    collected_info = Signal(dict)
+
     def __init__(self, url):
         super(PreDownloadTask, self).__init__(None)
         self.url = url
-        self.communication = DownloadCommunication()
 
     def run(self):
         with youtube_dl.YoutubeDL() as ydl:
             info = ydl.extract_info(self.url, download=False)
 
-        self.communication.progress.emit(info)
+        self.collected_info.emit(info)
 
 
 class PreDownload(object):
@@ -45,6 +47,7 @@ class PreDownload(object):
 
     @Slot(dict)
     def collect_info(self, info):
+        print("info", type(info))
         self.ready = True
         self.title = info["title"]
         self.uploader = info["uploader"]
@@ -353,7 +356,10 @@ class DownloadOptions(QObject):
         return download_options
 
 
-class DownloadTask(QRunnable):
+class DownloadTask(QThread):
+    post_process_started = Signal()
+    progress = Signal(dict)
+
     def __init__(self, url, options):
         super(DownloadTask, self).__init__(None)
         self.url = url
@@ -362,8 +368,7 @@ class DownloadTask(QRunnable):
 
         self.ydl_opts["progress_hooks"] = [self.process]
 
-        self.communication = DownloadCommunication()
-
+        # TODO: Use Operating System's filesystem events to handle when to start post process tracking
         self.download_post_process = DownloadPostProcess()
         self.download_post_process.total_bytes = self.options.post_process_file_size
         self.post_process_file = str()
@@ -372,17 +377,17 @@ class DownloadTask(QRunnable):
         self.post_process_timer.setSingleShot(True)
         self.post_process_timer.timeout.connect(lambda: self.download_post_process.track(self.post_process_file))
 
-        self.communication.start.connect(self.post_process_timer.start)
-        self.download_post_process.bytes_processed.connect(lambda bytes: self.communication.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
-        self.download_post_process.finished.connect(lambda: self.communication.progress.emit({"status": "finished"}), Qt.QueuedConnection)
-        self.download_post_process.started.connect(lambda: self.communication.progress.emit({"status": "Converting to {0}".format(self.options.file_format),
-                                                                                             "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
+        self.post_process_started.connect(self.post_process_timer.start)
+        self.download_post_process.bytes_processed.connect(lambda bytes: self.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
+        self.download_post_process.finished.connect(lambda: self.progress.emit({"status": "finished"}), Qt.QueuedConnection)
+        self.download_post_process.started.connect(lambda: self.progress.emit({"status": "Converting to {0}".format(self.options.file_format),
+                                                                                         "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
     def process(self, data):
-        self.communication.progress.emit(data)
+        self.progress.emit(data)
 
         if self.options.need_post_process() and data["status"] == "finished":
             self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.file_format))
-            self.communication.start.emit()
+            self.post_process_started.emit()
 
     def run(self):
         with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
@@ -583,20 +588,24 @@ class DownloadModel(QAbstractListModel):
         return None
 
 
-class DownloadManager(QThreadPool):
+class DownloadManager(QObject):
     def __init__(self):
         super(DownloadManager, self).__init__(None)
         self.predownload_model = PreDownloadModel()
         self.download_model = DownloadModel()
         self.logger = create_logger(__name__)
 
+        self.predownloads = []
+
     @Slot(str, "QVariantMap")
     def predownload(self, url, options):
         predownload = PreDownload(url, options)
         predownload_task = PreDownloadTask(url)
-        predownload_task.communication.progress.connect(predownload.collect_info, Qt.QueuedConnection)
+        predownload_task.collected_info.connect(predownload.collect_info, Qt.DirectConnection)
         self.predownload_model.add_predownload(predownload)
-        self.start(predownload_task)
+
+        self.predownloads.append(predownload_task)
+        predownload_task.start()
 
     @Slot()
     def download(self):
@@ -605,9 +614,9 @@ class DownloadManager(QThreadPool):
         for predownload in self.predownload_model.predownloads:
             download = Download.fromPreDownload(predownload)
             download_task = DownloadTask(download.url, download.download_options)
-            download_task.communication.progress.connect(download.update, Qt.QueuedConnection)
+            download_task.progress.connect(download.update, Qt.DirectConnection)
             self.download_model.add_download(download)
-            self.start(download_task)
+            download_task.start()
 
         self.predownload_model.clear()
 
