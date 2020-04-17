@@ -7,7 +7,6 @@ Item {
     id: root
 
     signal open()
-    signal remove()
 
    implicitWidth: mainLayout.implicitWidth
    implicitHeight: mainLayout.implicitHeight
@@ -24,15 +23,6 @@ Item {
             imageSource: Resources.icons.folder
 
             onClicked: root.open()
-        }
-
-        Items.YDImageButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
-
-            imageSource: Resources.icons.delete
-
-            onClicked: root.remove()
         }
     }
 }

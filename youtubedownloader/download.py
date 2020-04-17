@@ -468,6 +468,13 @@ class Download(QObject):
 
         self.task.progress.connect(self.progress.update)
 
+    def __del__(self):
+        if self.running():
+            self.pause()
+
+            while self.running():
+                continue
+
     def start(self):
         self.task.start()
 
@@ -476,9 +483,8 @@ class Download(QObject):
             self.progress.status = "paused"
             self.task.paused = True
 
-    def wait(self):
-        while self.task.isRunning():
-            continue
+    def running(self):
+        return self.task.isRunning()
 
     @Slot(str)
     def update(self, progress):
@@ -553,9 +559,14 @@ class DownloadModel(QAbstractListModel):
         self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
 
     def __del__(self):
+        running_downloads = [True] * len(self.downloads)
+
         for download in self.downloads:
             download.pause()
-            download.wait() # TODO: Upgrade wait to max the one longest thread's wait of all threads, not sum of all
+
+        while any(running_downloads):
+            for index, download in enumerate(self.downloads):
+                running_downloads[index] = download.running()
 
         self.save()
 

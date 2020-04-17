@@ -61,7 +61,15 @@ Items.YDProgressBar {
             enabled: (statusText === "finished")
 
             onOpen: root.open()
-            onRemove: root.remove()
+        }
+
+        Items.YDImageButton {
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
+
+            imageSource: Resources.icons.delete
+
+            onClicked: root.remove()
         }
     }
 }
