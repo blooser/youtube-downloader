@@ -428,8 +428,11 @@ class DownloadTask(QThread):
             self.progress.emit(data)
 
     def run(self):
-        with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
-            ydl.download([self.url])
+        try:
+            with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
+                ydl.download([self.url])
+        except youtube_dl.utils.DownloadError as download_error:
+            self.progress.emit({"status": str(download_error)})
 
 
 class DownloadData(object):
