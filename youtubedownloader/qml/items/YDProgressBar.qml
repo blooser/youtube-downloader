@@ -4,7 +4,11 @@ import QtQuick.Controls 2.14
 ProgressBar {
     id: root
 
+    property alias backgroundColor: backgroundRect.color
+
     background: Rectangle {
+        id: backgroundRect
+
         implicitWidth: 200
         implicitHeight: 4
         color: Theme.Colors.second

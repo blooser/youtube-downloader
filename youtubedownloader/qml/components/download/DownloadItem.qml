@@ -18,6 +18,8 @@ Items.YDProgressBar {
 
     signal remove()
     signal open()
+    signal redo()
+    signal pause()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -58,18 +60,25 @@ Items.YDProgressBar {
         }
 
         DownloadButtons {
-            enabled: (statusText === "finished")
+            status: statusText
 
             onOpen: root.open()
-        }
-
-        Items.YDImageButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
-
-            imageSource: Resources.icons.delete
-
-            onClicked: root.remove()
+            onRedo: root.redo()
+            onRemove: root.remove()
+            onPause: root.pause()
         }
     }
+
+    state: "*"
+    states: State {
+        when: statusText.includes("ERROR")
+        name: "error"
+        PropertyChanges { target: root; backgroundColor: Theme.Colors.error }
+    }
+
+    transitions: [
+        Transition {
+            ColorAnimation { duration: Theme.Animation.quick }
+        }
+    ]
 }

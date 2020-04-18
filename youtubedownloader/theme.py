@@ -9,7 +9,8 @@ Theme = {
         "text": "white",
         "textStyle": "black",
         "blank": "transparent",
-        "success": "#00b300"
+        "success": "#00b300",
+        "error": "#ff1a1a"
     },
 
     "Margins": {
@@ -28,7 +29,8 @@ Theme = {
     "Size": {
         "border": 1,
         "borderBold": 2,
-        "icon": 32
+        "icon": 36,
+        "none": 0
     },
 
     "Animation": {

@@ -293,9 +293,9 @@ class DownloadProgress(QObject):
             "filename": download_progress.filename
         }
 
-    @staticmethod
-    def unpack(data):
-        download_progress = DownloadProgress()
+    @classmethod
+    def unpack(cls, data):
+        download_progress = cls()
         download_progress.status = data["status"]
         download_progress.downloaded_bytes = data["downloaded_bytes"]
         download_progress.total_bytes = data["total_bytes"]
@@ -469,7 +469,7 @@ class Download(QObject):
         self.progress = DownloadProgress()
         self.task = DownloadTask(self.url, self.options)
 
-        self.task.progress.connect(self.progress.update)
+        self.task.progress.connect(self.update, Qt.QueuedConnection)
 
     def __del__(self):
         if self.running():
@@ -479,11 +479,18 @@ class Download(QObject):
                 continue
 
     def start(self):
+        if self.running():
+            return
+
+        if self.task.paused:
+            self.task.paused = False
+
+        self.update({"status": "queued"})
         self.task.start()
 
     def pause(self):
         if self.task.isRunning():
-            self.progress.status = "paused"
+            self.update({"status": "paused"})
             self.task.paused = True
 
     def running(self):
@@ -592,7 +599,7 @@ class DownloadModel(QAbstractListModel):
         size = settings.beginReadArray("downloads")
         for i in range(size):
             settings.setArrayIndex(i)
-            self.downloads.append(Download.unpack(settings.value("download")))
+            self.add_download(Download.unpack(settings.value("download")))
         settings.endArray()
 
     def rowCount(self, index=QModelIndex()):
@@ -644,6 +651,14 @@ class DownloadModel(QAbstractListModel):
         self.beginRemoveRows(QModelIndex(), row, row)
         self.downloads.pop(row)
         self.endRemoveRows()
+
+    @Slot(int)
+    def redo(self, row):
+        self.downloads[row].start()
+
+    @Slot(int)
+    def pause(self, row):
+        self.downloads[row].pause()
 
     def data(self, index, role):
         if not index.isValid():
