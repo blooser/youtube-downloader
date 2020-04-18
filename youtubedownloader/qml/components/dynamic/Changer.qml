@@ -7,13 +7,16 @@ Loader {
     property Component main
     property Component second
 
+    state: "main"
     states: [
         State {
+            name: "main"
             when: !root.when
             PropertyChanges { target: root; sourceComponent: main }
         },
 
         State {
+            name: "second"
             when: root.when
             PropertyChanges { target: root; sourceComponent: second }
         }
