@@ -681,9 +681,10 @@ class DownloadManager(QObject):
 
     @Slot(str, "QVariantMap")
     def predownload(self, url, options):
-        predownload = PreDownload(url, options)
-        self.predownload_model.add_predownload(predownload)
-        predownload.collect_info()
+        if url:
+            predownload = PreDownload(url, options)
+            self.predownload_model.add_predownload(predownload)
+            predownload.collect_info()
 
     @Slot()
     def download(self):
