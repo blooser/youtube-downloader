@@ -472,6 +472,7 @@ class Download(QObject):
         self.task.progress.connect(self.update, Qt.QueuedConnection)
 
     def __del__(self):
+        # TODO: Check if it has chance to happend
         if self.running():
             self.pause()
 
