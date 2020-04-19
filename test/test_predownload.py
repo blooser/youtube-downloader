@@ -24,6 +24,16 @@ class PreDownloadTest(unittest.TestCase):
                 "duration": 250
         }
         
+    def test_preDownloadEqOperator(self):
+        predownload1 = PreDownload(self.url, self.options)
+        predownload2 = PreDownload(self.url, self.options)
+        self.assertEqual(predownload1, predownload2)
+        
+        options_with_different_output_path = self.options
+        options_with_different_output_path.update({"output_path": "/foo/bar/path2"})
+        predownload3 = PreDownload(self.url, options_with_different_output_path)
+        self.assertNotEqual(predownload1, predownload3)
+        
     def test_preDownloadPackAndUnpack(self):
         predownload = PreDownload(self.url, self.options)
         predownload.ready = True

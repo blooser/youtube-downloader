@@ -83,6 +83,9 @@ class PreDownload(QObject):
             self.task.terminate()
             self.task.wait()
 
+    def __eq__(self, other):
+        return self.url == other.url and self.options == other.options
+
     def start(self):
         self.task.start()
 
@@ -91,7 +94,7 @@ class PreDownload(QObject):
         self.ready = True
         self.readyToDownload.emit(str(self.id))
 
-    @Slot()
+    @Slot(dict)
     def prepare_data(self, info):
         self.data.collect_info(info)
 
@@ -478,6 +481,9 @@ class Download(QObject):
 
             while self.running():
                 continue
+
+    def __eq__(self, other):
+        return self.url == other.url and self.options == other.options
 
     def start(self):
         if self.running():

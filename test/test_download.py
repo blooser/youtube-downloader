@@ -24,6 +24,16 @@ class DownloadTest(unittest.TestCase):
                 "thumbnail": "None",
                 "duration": 60,
         }
+            
+    def test_downloadEqOperator(self):
+        download1 = Download(self.url, self.options, self.data)
+        download2 = Download(self.url, self.options, self.data)
+        self.assertEqual(download1, download2)
+        
+        options_with_different_file_format = self.options
+        options_with_different_file_format.update({"file_format": "mp4"})
+        download3 = Download(self.url, options_with_different_file_format, self.data)
+        self.assertNotEqual(download1, download3)
         
     def test_downloadPackAndUnPack(self):
         download = Download(self.url, self.options, self.data)
