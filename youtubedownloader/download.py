@@ -12,6 +12,15 @@ from .logger import create_logger
 from .settings import Settings
 
 
+# NOTE: PreDownload and Download have same __eq__ operator
+class DownloadDuplicateChecker(object):
+    def __init__(self, url, options):
+        self.url = url
+        self.options = DownloadOptions(options)
+
+    def __eq__(self, other):
+        return self.url == other.url and self.options == other.options
+
 class PreDownloadTask(QThread):
     collected_info = Signal(dict)
 
@@ -138,6 +147,9 @@ class PreDownloadModel(QAbstractListModel):
 
     def __del__(self):
         self.save()
+
+    def __contains__(self, predownload):
+        return predownload in self.predownloads
 
     @Property(int, notify=sizeChanged)
     def size(self):
@@ -587,6 +599,9 @@ class DownloadModel(QAbstractListModel):
 
         self.save()
 
+    def __contains__(self, download):
+        return download in self.downloads
+
     @Property(int, notify=sizeChanged)
     def size(self):
         return len(self.downloads)
@@ -700,10 +715,10 @@ class DownloadModel(QAbstractListModel):
 
 
 class DownloadManager(QObject):
-    def __init__(self):
+    def __init__(self, config_path=None):
         super(DownloadManager, self).__init__(None)
-        self.predownload_model = PreDownloadModel()
-        self.download_model = DownloadModel()
+        self.predownload_model = PreDownloadModel(config_path)
+        self.download_model = DownloadModel(config_path)
         self.logger = create_logger(__name__)
 
     @Slot(str, "QVariantMap")
@@ -723,6 +738,12 @@ class DownloadManager(QObject):
             download.start()
 
         self.predownload_model.clear()
+
+    @Slot(str, "QVariantMap")
+    def exists(self, url, options):
+        duplicate_checker = DownloadDuplicateChecker(url, options)
+
+        return duplicate_checker in self.predownload_model or duplicate_checker in self.download_model
 
     def setQMLContext(self, engine):
         engine.rootContext().setContextProperty("downloadModel", self.download_model)
