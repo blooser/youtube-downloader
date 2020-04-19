@@ -30,8 +30,6 @@ Item {
             onFileFormatChanged: {
                 Settings.fileFormat = fileFormat
                 options["file_format"] = fileFormat
-
-                root.optionsChanged()
             }
         }
 
@@ -44,8 +42,6 @@ Item {
                 var path = paths.cleanPath(selectedFolder)
                 Settings.outputPath = path
                 options["output_path"] = path
-
-                root.optionsChanged()
             })
         }
     }
