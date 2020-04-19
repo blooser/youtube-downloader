@@ -6,6 +6,8 @@ import "../../items" as Items
 Item {
     id: root
 
+    property var options
+
     signal addLink(string link)
 
     implicitWidth: mainLayout.implicitWidth
@@ -42,11 +44,16 @@ Item {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
 
-            enabled: link.acceptableInput
+            enabled: (link.acceptableInput && !downloadManager.exists(link.text, options))
 
             imageSource: Resources.icons.plus
 
             onClicked: {
+                // BUG: Why it is happening if enabled=False?
+                if (!enabled) {
+                    return
+                }
+
                 root.addLink(link.text)
                 link.clear()
                 Settings.inputLink = Theme.String.empty

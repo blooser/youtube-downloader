@@ -12,15 +12,6 @@ from .logger import create_logger
 from .settings import Settings
 
 
-# NOTE: PreDownload and Download have same __eq__ operator
-class DownloadDuplicateChecker(object):
-    def __init__(self, url, options):
-        self.url = url
-        self.options = DownloadOptions(options)
-
-    def __eq__(self, other):
-        return self.url == other.url and self.options == other.options
-
 class PreDownloadTask(QThread):
     collected_info = Signal(dict)
 
@@ -714,6 +705,17 @@ class DownloadModel(QAbstractListModel):
         return None
 
 
+# NOTE: PreDownload and Download have same __eq__ operator, there is no need to initialize Download and PreDownload and all its variables for duplicates checking
+# TODO: Implement find duplicate position logic to notify user where duplicate already is
+class DownloadDuplicateChecker(object):
+    def __init__(self, url, options):
+        self.url = url
+        self.options = DownloadOptions(options)
+
+    def __eq__(self, other):
+        return self.url == other.url and self.options == other.options
+
+
 class DownloadManager(QObject):
     def __init__(self, config_path=None):
         super(DownloadManager, self).__init__(None)
@@ -739,10 +741,9 @@ class DownloadManager(QObject):
 
         self.predownload_model.clear()
 
-    @Slot(str, "QVariantMap")
+    @Slot(str, "QVariantMap", result="bool")
     def exists(self, url, options):
         duplicate_checker = DownloadDuplicateChecker(url, options)
-
         return duplicate_checker in self.predownload_model or duplicate_checker in self.download_model
 
     def setQMLContext(self, engine):

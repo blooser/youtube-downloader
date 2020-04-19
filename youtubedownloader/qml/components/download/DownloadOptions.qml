@@ -23,7 +23,16 @@ Item {
         anchors.fill: parent
 
         Components.FileFormat {
+            id: fileFormat
+
             Layout.alignment: Qt.AlignLeft
+
+            onFileFormatChanged: {
+                Settings.fileFormat = fileFormat
+                options["file_format"] = fileFormat
+
+                root.optionsChanged()
+            }
         }
 
         Items.YDButton {
@@ -32,7 +41,11 @@ Item {
             Layout.alignment: Qt.AlignRight
             text: Settings.outputPath
             onClicked: dialogManager.open_dialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
-                Settings.outputPath = paths.cleanPath(selectedFolder)
+                var path = paths.cleanPath(selectedFolder)
+                Settings.outputPath = path
+                options["output_path"] = path
+
+                root.optionsChanged()
             })
         }
     }

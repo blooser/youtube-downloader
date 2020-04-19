@@ -30,6 +30,7 @@ ApplicationWindow {
         Link.LinkInput {
             Layout.fillWidth: true
 
+            options: downloadOptions.options
             onAddLink: downloadManager.predownload(link, downloadOptions.options)
         }
 

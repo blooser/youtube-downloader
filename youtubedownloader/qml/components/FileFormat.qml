@@ -7,13 +7,15 @@ import "../items" as Items
 Item {
     id: root
 
+    signal fileFormatChanged(string fileFormat)
+
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
     ButtonGroup {
         id: buttonGroup
         buttons: mainLayout.children
-        onClicked: Settings.fileFormat = button.text
+        onClicked: root.fileFormatChanged(button.text)
     }
 
     RowLayout {
