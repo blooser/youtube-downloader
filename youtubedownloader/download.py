@@ -648,6 +648,11 @@ class DownloadModel(QAbstractListModel):
         if row >= len(self.downloads):
             return
 
+        if self.downloads[row].running():
+            self.downloads[row].task.finished.connect(lambda: self.remove_download(self.downloads.index(self.downloads[row])))
+            self.downloads[row].pause()
+            return
+
         self.beginRemoveRows(QModelIndex(), row, row)
         self.downloads.pop(row)
         self.endRemoveRows()
