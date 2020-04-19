@@ -7,11 +7,14 @@ from ..logger import create_logger
 
 class Resources(QObject):
     CORE_PATH = os.path.dirname(__file__)
+    YD_LOGO = os.path.join(CORE_PATH, "yd.svg")
 
     def __init__(self):
         super(Resources, self).__init__(None)
 
         self.logger = create_logger(__name__)
+        self.logger.info("YD Logo: {logo}".format(logo=Resources.YD_LOGO))
+
         self.icon_paths = Paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
         self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
 

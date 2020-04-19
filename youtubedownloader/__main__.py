@@ -3,6 +3,7 @@ import sys, os
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
 from PySide2.QtQuick import QQuickView
+from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QUrl, QResource
 from PySide2.QtWidgets import QApplication
 
@@ -22,6 +23,7 @@ def yd_run():
     app.setApplicationName("youtube downloader")
     app.setApplicationVersion("0.0.1")
     app.setOrganizationName("blooser")
+    app.setWindowIcon(QIcon(Resources.YD_LOGO))
 
     download_manager = DownloadManager()
     settings = Settings()
