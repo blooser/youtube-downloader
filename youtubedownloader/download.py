@@ -83,7 +83,7 @@ class PreDownload(QObject):
             self.task.terminate()
             self.task.wait()
 
-    def collect_info(self):
+    def start(self):
         self.task.start()
 
     @Slot()
@@ -705,7 +705,7 @@ class DownloadManager(QObject):
         if url:
             predownload = PreDownload(url, options)
             self.predownload_model.add_predownload(predownload)
-            predownload.collect_info()
+            predownload.start()
 
     @Slot()
     def download(self):
