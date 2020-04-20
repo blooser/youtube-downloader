@@ -37,7 +37,7 @@ class PreDownloadTest(unittest.TestCase):
     def test_preDownloadPackAndUnpack(self):
         predownload = PreDownload(self.url, self.options)
         predownload.ready = True
-        predownload.data.collect_info(self.data)
+        predownload.data.collect(self.data)
         
         packed = PreDownload.pack(predownload)
         self.assertTrue(isinstance(packed, dict))

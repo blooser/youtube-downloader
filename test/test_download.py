@@ -63,7 +63,7 @@ class DownloadTest(unittest.TestCase):
         }
         
         predownload = PreDownload(self.url, self.options)
-        predownload.data.collect_info(data)
+        predownload.data.collect(data)
         
         download = Download.fromPreDownload(predownload)
         self.assertEqual(download.url, predownload.url)

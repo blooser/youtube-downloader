@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import PreDownloadTask, PreDownloadData
+from youtubedownloader import PreDownloadTask, DownloadData
 from PySide2.QtCore import Qt
 
 class PreDownloadTaskTest(unittest.TestCase):
@@ -19,17 +19,17 @@ class PreDownloadTaskTest(unittest.TestCase):
             
     def test_preDownloadTaskCollectsInfoFromURL(self):
         predownload_task = PreDownloadTask(self.url)
-        predownload_data = PreDownloadData()
-        predownload_task.collected_info.connect(predownload_data.collect_info, Qt.DirectConnection)
+        download_data = DownloadData()
+        predownload_task.collected_info.connect(download_data.collect, Qt.DirectConnection)
 
         predownload_task.start()
         while predownload_task.isRunning():
             continue
 
-        self.assertEqual(predownload_data.title, "Fall Out Boy - Centuries (LEXIM Remix)")
-        self.assertEqual(predownload_data.uploader, "Trap Boost")
-        self.assertTrue(predownload_data.thumbnail)
-        self.assertEqual(predownload_data.duration, 262)
+        self.assertEqual(download_data.title, "Fall Out Boy - Centuries (LEXIM Remix)")
+        self.assertEqual(download_data.uploader, "Trap Boost")
+        self.assertTrue(download_data.thumbnail)
+        self.assertEqual(download_data.duration, 262)
 
 
 if __name__ == "__main__":
