@@ -331,7 +331,9 @@ class DownloadOptions(QObject):
        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
     }
 
-    WEBM_TEMPLATE = {}
+    WEBM_TEMPLATE = {
+       "format": "bestvideo[ext=webm]+bestaudio[ext=webm]/webm"
+    }
 
     changed = Signal(str)
 
