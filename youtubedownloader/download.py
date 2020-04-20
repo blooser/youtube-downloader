@@ -29,38 +29,6 @@ class PreDownloadTask(QThread):
         self.collected_info.emit(info)
 
 
-class PreDownloadData(object):
-    def __init__(self):
-        self.title = str()
-        self.uploader = str()
-        self.thumbnail = str()
-        self.duration = str()
-
-    def collect_info(self, info):
-        self.title = info["title"]
-        self.uploader = info["uploader"]
-        self.thumbnail = info["thumbnail"]
-        self.duration = int(info["duration"])
-
-    @staticmethod
-    def pack(predownloaddata):
-        return {
-            "title": predownloaddata.title,
-            "uploader": predownloaddata.uploader,
-            "thumbnail": predownloaddata.thumbnail,
-            "duration": predownloaddata.duration,
-        }
-
-    @staticmethod
-    def unpack(data):
-        predownloaddata = PreDownloadData()
-        predownloaddata.title = data["title"]
-        predownloaddata.uploader = data["uploader"]
-        predownloaddata.thumbnail = data["thumbnail"]
-        predownloaddata.duration = data["duration"]
-        return predownloaddata
-
-
 class PreDownload(QObject):
     readyToDownload = Signal(str)
 
@@ -72,7 +40,7 @@ class PreDownload(QObject):
         self.url = url
         self.options = DownloadOptions(options)
 
-        self.data = PreDownloadData()
+        self.data = DownloadData()
         self.task = PreDownloadTask(self.url)
 
         self.task.collected_info.connect(self.prepare_data)
@@ -96,7 +64,7 @@ class PreDownload(QObject):
 
     @Slot(dict)
     def prepare_data(self, info):
-        self.data.collect_info(info)
+        self.data.collect(info)
 
         if self.options.need_post_process():
             self.options.calc_post_process_file_size(self.data.duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
@@ -106,7 +74,7 @@ class PreDownload(QObject):
         return {
             "url": predownload.url,
             "ready": predownload.ready,
-            "data": PreDownloadData.pack(predownload.data),
+            "data": DownloadData.pack(predownload.data),
             "options": DownloadOptions.pack(predownload.options)
         }
 
@@ -114,7 +82,7 @@ class PreDownload(QObject):
     def unpack(data):
         predownload = PreDownload(data["url"], data["options"])
         predownload.ready = data["ready"]
-        predownload.data = PreDownloadData.unpack(data["data"])
+        predownload.data = DownloadData.unpack(data["data"])
         return predownload
 
 
@@ -232,6 +200,43 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.options
 
         return None
+
+
+class DownloadData(QObject):
+    def __init__(self, data=None):
+        super(DownloadData, self).__init__(None)
+        self.title = str()
+        self.uploader = str()
+        self.thumbnail = str()
+        self.duration = str()
+
+        if data is not None:
+            self.collect(data)
+
+    @Slot(dict)
+    def collect(self, info):
+        self.title = info["title"]
+        self.uploader = info["uploader"]
+        self.thumbnail = info["thumbnail"]
+        self.duration = info["duration"]
+
+    @staticmethod
+    def pack(download_data):
+        return {
+            "title": download_data.title,
+            "uploader": download_data.uploader,
+            "thumbnail": download_data.thumbnail,
+            "duration": download_data.duration,
+        }
+
+    @staticmethod
+    def unpack(data):
+        download_data = DownloadData()
+        download_data.title = data["title"]
+        download_data.uploader = data["uploader"]
+        download_data.thumbnail = data["thumbnail"]
+        download_data.duration = data["duration"]
+        return download_data
 
 
 class DownloadProgress(QObject):
@@ -441,27 +446,6 @@ class DownloadTask(QThread):
             self.progress.emit({"status": str(download_error)})
 
 
-class DownloadData(object):
-    def __init__(self, data):
-        self.title = data["title"]
-        self.uploader = data["uploader"]
-        self.thumbnail = data["thumbnail"]
-        self.duration = data["duration"]
-
-    @staticmethod
-    def pack(download):
-        return {
-            "title": download.title,
-            "uploader": download.uploader,
-            "thumbnail": download.thumbnail,
-            "duration": download.duration,
-        }
-
-    @staticmethod
-    def unpack(data):
-        return DownloadData(data)
-
-
 class Download(QObject):
     updated = Signal(str)
 
@@ -528,7 +512,7 @@ class Download(QObject):
 
     @classmethod
     def fromPreDownload(cls, predownload):
-        return Download(predownload.url, DownloadOptions.pack(predownload.options), PreDownloadData.pack(predownload.data))
+        return Download(predownload.url, DownloadOptions.pack(predownload.options), DownloadData.pack(predownload.data))
 
 
 class DownloadPostProcess(QObject):
