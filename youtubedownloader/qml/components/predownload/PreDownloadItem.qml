@@ -8,6 +8,7 @@ import ".." as Components
 Rectangle {
     id: root
 
+    property string destinationFile
     property string preDownloadStatus
     property string thumbnailUrl
     property string linkTitle
@@ -48,6 +49,7 @@ Rectangle {
     Component {
         id: alreadyExistsIndicator
         PreDownloadItemAlreadyExistsIndicator {
+            existsPath: root.destinationFile
             PreDownloadItemInfo {
                 anchors.fill: parent
                 opacity: Theme.Visible.disabled
