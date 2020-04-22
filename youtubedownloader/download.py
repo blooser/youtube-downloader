@@ -7,6 +7,7 @@ import os.path
 import pathlib
 import pickle
 import youtube_dl
+import atexit
 
 from .logger import create_logger
 from .settings import Settings
@@ -45,11 +46,6 @@ class PreDownload(QObject):
 
         self.task.collected_info.connect(self.prepare_data)
         self.task.finished.connect(self.setReady)
-
-    def __del__(self):
-        if self.task and self.task.isRunning():
-            self.task.terminate()
-            self.task.wait()
 
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
@@ -110,8 +106,7 @@ class PreDownloadModel(QAbstractListModel):
         self.rowsInserted.connect(lambda: self.sizeChanged.emit(len(self.predownloads)))
         self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.predownloads)))
 
-    def __del__(self):
-        self.save()
+        atexit.register(self.save)
 
     def __contains__(self, predownload):
         return predownload in self.predownloads
@@ -175,9 +170,7 @@ class PreDownloadModel(QAbstractListModel):
 
         else:
             for row in range(len(self.predownloads)-1, -1, -1):
-                print(self.predownloads[row].status, status)
                 if self.predownloads[row].status == status:
-                    print(self.predownloads[row].status)
                     self.beginRemoveRows(QModelIndex(), row, row)
                     self.endRemoveRows()
 
@@ -485,14 +478,6 @@ class Download(QObject):
 
         self.task.progress.connect(self.update, Qt.QueuedConnection)
 
-    def __del__(self):
-        # TODO: Check if it has chance to happen
-        if self.running():
-            self.pause()
-
-            while self.running():
-                continue
-
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
 
@@ -586,7 +571,9 @@ class DownloadModel(QAbstractListModel):
         self.rowsInserted.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
         self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
 
-    def __del__(self):
+        atexit.register(self.pauseAndSave)
+
+    def pauseAndSave(self):
         running_downloads = [True] * len(self.downloads)
 
         for download in self.downloads:
