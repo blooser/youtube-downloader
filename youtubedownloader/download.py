@@ -47,7 +47,7 @@ class PreDownload(QObject):
         self.task.finished.connect(self.setReady)
 
     def __del__(self):
-        if self.task.isRunning():
+        if self.task and self.task.isRunning():
             self.task.terminate()
             self.task.wait()
 
