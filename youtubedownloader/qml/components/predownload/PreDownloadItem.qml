@@ -1,9 +1,12 @@
 import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
+import yd.items 0.1
+
 import "../../items" as Items
 import "../link" as Link
 import ".." as Components
+import "../dynamic" as Dynamic
 
 Rectangle {
     id: root
@@ -18,8 +21,8 @@ Rectangle {
 
     signal remove()
 
-    implicitWidth: loader.implicitWidth
-    implicitHeight: Math.max(loader.implicitHeight, 86)
+    implicitWidth: changer.implicitWidth
+    implicitHeight: Math.max(changer.implicitHeight, 86)
 
     color: Theme.Colors.second
     radius: Theme.Margins.tiny
@@ -63,30 +66,27 @@ Rectangle {
         }
     }
 
-    Loader {
-        id: loader
+    Dynamic.Changer {
+        id: changer
 
         anchors.fill: parent
+
+        changes: [
+            Change {
+                component: collectingInfoIndicator
+                when: (preDownloadStatus === "processing")
+            },
+
+            Change {
+                component: itemInfo
+                when: (preDownloadStatus === "ready")
+
+            },
+
+            Change {
+                component: alreadyExistsIndicator
+                when: (preDownloadStatus === "exists")
+            }
+        ]
     }
-
-    state: "processing"
-    states: [
-        State {
-            name: "processing"
-            when: (preDownloadStatus === "processing")
-            PropertyChanges { target: loader; sourceComponent: collectingInfoIndicator }
-        },
-
-        State {
-            name: "ready"
-            when: (preDownloadStatus === "ready")
-            PropertyChanges { target: loader; sourceComponent: itemInfo }
-        },
-
-        State {
-            name: "exists"
-            when: (preDownloadStatus === "exists")
-            PropertyChanges { target: loader; sourceComponent: alreadyExistsIndicator }
-        }
-    ]
 }
