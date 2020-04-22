@@ -35,7 +35,7 @@ class PreDownload(QObject):
     def __init__(self, url, options):
         super(PreDownload, self).__init__(None)
 
-        self.ready = False
+        self.status = "processing"
         self.id = hash(url)
         self.url = url
         self.options = DownloadOptions(options)
@@ -57,6 +57,10 @@ class PreDownload(QObject):
     def start(self):
         self.task.start()
 
+    def already_downloaded(self):
+        destination_file = "{root}/{title}.{ext}".format(root=self.options.output_path, title=self.data.title, ext=self.options.file_format)
+        return os.path.isfile(destination_file)
+
     @Slot()
     def setReady(self):
         self.ready = True
@@ -66,6 +70,8 @@ class PreDownload(QObject):
     def prepare_data(self, info):
         self.data.collect(info)
 
+        self.status = "ready" if not self.already_downloaded() else "exists"
+
         if self.options.need_post_process():
             self.options.calc_post_process_file_size(self.data.duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
 
@@ -73,7 +79,7 @@ class PreDownload(QObject):
     def pack(predownload):
         return {
             "url": predownload.url,
-            "ready": predownload.ready,
+            "status": predownload.status,
             "data": DownloadData.pack(predownload.data),
             "options": DownloadOptions.pack(predownload.options)
         }
@@ -81,7 +87,7 @@ class PreDownload(QObject):
     @staticmethod
     def unpack(data):
         predownload = PreDownload(data["url"], data["options"])
-        predownload.ready = data["ready"]
+        predownload.status = data["status"]
         predownload.data = DownloadData.unpack(data["data"])
         return predownload
 
@@ -137,7 +143,7 @@ class PreDownloadModel(QAbstractListModel):
 
     def roleNames(self, index=QModelIndex()):
         return {
-            0: b"ready",
+            0: b"status",
             1: b"title",
             2: b"uploader",
             3: b"thumbnail",
@@ -182,7 +188,7 @@ class PreDownloadModel(QAbstractListModel):
         predownload = self.predownloads[index.row()]
 
         if role == 0:
-            return predownload.ready
+            return predownload.status
 
         elif role == 1:
             return predownload.data.title
@@ -464,7 +470,7 @@ class Download(QObject):
         self.task.progress.connect(self.update, Qt.QueuedConnection)
 
     def __del__(self):
-        # TODO: Check if it has chance to happend
+        # TODO: Check if it has chance to happen
         if self.running():
             self.pause()
 

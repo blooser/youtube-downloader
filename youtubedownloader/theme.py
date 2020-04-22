@@ -10,7 +10,8 @@ Theme = {
         "textStyle": "black",
         "blank": "transparent",
         "success": "#00b300",
-        "error": "#ff1a1a"
+        "error": "#ff1a1a",
+        "shadowError": "#99ff1a1a"
     },
 
     "Margins": {

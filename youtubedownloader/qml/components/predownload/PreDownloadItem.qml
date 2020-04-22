@@ -8,16 +8,17 @@ import ".." as Components
 Rectangle {
     id: root
 
-    property alias thumbnailUrl: thumbnail.source
-    property alias linkTitle: link.titleText
-    property alias linkUploader: link.uploaderText
-    property alias linkDuration: link.durationText
-    property alias selectedFormat: selectedFormat.text
+    property string preDownloadStatus
+    property string thumbnailUrl
+    property string linkTitle
+    property string linkUploader
+    property string linkDuration
+    property string selectedFormat
 
     signal remove()
 
-    implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight
+    implicitWidth: loader.implicitWidth
+    implicitHeight: Math.max(loader.implicitHeight, 86)
 
     color: Theme.Colors.second
     radius: Theme.Margins.tiny
@@ -27,44 +28,63 @@ Rectangle {
         color: Theme.Colors.base
     }
 
-    RowLayout {
-        id: mainLayout
+    Component {
+        id: collectingInfoIndicator
+        PreDownloadItemCollectingInfoIndicator {}
+    }
 
-        anchors {
-            fill: parent
-            leftMargin: Theme.Margins.normal
-            rightMargin: Theme.Margins.normal
-        }
-
-        spacing: Theme.Margins.big
-
-        Items.YDImage {
-            id: thumbnail
-
-            Layout.preferredWidth: 86
-            Layout.preferredHeight: 86
-        }
-
-        Link.LinkInfo {
-            id: link
-
-            Layout.fillWidth: true
-        }
-
-        Components.TileText {
-            id: selectedFormat
-
-            Layout.preferredWidth: 65
-
-        }
-
-        Items.YDImageButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
-
-            imageSource: Resources.icons.delete
-
-            onClicked: root.remove()
+    Component {
+        id: itemInfo
+        PreDownloadItemInfo {
+            thumbnailUrl: root.thumbnailUrl
+            linkTitle: root.linkTitle
+            linkUploader: root.linkUploader
+            linkDuration: root.linkDuration
+            selectedFormat: root.selectedFormat
+            onRemove: root.remove()
         }
     }
+
+    Component {
+        id: alreadyExistsIndicator
+        PreDownloadItemAlreadyExistsIndicator {
+            PreDownloadItemInfo {
+                anchors.fill: parent
+                opacity: Theme.Visible.disabled
+                thumbnailUrl: root.thumbnailUrl
+                linkTitle: root.linkTitle
+                linkUploader: root.linkUploader
+                linkDuration: root.linkDuration
+                selectedFormat: root.selectedFormat
+                onRemove: root.remove()
+            }
+        }
+    }
+
+    Loader {
+        id: loader
+
+        anchors.fill: parent
+    }
+
+    state: "processing"
+    states: [
+        State {
+            name: "processing"
+            when: (preDownloadStatus === "processing")
+            PropertyChanges { target: loader; sourceComponent: collectingInfoIndicator }
+        },
+
+        State {
+            name: "ready"
+            when: (preDownloadStatus === "ready")
+            PropertyChanges { target: loader; sourceComponent: itemInfo }
+        },
+
+        State {
+            name: "exists"
+            when: (preDownloadStatus === "exists")
+            PropertyChanges { target: loader; sourceComponent: alreadyExistsIndicator }
+        }
+    ]
 }

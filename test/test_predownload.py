@@ -36,18 +36,18 @@ class PreDownloadTest(unittest.TestCase):
         
     def test_preDownloadPackAndUnpack(self):
         predownload = PreDownload(self.url, self.options)
-        predownload.ready = True
+        predownload.status = "ready"
         predownload.data.collect(self.data)
         
         packed = PreDownload.pack(predownload)
         self.assertTrue(isinstance(packed, dict))
-        expected_keys = ["url", "ready", "data", "options"]
+        expected_keys = ["url", "status", "data", "options"]
         for key in packed.keys():
             self.assertTrue(key in expected_keys)
             
         unpacked = PreDownload.unpack(packed)
         self.assertEqual(unpacked.url, self.url)
-        self.assertEqual(unpacked.ready, True)
+        self.assertEqual(unpacked.status, "ready")
         self.assertEqual(unpacked.options, DownloadOptions(self.options))
         self.assertEqual(unpacked.data.title, self.data["title"])
         self.assertEqual(unpacked.data.uploader, self.data["uploader"])

@@ -45,29 +45,27 @@ Item {
             spacing: Theme.Margins.tiny
             model: predownloadModel
 
-            delegate: Dynamic.Changer {
+            delegate: PreDownloadItem {
                 width: preDownloadItems.width
 
-                property bool predownloadIsReady: ready
-
-                onPredownloadIsReadyChanged: preDownloadItems.itemsNotReady -= 1
-
-                main: PreDownloadItemCollectingInfoIndicator {}
-
-                second: PreDownloadItem {
-                    linkTitle: title
-                    linkUploader: uploader
-                    linkDuration: duration
-
-                    thumbnailUrl: thumbnail
-                    selectedFormat: options.fileFormat
-
-                    onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(title).arg(uploader))}, function(){
-                        predownloadModel.remove_predownload(index)
-                    })
+                property bool predownloadIsReady: (status === "ready")
+                onPredownloadIsReadyChanged: {
+                    if (predownloadIsReady) {
+                        preDownloadItems.itemsNotReady -= 1
+                    }
                 }
 
-                when: predownloadIsReady
+                preDownloadStatus: status
+                linkTitle: title
+                linkUploader: uploader
+                linkDuration: duration
+
+                thumbnailUrl: thumbnail
+                selectedFormat: options.fileFormat
+
+                onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(title).arg(uploader))}, function() {
+                    predownloadModel.remove_predownload(index)
+                })
 
                 Component.onCompleted: preDownloadItems.itemsNotReady += 1 // NOTE: When added first of all the predownload need to collect info from server
             }

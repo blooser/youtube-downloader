@@ -13,7 +13,7 @@ ApplicationWindow {
     width: 1050; height: 750
     visible: true
 
-    title: qsTr("Youtube downloader")
+    title: qsTr("Youtube Downloader")
 
     background: Rectangle {
         color: Theme.Colors.base
