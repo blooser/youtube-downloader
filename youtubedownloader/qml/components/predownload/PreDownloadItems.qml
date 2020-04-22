@@ -19,10 +19,10 @@ Item {
         Items.YDButton {
             Layout.alignment: Qt.AlignHCenter
 
-            text: qsTr("Download %1 items").arg(preDownloadItems.count)
-            opacity: preDownloadItems.count ? 1 : 0
+            text: qsTr("Download %1 items").arg(preDownloadItems.itemsReady)
+            opacity: preDownloadItems.itemsReady ? Theme.Visible.on : Theme.Visible.off
 
-            enabled: (preDownloadItems.itemsNotReady === 0)
+            enabled: preDownloadItems.itemsReady && !preDownloadItems.itemsProcessing
 
             onClicked: downloadManager.download()
 
@@ -37,6 +37,8 @@ Item {
             id: preDownloadItems
 
             property int itemsNotReady: 0
+            property int itemsProcessing: 0
+            readonly property int itemsReady: count - itemsNotReady
 
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -48,12 +50,10 @@ Item {
             delegate: PreDownloadItem {
                 width: preDownloadItems.width
 
-                property bool predownloadIsReady: (status === "ready")
-                onPredownloadIsReadyChanged: {
-                    if (predownloadIsReady) {
-                        preDownloadItems.itemsNotReady -= 1
-                    }
-                }
+                property bool predownloadIsNotReady: (status === "exists")
+                property bool predownloadIsProcessing: (status === "processing")
+                onPredownloadIsNotReadyChanged: preDownloadItems.itemsNotReady += (predownloadIsNotReady) ? 1 : -1
+                onPredownloadIsProcessingChanged: preDownloadItems.itemsProcessing += (predownloadIsProcessing) ? 1 : -1
 
                 preDownloadStatus: status
                 linkTitle: title
@@ -68,7 +68,11 @@ Item {
                     predownloadModel.remove_predownload(index)
                 })
 
-                Component.onCompleted: preDownloadItems.itemsNotReady += 1 // NOTE: When added first of all the predownload need to collect info from server
+                Component.onDestruction: {
+                    if (predownloadIsNotReady) {
+                        preDownloadItems.itemsNotReady -= 1
+                    }
+                }
             }
         }
     }
