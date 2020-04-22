@@ -28,6 +28,10 @@ from .theme import (
     Theme
 )
 
+from .component_changer import (
+    ComponentChanger
+)
+
 from .resources import (
     Resources
 )
