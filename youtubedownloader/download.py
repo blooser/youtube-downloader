@@ -154,14 +154,6 @@ class PreDownloadModel(QAbstractListModel):
     def index(self, row, column, parent):
         return self.createIndex(row, column, parent)
 
-    def remove_ready(self):
-        for row in range(self.rowCount() - 1, -1, -1):
-            if self.predownloads[row].status == "ready":
-                self.beginRemoveRows(QModelIndex(), row, row)
-                self.endRemoveRows()
-
-        self.predownloads = [predownload for predownload in self.predownloads if predownload.status != "ready"]
-
     def refresh(self, id):
         id = int(id)
         for row, predownload in enumerate(self.predownloads):
@@ -174,6 +166,22 @@ class PreDownloadModel(QAbstractListModel):
         predownload.readyToDownload.connect(self.refresh, Qt.QueuedConnection)
         self.predownloads.append(predownload)
         self.endInsertRows()
+
+    def remove(self, status="*"):
+        if status == "*":
+            self.beginResetModel()
+            self.predownloads.clear()
+            self.endResetModel()
+
+        else:
+            for row in range(len(self.predownloads)-1, -1, -1):
+                print(self.predownloads[row].status, status)
+                if self.predownloads[row].status == status:
+                    print(self.predownloads[row].status)
+                    self.beginRemoveRows(QModelIndex(), row, row)
+                    self.endRemoveRows()
+
+            self.predownloads = [predownload for predownload in self.predownloads if predownload.status != status]
 
     @Slot(int)
     def remove_predownload(self, row):
@@ -738,7 +746,7 @@ class DownloadManager(QObject):
                 self.download_model.add_download(download)
                 download.start()
 
-        self.predownload_model.remove_ready()
+        self.predownload_model.remove("ready")
 
     @Slot(str, "QVariantMap", result="bool")
     def exists(self, url, options):
