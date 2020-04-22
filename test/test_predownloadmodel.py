@@ -38,6 +38,36 @@ class PreDownloadModelTest(unittest.TestCase):
             second_predownload = second_predownload_model.predownloads[0]
             self.assertEqual(second_predownload.download_options, DownloadOptions(self.options))
             self.assertEqual(second_predownload.url, self.yt_url)
+            
+    def test_preDownloadModelRemovesItemsWithSelectedStatus(self):
+        def create_predownload(status):
+              predownload = PreDownload(self.yt_url, self.options)
+              predownload.status = status
+              return predownload
+          
+        def item_not_exists(status, items):
+            for item in items:
+                if item.status == status:
+                        return False
+            return True
+        
+        predownload_model = PreDownloadModel(self.config_path)
+        for status in ["ready", "processing", "exists"] * 3:
+            predownload_model.add_predownload(create_predownload(status))
+            
+        self.assertEqual(predownload_model.rowCount(), 9)
+
+        predownload_model.remove("ready")
+        self.assertTrue(item_not_exists("ready", predownload_model.predownloads))
+        self.assertEqual(predownload_model.rowCount(), 6)
+        
+        predownload_model.remove("processing")
+        self.assertTrue(item_not_exists("processing", predownload_model.predownloads))
+        self.assertEqual(predownload_model.rowCount(), 3)
+        
+        predownload_model.remove("exists")
+        self.assertTrue(item_not_exists("exists", predownload_model.predownloads))
+        self.assertEqual(predownload_model.rowCount(), 0)
 
 
 if __name__ == "__main__":
