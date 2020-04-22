@@ -154,6 +154,14 @@ class PreDownloadModel(QAbstractListModel):
     def index(self, row, column, parent):
         return self.createIndex(row, column, parent)
 
+    def remove_ready(self):
+        for row in range(self.rowCount() - 1, -1, -1):
+            if self.predownloads[row].status == "ready":
+                self.beginRemoveRows(QModelIndex(), row, row)
+                self.endRemoveRows()
+
+        self.predownloads = [predownload for predownload in self.predownloads if predownload.status != "ready"]
+
     def refresh(self, id):
         id = int(id)
         for row, predownload in enumerate(self.predownloads):
@@ -724,14 +732,13 @@ class DownloadManager(QObject):
 
     @Slot()
     def download(self):
-        self.logger.info("Downloading {items} items".format(items=len(self.predownload_model.predownloads)))
+        for predownload in [ready_predownload for ready_predownload in self.predownload_model.predownloads if ready_predownload.status == "ready"]:
+            if predownload.status == "ready":
+                download = Download.fromPreDownload(predownload)
+                self.download_model.add_download(download)
+                download.start()
 
-        for predownload in self.predownload_model.predownloads:
-            download = Download.fromPreDownload(predownload)
-            self.download_model.add_download(download)
-            download.start()
-
-        self.predownload_model.clear()
+        self.predownload_model.remove_ready()
 
     @Slot(str, "QVariantMap", result="bool")
     def exists(self, url, options):
