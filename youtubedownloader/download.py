@@ -438,7 +438,7 @@ class DownloadTask(QThread):
 
         self.post_process_started.connect(self.post_process_timer.start)
         self.download_post_process.bytes_processed.connect(lambda bytes: self.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
-        self.download_post_process.started.connect(lambda: self.progress.emit({"status": "Converting to {0}".format(self.options.file_format),
+        self.download_post_process.started.connect(lambda: self.progress.emit({"status": "converting to {0}".format(self.options.file_format),
                                                                                          "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
     def process(self, data):
         if self.paused:
@@ -473,7 +473,7 @@ class Download(QObject):
         self.task = DownloadTask(self.url, self.options)
 
         self.task.progress.connect(self.update, Qt.QueuedConnection)
-        self.task.finished.connect(lambda: self.update({"status": "finished"} if not self.task.paused else None))
+        self.task.finished.connect(lambda: self.update({"status": "finished"} if not self.task.paused else {}))
 
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options

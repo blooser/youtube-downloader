@@ -25,7 +25,10 @@ Item {
         Items.YDImageButton {
             id: downloadButton
 
+            Layout.preferredWidth: Theme.Size.none
+            Layout.preferredHeight: Theme.Size.none
             Layout.alignment: Qt.AlignRight
+            opacity: Theme.Visible.off
         }
 
         Items.YDImageButton {
@@ -39,49 +42,36 @@ Item {
         }
     }
 
-    state: "queued"
+    state: "repose"
     states: [
         State {
-            when: status.includes("ERROR")
-            name: "error"
-            PropertyChanges { target: downloadButton; implicitWidth: Theme.Size.icon; implicitHeight: Theme.Size.icon; opacity: Theme.Visible.on; imageSource: Resources.icons.redo; onClicked: root.redo() }
+            when: (status.includes("ERROR") || (status === "paused"))
+            name: "repose"
+            PropertyChanges { target: downloadButton; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; opacity: Theme.Visible.on; imageSource: Resources.icons.redo; onClicked: root.redo() }
         },
 
         State {
-            when: (status === "queued")
-            name: "queued"
-            PropertyChanges { target: downloadButton; implicitWidth: Theme.Size.none; implicitHeight: Theme.Size.none; opacity: Theme.Visible.off }
+            when: (status === "queued" || status.includes("converting"))
+            name: "occupied"
+            PropertyChanges { target: downloadButton; Layout.preferredWidth: Theme.Size.none; Layout.preferredHeight: Theme.Size.none; opacity: Theme.Visible.off }
         },
 
         State {
             when: (status === "downloading")
             name: "downloading"
-            PropertyChanges { target: downloadButton; imageSource: Resources.icons.pause; enabled: true; implicitWidth: Theme.Size.icon; implicitHeight: Theme.Size.icon; onClicked: root.pause() }
-        },
-
-        State {
-            when: (status === "paused")
-            name: "paused"
-            PropertyChanges { target: downloadButton; imageSource: Resources.icons.redo; implicitWidth: Theme.Size.icon; implicitHeight: Theme.Size.icon; onClicked: root.redo() }
-        },
-
-
-        State {
-            when: status.includes("converting")
-            name: "converting"
-            PropertyChanges { target: downloadButton; implicitWidth: Theme.Size.none; implicitHeight: Theme.Size.none; opacity: Theme.Visible.off }
+            PropertyChanges { target: downloadButton; imageSource: Resources.icons.pause; opacity: Theme.Visible.on; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; onClicked: root.pause() }
         },
 
         State {
             when: (status === "finished")
             name: "finished"
-            PropertyChanges { target: downloadButton; imageSource: Resources.icons.folder; implicitWidth: Theme.Size.icon; implicitHeight: Theme.Size.icon; opacity: Theme.Visible.on; onClicked: root.open() }
+            PropertyChanges { target: downloadButton; imageSource: Resources.icons.folder; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; opacity: Theme.Visible.on; onClicked: root.open() }
         }
     ]
 
     transitions: Transition {
         SequentialAnimation {
-            NumberAnimation { properties: "implicitWidth, implicitHeight"; duration: Theme.Animation.quick }
+            NumberAnimation { properties: "Layout.preferredWidth, Layout.preferredHeight"; duration: Theme.Animation.quick }
             NumberAnimation { property: "opacity"; duration: Theme.Animation.quick }
         }
     }
