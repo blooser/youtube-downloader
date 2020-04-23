@@ -15,7 +15,7 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    GridLayout {
+    ColumnLayout {
         id: mainLayout
 
         anchors.fill: parent
@@ -23,35 +23,24 @@ Item {
         Items.YDLink {
             id: title
 
-            Layout.row: 0
-            Layout.column: 0
-            Layout.columnSpan: 3
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-
             font.pixelSize: Theme.FontSize.normal
             horizontalAlignment: Text.AlignLeft
         }
 
-        Items.YDLink {
-            id: uploader
+        RowLayout {
+            spacing: Theme.Margins.tiny
 
-            Layout.row: 1
-            Layout.column: 0
-            Layout.alignment: Qt.AlignLeft
+            Items.YDLink {
+                id: uploader
 
-            horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft
+            }
 
-        }
+            Items.YDText {
+                id: duration
 
-        Items.YDText {
-            id: duration
-
-            Layout.row: 1
-            Layout.column: 1
-            Layout.alignment: Qt.AlignLeft
-
-            horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft
+            }
         }
     }
 }
