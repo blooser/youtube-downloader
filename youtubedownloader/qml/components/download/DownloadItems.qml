@@ -27,8 +27,10 @@ Item {
 
             statusText: progress.downloadStatus
             thumbnailSrc: thumbnail
+            link: url
             titleText: title
             uploaderText: uploader
+            uploaderLink: uploaderUrl
             linkDuration: duration
 
             selectedFormat: options.fileFormat

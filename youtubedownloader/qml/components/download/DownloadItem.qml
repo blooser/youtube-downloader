@@ -8,24 +8,26 @@ import ".." as Components
 Items.YDProgressBar {
     id: root
 
-    property alias statusText: preDownloadItemInfo.statusText
-    property alias thumbnailSrc: preDownloadItemInfo.thumbnailSrc
-    property alias titleText: preDownloadItemInfo.titleText
-    property alias uploaderText: preDownloadItemInfo.uploaderText
-    property alias linkDuration: preDownloadItemInfo.linkDuration
+    property alias statusText: downloadItemInfo.statusText
+    property alias link: downloadItemInfo.link
+    property alias thumbnailSrc: downloadItemInfo.thumbnailSrc
+    property alias titleText: downloadItemInfo.titleText
+    property alias uploaderText: downloadItemInfo.uploaderText
+    property alias uploaderLink: downloadItemInfo.uploaderLink
+    property alias linkDuration: downloadItemInfo.linkDuration
 
-    property alias selectedFormat: preDownloadItemInfo.selectedFormat
+    property alias selectedFormat: downloadItemInfo.selectedFormat
 
     signal remove()
     signal open()
     signal redo()
     signal pause()
 
-    implicitWidth: preDownloadItemInfo.implicitWidth
-    implicitHeight: preDownloadItemInfo.implicitHeight
+    implicitWidth: downloadItemInfo.implicitWidth
+    implicitHeight: downloadItemInfo.implicitHeight
 
     DownloadItemInfo {
-        id: preDownloadItemInfo
+        id: downloadItemInfo
 
         z: root.z + 1
 

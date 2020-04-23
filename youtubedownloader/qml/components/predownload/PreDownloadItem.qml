@@ -14,8 +14,10 @@ Rectangle {
     property string destinationFile
     property string preDownloadStatus
     property string thumbnailUrl
+    property string link
     property string linkTitle
     property string linkUploader
+    property string linkUploaderLink
     property string linkDuration
     property string selectedFormat
 
@@ -41,8 +43,10 @@ Rectangle {
         id: itemInfo
         PreDownloadItemInfo {
             thumbnailUrl: root.thumbnailUrl
+            link: root.link
             linkTitle: root.linkTitle
             linkUploader: root.linkUploader
+            linkUploaderLink: root.linkUploaderLink
             linkDuration: root.linkDuration
             selectedFormat: root.selectedFormat
             onRemove: root.remove()

@@ -6,8 +6,10 @@ import "../../items" as Items
 Item {
     id: root
 
+    property alias link: title.link
     property alias titleText: title.text
     property alias uploaderText: uploader.text
+    property alias uploaderLink: uploader.link
     property alias durationText: duration.text
 
     implicitWidth: mainLayout.implicitWidth
@@ -18,7 +20,7 @@ Item {
 
         anchors.fill: parent
 
-        Items.YDText {
+        Items.YDLink {
             id: title
 
             Layout.row: 0
@@ -31,7 +33,7 @@ Item {
             horizontalAlignment: Text.AlignLeft
         }
 
-        Items.YDText {
+        Items.YDLink {
             id: uploader
 
             Layout.row: 1

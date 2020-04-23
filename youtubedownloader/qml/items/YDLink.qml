@@ -1,5 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.14
 
-Item {
+YDText {
+    property string link
 
+    MouseArea {
+        anchors.fill: parent
+        onClicked: Qt.openUrlExternally(link)
+    }
 }

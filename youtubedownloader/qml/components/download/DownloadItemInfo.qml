@@ -10,8 +10,10 @@ Item {
 
     property alias statusText: downloadStatus.status
     property alias thumbnailSrc: thumbnail.source
+    property alias link: link.link
     property alias titleText: link.titleText
     property alias uploaderText: link.uploaderText
+    property alias uploaderLink: link.uploaderLink
     property alias linkDuration: link.durationText
 
     property alias selectedFormat: selectedFormat.text

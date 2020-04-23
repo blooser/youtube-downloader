@@ -9,8 +9,10 @@ Item {
     id: root
 
     property alias thumbnailUrl: thumbnail.source
+    property alias link: link.link
     property alias linkTitle: link.titleText
     property alias linkUploader: link.uploaderText
+    property alias linkUploaderLink: link.uploaderLink
     property alias linkDuration: link.durationText
     property alias selectedFormat: selectedFormat.text
 

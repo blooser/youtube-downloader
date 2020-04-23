@@ -56,8 +56,10 @@ Item {
                 onPredownloadIsProcessingChanged: preDownloadItems.itemsProcessing += (predownloadIsProcessing) ? 1 : -1
 
                 preDownloadStatus: status
+                link: url
                 linkTitle: title
                 linkUploader: uploader
+                linkUploaderLink: uploaderUrl
                 linkDuration: duration
 
                 thumbnailUrl: thumbnail
