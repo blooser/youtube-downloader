@@ -332,22 +332,24 @@ class DownloadProgress(QObject):
 
 
 class DownloadOptions(QObject):
-    OUTPUT_FILE = "%(title)s.%(ext)s"
+    OUTPUT_FILE = os.path.join("{output_path}", "%(title)s.%(ext)s")
 
-    MP3_TEMPLATE = {
-        "postprocessors": [{
+    TEMPLATES = {
+        "mp4": {
+            "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
+        },
+
+        "webm": {
+            "format": "bestvideo[ext=webm]+bestaudio[ext=webm]/webm"
+        },
+
+        "mp3": {
+            "postprocessors": [{
                "key": 'FFmpegExtractAudio',
                "preferredcodec": 'mp3',
                "preferredquality": "192",
             }]
         }
-
-    MP4_TEMPLATE = {
-       "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
-    }
-
-    WEBM_TEMPLATE = {
-       "format": "bestvideo[ext=webm]+bestaudio[ext=webm]/webm"
     }
 
     changed = Signal(str)
@@ -378,29 +380,12 @@ class DownloadOptions(QObject):
 
     def to_ydl_opts(self):
         template = self.ydl_opts
-        template.update(self.output_template())
-        template.update(self.post_processors())
+        template.update({"outtmpl": DownloadOptions.OUTPUT_FILE.format(output_path=self.output_path)})
+        template.update(DownloadOptions.TEMPLATES[self.file_format])
         return template
 
     def need_post_process(self):
         return self.file_format in ["mp3"] # TODO: Add more file formats
-
-    def output_template(self):
-        return {
-            "outtmpl": self.output_path + "/" + DownloadOptions.OUTPUT_FILE
-        }
-
-    def post_processors(self):
-        if "mp3" in self.file_format:
-            return DownloadOptions.MP3_TEMPLATE
-
-        elif "mp4" in self.file_format:
-            return DownloadOptions.MP4_TEMPLATE
-
-        elif "webm" in self.file_format:
-            return DownloadOptions.WEBM_TEMPLATE
-
-        return {}
 
     @staticmethod
     def pack(download_options):
@@ -440,7 +425,6 @@ class DownloadTask(QThread):
 
         self.post_process_started.connect(self.post_process_timer.start)
         self.download_post_process.bytes_processed.connect(lambda bytes: self.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
-        self.download_post_process.finished.connect(lambda: self.progress.emit({"status": "finished"}), Qt.QueuedConnection)
         self.download_post_process.started.connect(lambda: self.progress.emit({"status": "Converting to {0}".format(self.options.file_format),
                                                                                          "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
     def process(self, data):
