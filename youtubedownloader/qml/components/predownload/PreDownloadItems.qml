@@ -36,8 +36,8 @@ Item {
         ListView {
             id: preDownloadItems
 
-            property int itemsNotReady: 0
-            property int itemsProcessing: 0
+            property int itemsNotReady: Theme.Capacity.empty
+            property int itemsProcessing: Theme.Capacity.empty
             readonly property int itemsReady: count - itemsNotReady
 
             Layout.fillWidth: true
