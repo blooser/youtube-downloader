@@ -138,12 +138,14 @@ class PreDownloadModel(QAbstractListModel):
 
     def roleNames(self, index=QModelIndex()):
         return {
-            0: b"status",
-            1: b"title",
-            2: b"uploader",
-            3: b"thumbnail",
-            4: b"duration",
-            5: b"options"
+            0: b"url",
+            1: b"status",
+            2: b"title",
+            3: b"uploader",
+            4: b"uploaderUrl",
+            5: b"thumbnail",
+            6: b"duration",
+            7: b"options"
         }
 
     def index(self, row, column, parent):
@@ -197,21 +199,27 @@ class PreDownloadModel(QAbstractListModel):
         predownload = self.predownloads[index.row()]
 
         if role == 0:
-            return predownload.status
+            return predownload.url
 
         elif role == 1:
-            return predownload.data.title
+            return predownload.status
 
         elif role == 2:
-            return predownload.data.uploader
+            return predownload.data.title
 
         elif role == 3:
-            return predownload.data.thumbnail
+            return predownload.data.uploader
 
         elif role == 4:
-            return QDateTime.fromSecsSinceEpoch(int(predownload.data.duration)).toString("mm:ss")
+            return predownload.data.uploader_url
 
         elif role == 5:
+            return predownload.data.thumbnail
+
+        elif role == 6:
+            return QDateTime.fromSecsSinceEpoch(int(predownload.data.duration)).toString("mm:ss")
+
+        elif role == 7:
             return predownload.options
 
         return None
@@ -222,6 +230,7 @@ class DownloadData(QObject):
         super(DownloadData, self).__init__(None)
         self.title = str()
         self.uploader = str()
+        self.uploader_url = str()
         self.thumbnail = str()
         self.duration = str()
 
@@ -232,6 +241,7 @@ class DownloadData(QObject):
     def collect(self, info):
         self.title = info["title"]
         self.uploader = info["uploader"]
+        self.uploader_url = info["uploader_url"]
         self.thumbnail = info["thumbnail"]
         self.duration = info["duration"]
 
@@ -240,6 +250,7 @@ class DownloadData(QObject):
         return {
             "title": download_data.title,
             "uploader": download_data.uploader,
+            "uploader_url": download_data.uploader_url,
             "thumbnail": download_data.thumbnail,
             "duration": download_data.duration,
         }
@@ -249,6 +260,7 @@ class DownloadData(QObject):
         download_data = DownloadData()
         download_data.title = data["title"]
         download_data.uploader = data["uploader"]
+        download_data.uploader_url = data["uploader_url"]
         download_data.thumbnail = data["thumbnail"]
         download_data.duration = data["duration"]
         return download_data
@@ -601,12 +613,14 @@ class DownloadModel(QAbstractListModel):
 
     def roleNames(self, index=QModelIndex()):
         return {
-            0: b"title",
-            1: b"uploader",
-            2: b"duration",
-            3: b"progress",
-            4: b"thumbnail",
-            5: b"options"
+            0: b"url",
+            1: b"title",
+            2: b"uploader",
+            3: b"uploaderUrl",
+            4: b"duration",
+            5: b"progress",
+            6: b"thumbnail",
+            7: b"options"
         }
 
     def clear(self):
@@ -660,21 +674,27 @@ class DownloadModel(QAbstractListModel):
         download = self.downloads[index.row()]
 
         if role == 0:
-            return download.data.title
+            return download.url
 
         elif role == 1:
-            return download.data.uploader
+            return download.data.title
 
         elif role == 2:
-            return QDateTime.fromSecsSinceEpoch(download.data.duration).toString("mm:ss")
+            return download.data.uploader
 
         elif role == 3:
-            return download.progress
+            return download.data.uploader_url
 
         elif role == 4:
-            return download.data.thumbnail
+            return QDateTime.fromSecsSinceEpoch(download.data.duration).toString("mm:ss")
 
         elif role == 5:
+            return download.progress
+
+        elif role == 6:
+            return download.data.thumbnail
+
+        elif role == 7:
             return download.options
 
         return None
