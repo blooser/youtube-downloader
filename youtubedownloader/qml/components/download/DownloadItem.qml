@@ -8,77 +8,36 @@ import ".." as Components
 Items.YDProgressBar {
     id: root
 
-    property alias statusText: downloadStatus.status
-    property alias thumbnailSrc: thumbnail.source
-    property alias titleText: link.titleText
-    property alias uploaderText: link.uploaderText
-    property alias linkDuration: link.durationText
+    property alias statusText: preDownloadItemInfo.statusText
+    property alias thumbnailSrc: preDownloadItemInfo.thumbnailSrc
+    property alias titleText: preDownloadItemInfo.titleText
+    property alias uploaderText: preDownloadItemInfo.uploaderText
+    property alias linkDuration: preDownloadItemInfo.linkDuration
 
-    property alias selectedFormat: selectedFormat.text
+    property alias selectedFormat: preDownloadItemInfo.selectedFormat
 
     signal remove()
     signal open()
     signal redo()
     signal pause()
 
-    implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight
+    implicitWidth: preDownloadItemInfo.implicitWidth
+    implicitHeight: preDownloadItemInfo.implicitHeight
 
-    RowLayout {
-        id: mainLayout
+    DownloadItemInfo {
+        id: preDownloadItemInfo
 
         z: root.z + 1
-        spacing: Theme.Margins.normal
 
         anchors {
-            fill: parent
-            leftMargin: Theme.Margins.tiny
-            rightMargin: Theme.Margins.tiny
+            fill: root
+            leftMargin: Theme.Margins.small
+            rightMargin: Theme.Margins.small
         }
 
-        Items.YDImage {
-            id: thumbnail
-
-            Layout.preferredWidth: 86
-            Layout.preferredHeight: 86
-        }
-
-        Link.LinkInfo {
-            id: link
-
-            Layout.fillWidth: true
-        }
-
-        DownloadStatus {
-            id: downloadStatus
-        }
-
-        Components.TileText {
-            id: selectedFormat
-
-            Layout.preferredWidth: 65
-        }
-
-        DownloadButtons {
-            status: statusText
-
-            onOpen: root.open()
-            onRedo: root.redo()
-            onRemove: root.remove()
-            onPause: root.pause()
-        }
+        onRemove: root.remove()
+        onOpen: root.open()
+        onRedo: root.redo()
+        onPause: root.pause()
     }
-
-    state: "*"
-    states: State {
-        when: statusText.includes("ERROR")
-        name: "error"
-        PropertyChanges { target: root; backgroundColor: Theme.Colors.error }
-    }
-
-    transitions: [
-        Transition {
-            ColorAnimation { duration: Theme.Animation.quick }
-        }
-    ]
 }
