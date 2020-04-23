@@ -344,6 +344,7 @@ class DownloadOptions(QObject):
         },
 
         "mp3": {
+            "format": "bestaudio/best",
             "postprocessors": [{
                "key": 'FFmpegExtractAudio',
                "preferredcodec": 'mp3',
