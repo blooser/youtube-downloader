@@ -432,7 +432,6 @@ class DownloadTask(QThread):
 
         # TODO: Use Operating System's filesystem events to handle when to start post process tracking
         self.download_post_process = DownloadPostProcess()
-        self.download_post_process.total_bytes = self.options.post_process_file_size
         self.post_process_file = str()
         self.post_process_timer = QTimer()
         self.post_process_timer.setInterval(500)
@@ -477,6 +476,7 @@ class Download(QObject):
         self.task = DownloadTask(self.url, self.options)
 
         self.task.progress.connect(self.update, Qt.QueuedConnection)
+        self.task.finished.connect(lambda: self.update({"status": "finished"} if not self.task.paused else None))
 
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
@@ -527,14 +527,12 @@ class Download(QObject):
 class DownloadPostProcess(QObject):
     bytes_processed = Signal(int)
     started = Signal()
-    finished = Signal()
 
     def __init__(self):
         super(DownloadPostProcess, self).__init__(None)
 
         self.file_watcher = QFileSystemWatcher()
         self.file_watcher.fileChanged.connect(self.read_bytes)
-        self.total_bytes = None
 
         self.logger = create_logger(__name__)
 
@@ -548,9 +546,6 @@ class DownloadPostProcess(QObject):
         bytes = QFileInfo(path).size()
         self.bytes_processed.emit(bytes)
         self.logger.debug("Read {bytes} bytes".format(bytes=bytes))
-
-        if bytes >= self.total_bytes:
-            self.finished.emit()
 
 
 class DownloadModel(QAbstractListModel):
