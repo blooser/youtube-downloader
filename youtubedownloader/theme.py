@@ -11,7 +11,8 @@ Theme = {
         "blank": "transparent",
         "success": "#00b300",
         "error": "#ff1a1a",
-        "shadowError": "#99ff1a1a"
+        "shadowError": "#99ff1a1a",
+        "linkReady": "#b3b3ff"
     },
 
     "Margins": {
