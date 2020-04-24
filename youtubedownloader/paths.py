@@ -23,7 +23,13 @@ class Paths(QObject):
         elif suffix in Paths.FILE_TYPE["audio"]:
             return "audio"
 
-        return "Unknown"
+        return ""
+
+    @staticmethod
+    def new_extension(file, new_ext):
+        new_ext = new_ext.replace(".", "")
+        return "{file}.{ext}".format(file=pathlib.PurePath(file).stem,
+                                     ext=new_ext)
 
     @staticmethod
     def collect_files(core_path):
