@@ -57,7 +57,7 @@ Item {
         },
 
         State {
-            when: (status === "downloading")
+            when: (status.includes("downloading"))
             name: "downloading"
             PropertyChanges { target: downloadButton; imageSource: Resources.icons.pause; opacity: Theme.Visible.on; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; onClicked: root.pause() }
         },
