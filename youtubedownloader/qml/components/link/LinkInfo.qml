@@ -2,6 +2,7 @@ import QtQuick 2.14
 import QtQuick.Layouts 1.14
 
 import "../../items" as Items
+import ".." as Components
 
 Item {
     id: root
@@ -28,7 +29,7 @@ Item {
         }
 
         RowLayout {
-            spacing: Theme.Margins.tiny
+            spacing: Theme.Margins.small
 
             Items.YDLink {
                 id: uploader
@@ -36,10 +37,10 @@ Item {
                 horizontalAlignment: Text.AlignLeft
             }
 
-            Items.YDText {
+            Components.IconText {
                 id: duration
 
-                horizontalAlignment: Text.AlignLeft
+                iconSource: Resources.icons.time
             }
         }
     }
