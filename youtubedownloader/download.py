@@ -89,7 +89,7 @@ class PreDownload(QObject):
 
 
 class PreDownloadModel(QAbstractListModel):
-    COLUMNS = ("ready", "title", "uploader", "thumbnail", "duration", "options")
+    COLUMNS = ("url", "status", "title", "uploader", "uploaderUrl", "thumbnail", "duration", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -548,7 +548,7 @@ class DownloadPostProcess(QObject):
 
 
 class DownloadModel(QAbstractListModel):
-    COLUMNS = ("title", "uploader", "duration", "progress", "thumbnail", "output_path", "options")
+    COLUMNS = ("url", "title", "uploader", "uploaderUrl", "duration", "progress", "thumbnail", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
