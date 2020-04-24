@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
+from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
 
 import os.path
 import pathlib
@@ -12,6 +12,17 @@ import atexit
 from .logger import create_logger
 from .settings import Settings
 from .paths import Paths, FileExpect
+
+
+def human_time(time):
+    if not time:
+        return "00:00"
+
+    time = int(time)
+    format = "hh:mm:ss" if time >= 60 * 60 else "mm:ss"
+
+    return QTime.fromMSecsSinceStartOfDay(time * 1000).toString(format)
+
 
 class PreDownloadTask(QThread):
     collected_info = Signal(dict)
@@ -216,7 +227,7 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.data.thumbnail
 
         elif role == 6:
-            return QDateTime.fromSecsSinceEpoch(int(predownload.data.duration)).toString("mm:ss")
+            return human_time(predownload.data.duration)
 
         elif role == 7:
             return predownload.options
@@ -712,7 +723,7 @@ class DownloadModel(QAbstractListModel):
             return download.data.uploader_url
 
         elif role == 4:
-            return QDateTime.fromSecsSinceEpoch(download.data.duration).toString("mm:ss")
+            return human_time(download.data.duration)
 
         elif role == 5:
             return download.progress
