@@ -42,4 +42,17 @@ Items.YDProgressBar {
         onRedo: root.redo()
         onPause: root.pause()
     }
+
+    state: "*"
+    states: State {
+        when: statusText.includes("ERROR")
+        name: "error"
+        PropertyChanges { target: root; backgroundColor: Theme.Colors.error }
+    }
+
+    transitions: [
+        Transition {
+            ColorAnimation { duration: Theme.Animation.quick }
+        }
+    ]
 }
