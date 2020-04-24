@@ -445,7 +445,7 @@ class DownloadTask(QThread):
             raise ValueError()
 
         if self.options.need_post_process() and data["status"] == "finished":
-            self.post_process_file = os.path.join(self.options.output_path, "{file}.{ext}".format(file=pathlib.PurePath(data["filename"]).stem, ext=self.options.file_format))
+            self.post_process_file = os.path.join(self.options.output_path, Paths.new_extension(data["filename"], self.options.file_format))
             self.post_process_started.emit()
 
         else:
