@@ -17,7 +17,7 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    RowLayout {
+    ColumnLayout {
         id: mainLayout
 
         anchors.fill: parent
@@ -25,7 +25,7 @@ Item {
         Components.FileFormat {
             id: fileFormat
 
-            Layout.alignment: Qt.AlignLeft
+            Layout.alignment: Qt.AlignHCenter
 
             onFileFormatChanged: {
                 Settings.fileFormat = fileFormat
