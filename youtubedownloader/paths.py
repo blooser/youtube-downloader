@@ -5,9 +5,25 @@ import sys, os, pathlib
 
 class Paths(QObject):
     FILE_PREFIX = "file://" if sys.platform.startswith("linux") else "file:///"
+    FILE_TYPE = {
+        "video": ["webm", "mp4", "flv", "3gp", "ogg"],
+        "audio": ["mp3", "flac", "m4a", "wav"]
+    }
 
     def __init__(self):
         super(Paths, self).__init__(None)
+
+    @staticmethod
+    def get_file_type(file):
+        suffix = pathlib.PurePath(file).suffix.replace(".", "")
+
+        if suffix in Paths.FILE_TYPE["video"]:
+            return "video"
+
+        elif suffix in Paths.FILE_TYPE["audio"]:
+            return "audio"
+
+        return "Unknown"
 
     @staticmethod
     def collect_files(core_path):
