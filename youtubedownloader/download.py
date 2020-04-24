@@ -156,7 +156,6 @@ class PreDownloadModel(QAbstractListModel):
         for row, predownload in enumerate(self.predownloads):
             if predownload.id == id:
                 self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
-                break
 
     def add_predownload(self, predownload):
         self.beginInsertRows(QModelIndex(), len(self.predownloads), len(self.predownloads))
@@ -665,7 +664,6 @@ class DownloadModel(QAbstractListModel):
         for row, download in enumerate(self.downloads):
             if download.id == id:
                 self.dataChanged.emit(self.index(row, DownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, DownloadModel.LAST_COLUMN, QModelIndex()))
-                break
 
     def add_download(self, download):
         self.beginInsertRows(QModelIndex(), len(self.downloads), len(self.downloads))
