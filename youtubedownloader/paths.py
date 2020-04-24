@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QObject, Slot
+from PySide2.QtCore import QObject, QTimer, Slot, Signal
 
 import sys, os, pathlib
 
@@ -45,3 +45,25 @@ class Paths(QObject):
     def cleanPath(self, path):
         return path.replace(Paths.FILE_PREFIX, "")
 
+
+class FileExpect(QObject):
+    file_exists = Signal()
+
+    def __init__(self):
+        super(FileExpect, self).__init__(None)
+
+        self.file = str()
+        self.timer = QTimer()
+        self.timer.setInterval(500)
+
+        self.timer.timeout.connect(self.check_file_exists)
+
+    def observe(self, file):
+        self.file = file
+        self.timer.start()
+
+    @Slot()
+    def check_file_exists(self):
+        if os.path.isfile(self.file):
+            self.file_exists.emit()
+            self.timer.stop()

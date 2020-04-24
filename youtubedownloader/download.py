@@ -11,7 +11,7 @@ import atexit
 
 from .logger import create_logger
 from .settings import Settings
-
+from .paths import Paths, FileExpect
 
 class PreDownloadTask(QThread):
     collected_info = Signal(dict)
@@ -428,15 +428,14 @@ class DownloadTask(QThread):
 
         self.ydl_opts["progress_hooks"] = [self.process]
 
-        # TODO: Use Operating System's filesystem events to handle when to start post process tracking
         self.download_post_process = DownloadPostProcess()
-        self.post_process_file = str()
-        self.post_process_timer = QTimer()
-        self.post_process_timer.setInterval(500)
-        self.post_process_timer.setSingleShot(True)
-        self.post_process_timer.timeout.connect(lambda: self.download_post_process.track(self.post_process_file))
 
-        self.post_process_started.connect(self.post_process_timer.start)
+        self.file_expect = FileExpect()
+        self.post_process_file = str()
+
+        self.post_process_started.connect(lambda: self.file_expect.observe(self.post_process_file))
+        self.file_expect.file_exists.connect(lambda: self.download_post_process.track(self.post_process_file))
+
         self.download_post_process.bytes_processed.connect(lambda bytes: self.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
         self.download_post_process.started.connect(lambda: self.progress.emit({"status": "converting to {0}".format(self.options.file_format),
                                                                                          "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
@@ -444,9 +443,12 @@ class DownloadTask(QThread):
         if self.paused:
             raise ValueError()
 
+        if data["status"] == "downloading":
+            data.update({"status": "downloading {what}".format(what=Paths.get_file_type(data["filename"]))})
+
         if self.options.need_post_process() and data["status"] == "finished":
             self.post_process_file = os.path.join(self.options.output_path, Paths.new_extension(data["filename"], self.options.file_format))
-            self.post_process_started.emit()
+            self.post_process_started.emit() # NOTE: Because we can't start timers from another thread
 
         else:
             self.progress.emit(data)
