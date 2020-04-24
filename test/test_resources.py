@@ -14,14 +14,14 @@ class ResourcesTest(unittest.TestCase):
     def test_resourcesCollectsIcons(self):
         resources = Resources()
         
-        icons = resources.get_icons()
-        self.assertEqual(len(icons), 6)
+        resources_icons = resources.icons()
+        self.assertEqual(len(resources_icons), 7)
         
-        expected_keys = ["download", "delete", "plus", "folder", "redo", "pause"]
-        for key in icons.keys():
+        expected_keys = ["download", "delete", "plus", "folder", "redo", "pause", "youtube"]
+        for key in resources_icons.keys():
                 self.assertTrue(key in expected_keys)
                 
-                icon = icons[key]
+                icon = resources_icons[key]
                 self.assertTrue(icon.startswith("file:"))
         
 if __name__ == "__main__":

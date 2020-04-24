@@ -15,6 +15,7 @@ class DownloadTest(unittest.TestCase):
         self.data = {
                 "title": "test",
                 "uploader": "test1",
+                "uploader_url": "/foo/bar/uploader",
                 "thumbnail": "None",
                 "duration": 60,
         }
@@ -24,13 +25,14 @@ class DownloadTest(unittest.TestCase):
         
         packed = DownloadData.pack(download_data)
         self.assertTrue(isinstance(packed, dict))
-        expected_keys = ["title", "uploader", "thumbnail", "duration"]
+        expected_keys = ["title", "uploader", "uploader_url",  "thumbnail", "duration"]
         for key in packed.keys():
             self.assertTrue(key in expected_keys)
             
         unpacked = DownloadData.unpack(packed)
         self.assertEqual(unpacked.title, download_data.title)
         self.assertEqual(unpacked.uploader, download_data.uploader)
+        self.assertEqual(unpacked.uploader_url, download_data.uploader_url)
         self.assertEqual(unpacked.thumbnail, download_data.thumbnail)
         self.assertEqual(unpacked.duration, download_data.duration)
             

@@ -21,6 +21,7 @@ class DownloadTest(unittest.TestCase):
         self.data = {
                 "title": "test",
                 "uploader": "test1",
+                "uploader_url": "/foo/bar/uploader",
                 "thumbnail": "None",
                 "duration": 60,
         }
@@ -50,6 +51,7 @@ class DownloadTest(unittest.TestCase):
         self.assertEqual(unpacked.options, download.options)
         self.assertEqual(unpacked.data.title, download.data.title)
         self.assertEqual(unpacked.data.uploader, download.data.uploader)
+        self.assertEqual(unpacked.data.uploader_url, download.data.uploader_url)
         self.assertEqual(unpacked.data.thumbnail, download.data.thumbnail)
         self.assertEqual(unpacked.data.duration, download.data.duration)
         
@@ -58,6 +60,7 @@ class DownloadTest(unittest.TestCase):
         data = {
                 "title": "test1",
                 "uploader": "admin",
+                "uploader_url": "/foo/bar/uploader",
                 "thumbnail": "None",
                 "duration": 60
         }

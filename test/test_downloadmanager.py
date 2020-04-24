@@ -23,6 +23,7 @@ class DownloadManagerTest(unittest.TestCase):
         self.data = {
                 "title": "",
                 "uploader": "",
+                "uploader_url": "",
                 "thumbnail": "",
                 "duration": ""
         }

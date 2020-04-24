@@ -20,6 +20,7 @@ class PreDownloadTest(unittest.TestCase):
         self.data = {
                 "title": "Test",
                 "uploader": "Me",
+                "uploader_url": "/foo/bar/uploader",
                 "thumbnail": "/foo/bar/path1",
                 "duration": 250
         }
