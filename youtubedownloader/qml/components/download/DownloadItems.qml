@@ -37,7 +37,7 @@ Item {
 
             onPause: downloadModel.pause(index)
             onRedo: downloadModel.redo(index)
-            onOpen: Qt.openUrlExternally(paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(title).arg(options.fileFormat))
+            onOpen: Qt.openUrlExternally(Paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(title).arg(options.fileFormat))
             onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(title).arg(uploader))}, function(){
                 downloadModel.remove_download(index)
             })

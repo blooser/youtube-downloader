@@ -42,7 +42,7 @@ def yd_run():
     engine.rootContext().setContextProperty("Settings", settings)
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
-    engine.rootContext().setContextProperty("paths", paths)
+    engine.rootContext().setContextProperty("Paths", paths)
     download_manager.setQMLContext(engine)
     engine.load(qml_file)
 

@@ -39,7 +39,7 @@ Item {
             Layout.alignment: Qt.AlignRight
             text: Settings.outputPath
             onClicked: dialogManager.open_dialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
-                var path = paths.cleanPath(selectedFolder)
+                var path = Paths.cleanPath(selectedFolder)
                 Settings.outputPath = path
                 options["output_path"] = path
             })
