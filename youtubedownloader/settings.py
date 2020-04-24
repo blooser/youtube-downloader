@@ -4,7 +4,7 @@ from PySide2.QtCore import QObject, QSettings, QStandardPaths, Signal, Property
 
 class Settings(QObject):
     CONFIG_PATH = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.yddownloadersettings"
-    FILE_FORMATS = ["webm", "mp4", "mp3"]
+    FILE_FORMATS = ["webm", "mp4", "mkv", "m4a", "mp3", "flac", "wav"]
 
     input_link_changed = Signal(str)
     output_path_changed = Signal(str)

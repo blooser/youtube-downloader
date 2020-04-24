@@ -6,7 +6,7 @@ import sys, os, pathlib
 class Paths(QObject):
     FILE_PREFIX = "file://" if sys.platform.startswith("linux") else "file:///"
     FILE_TYPE = {
-        "video": ["webm", "mp4", "flv", "3gp", "ogg"],
+        "video": ["webm", "mp4", "mkv"],
         "audio": ["mp3", "flac", "m4a", "wav"]
     }
 

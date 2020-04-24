@@ -355,12 +355,38 @@ class DownloadOptions(QObject):
             "format": "bestvideo[ext=webm]+bestaudio[ext=webm]/webm"
         },
 
+        "mkv": {
+            "format": "bestvideo[ext=webm]+bestaudio[ext=m4a]/mkv"
+        },
+
+        "m4a": {
+            "format": "bestaudio[ext=m4a]/m4a"
+        },
+
+        "flac": {
+            "format": "bestaudio/best",
+            "postprocessors": [{
+               "key": 'FFmpegExtractAudio',
+               "preferredcodec": 'flac',
+               "preferredquality": "192",
+            }]
+        },
+
         "mp3": {
             "format": "bestaudio/best",
             "postprocessors": [{
                "key": 'FFmpegExtractAudio',
                "preferredcodec": 'mp3',
                "preferredquality": "192",
+            }]
+        },
+
+        "wav": {
+            "format": "bestaudio/best",
+            "postprocessors": [{
+                "key": 'FFmpegExtractAudio',
+                "preferredcodec": 'wav',
+                "preferredquality": "192",
             }]
         }
     }
@@ -398,7 +424,7 @@ class DownloadOptions(QObject):
         return template
 
     def need_post_process(self):
-        return self.file_format in ["mp3"] # TODO: Add more file formats
+        return self.file_format in ["flac", "mp3", "wav"]
 
     @staticmethod
     def pack(download_options):
