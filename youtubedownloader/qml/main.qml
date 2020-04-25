@@ -40,7 +40,7 @@ ApplicationWindow {
 
         }
 
-        Components.DownloadsView {
+        Components.Downloads {
             Layout.fillWidth: true
             Layout.fillHeight: true
         }
