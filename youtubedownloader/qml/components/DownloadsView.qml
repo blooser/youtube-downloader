@@ -23,7 +23,7 @@ Item {
         }
 
         Separator {
-            opacity: (predownloadModel.size && downloadModel.size)
+            visible: (predownloadModel.size && downloadModel.size)
         }
 
         Download.DownloadItems {
