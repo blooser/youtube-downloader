@@ -22,7 +22,6 @@ Item {
             Layout.alignment: Qt.AlignHCenter
 
             text: qsTr("Download %1 items").arg(preDownloadItems.itemsReady)
-            opacity: preDownloadItems.itemsReady ? Theme.Visible.on : Theme.Visible.off
             enabled: preDownloadItems.itemsReady && !preDownloadItems.itemsProcessing
 
             onClicked: downloadManager.download()
@@ -36,12 +35,15 @@ Item {
             state: "hidden"
             states: State {
                 name: "hidden"
-                when: (preDownloadItems.count === 0)
-                PropertyChanges { target: downloadButton; Layout.preferredWidth: Theme.Size.none; Layout.preferredHeight: Theme.Size.none; }
+                when: (preDownloadItems.itemsReady === 0)
+                PropertyChanges { target: downloadButton; implicitHeight: Theme.Size.none; opacity: Theme.Visible.off }
             }
 
             transitions: Transition {
-                NumberAnimation { properties: "Layout.preferredWidth, Layout.preferredHeight"; duration: Theme.Animation.quick }
+                ParallelAnimation {
+                    NumberAnimation { property: "implicitHeight"; duration: Theme.Animation.quick }
+                    OpacityAnimator { duration: Theme.Animation.quick }
+                }
             }
         }
 
