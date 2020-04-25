@@ -42,7 +42,7 @@ class PreDownloadTask(QThread):
 
 
 class PreDownload(QObject):
-    readyToDownload = Signal(str)
+    updated = Signal(str)
 
     def __init__(self, url, options):
         super(PreDownload, self).__init__(None)
@@ -56,7 +56,6 @@ class PreDownload(QObject):
         self.task = PreDownloadTask(self.url)
 
         self.task.collected_info.connect(self.prepare_data)
-        self.task.finished.connect(self.setReady)
 
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
@@ -68,11 +67,6 @@ class PreDownload(QObject):
         destination_file = "{root}/{title}.{ext}".format(root=self.options.output_path, title=self.data.title, ext=self.options.file_format)
         return os.path.isfile(destination_file)
 
-    @Slot()
-    def setReady(self):
-        self.ready = True
-        self.readyToDownload.emit(str(self.id))
-
     @Slot(dict)
     def prepare_data(self, info):
         self.data.collect(info)
@@ -81,6 +75,8 @@ class PreDownload(QObject):
 
         if self.options.need_post_process():
             self.options.calc_post_process_file_size(self.data.duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
+
+        self.updated.emit(str(self.id))
 
     @staticmethod
     def pack(predownload):
@@ -141,7 +137,7 @@ class PreDownloadModel(QAbstractListModel):
         size = settings.beginReadArray("predownloads")
         for i in range(size):
             settings.setArrayIndex(i)
-            self.predownloads.append(PreDownload.unpack(settings.value("predownload")))
+            self.add_predownload(PreDownload.unpack(settings.value("predownload")))
         settings.endArray()
 
     def rowCount(self, index=QModelIndex()):
@@ -170,7 +166,7 @@ class PreDownloadModel(QAbstractListModel):
 
     def add_predownload(self, predownload):
         self.beginInsertRows(QModelIndex(), len(self.predownloads), len(self.predownloads))
-        predownload.readyToDownload.connect(self.refresh, Qt.QueuedConnection)
+        predownload.updated.connect(self.refresh, Qt.QueuedConnection)
         self.predownloads.append(predownload)
         self.endInsertRows()
 
