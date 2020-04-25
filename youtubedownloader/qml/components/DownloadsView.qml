@@ -1,7 +1,6 @@
 import QtQuick 2.14
+import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.14
-
-import Qt.labs.settings 1.1
 
 import "predownload" as PreDownload
 import "download" as Download
@@ -10,47 +9,27 @@ import "../items" as Items
 Item {
     id: root
 
-    implicitWidth: splitView.implicitWidth
-    implicitHeight: splitView.implicitHeight
+    implicitWidth: mainLayout.implicitWidth
+    implicitHeight: mainLayout.implicitHeight
 
-    Component.onCompleted: splitView.restoreState(splitViewSettings.splitView)
-    Component.onDestruction: splitViewSettings.splitView = splitView.saveState()
-
-    Settings {
-        id: splitViewSettings
-        property var splitView
-    }
-
-    Items.YDSplitView {
-        id: splitView
+    ColumnLayout {
+        id: mainLayout
 
         anchors.fill: parent
+        spacing: Theme.Margins.tiny
 
-        orientation: Qt.Vertical
-
-        PreDownload.PreDownloadView {
-            SplitView.fillWidth: true
-            SplitView.preferredHeight: root.height/2
+        PreDownload.PreDownloadItems {
+            Layout.fillWidth: true
         }
 
-        Download.DownloadView {
-            SplitView.fillWidth: true
-            SplitView.preferredHeight: root.height/2
+        Separator {
+            opacity: (predownloadModel.size && downloadModel.size)
         }
-    }
 
-    state: "empty"
-
-    states: [
-        State {
-            name: "empty"
-            when: (predownloadModel.size === Theme.Capacity.empty && downloadModel.size === Theme.Capacity.empty)
-            PropertyChanges { target: root; opacity: Theme.Visible.off }
+        Download.DownloadItems {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
         }
-    ]
-
-    transitions: Transition {
-        OpacityAnimator { duration: Theme.Animation.quick }
     }
 }
 

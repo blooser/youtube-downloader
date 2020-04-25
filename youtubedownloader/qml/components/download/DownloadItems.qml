@@ -43,4 +43,8 @@ Item {
             })
         }
     }
+
+    Behavior on implicitHeight {
+        NumberAnimation { duration: Theme.Animation.quick }
+    }
 }

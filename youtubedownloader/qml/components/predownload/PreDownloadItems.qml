@@ -8,7 +8,7 @@ Item {
     id: root
 
     implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight
+    implicitHeight: mainLayout.implicitHeight + preDownloadItems.contentHeight // TODO: Is there another way?
 
     ColumnLayout {
         id: mainLayout
@@ -17,11 +17,12 @@ Item {
         spacing: Theme.Margins.tiny
 
         Items.YDButton {
+            id: downloadButton
+
             Layout.alignment: Qt.AlignHCenter
 
             text: qsTr("Download %1 items").arg(preDownloadItems.itemsReady)
             opacity: preDownloadItems.itemsReady ? Theme.Visible.on : Theme.Visible.off
-
             enabled: preDownloadItems.itemsReady && !preDownloadItems.itemsProcessing
 
             onClicked: downloadManager.download()
@@ -30,6 +31,17 @@ Item {
                 OpacityAnimator {
                     duration: Theme.Animation.quick
                 }
+            }
+
+            state: "hidden"
+            states: State {
+                name: "hidden"
+                when: (preDownloadItems.count === 0)
+                PropertyChanges { target: downloadButton; Layout.preferredWidth: Theme.Size.none; Layout.preferredHeight: Theme.Size.none; }
+            }
+
+            transitions: Transition {
+                NumberAnimation { properties: "Layout.preferredWidth, Layout.preferredHeight"; duration: Theme.Animation.quick }
             }
         }
 
@@ -77,5 +89,9 @@ Item {
                 }
             }
         }
+    }
+
+    Behavior on implicitHeight {
+        NumberAnimation { duration: Theme.Animation.quick }
     }
 }
