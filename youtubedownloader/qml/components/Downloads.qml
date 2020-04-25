@@ -20,6 +20,7 @@ Item {
 
         PreDownload.PreDownloadItems {
             Layout.fillWidth: true
+            Layout.preferredHeight: implicitHeight
         }
 
         Separator {

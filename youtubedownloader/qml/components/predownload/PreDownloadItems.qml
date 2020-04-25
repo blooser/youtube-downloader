@@ -26,24 +26,11 @@ Item {
 
             onClicked: downloadManager.download()
 
-            Behavior on opacity {
-                OpacityAnimator {
-                    duration: Theme.Animation.quick
-                }
-            }
-
             state: "hidden"
             states: State {
                 name: "hidden"
                 when: (preDownloadItems.itemsReady === 0)
-                PropertyChanges { target: downloadButton; implicitHeight: Theme.Size.none; opacity: Theme.Visible.off }
-            }
-
-            transitions: Transition {
-                ParallelAnimation {
-                    NumberAnimation { property: "implicitHeight"; duration: Theme.Animation.quick }
-                    OpacityAnimator { duration: Theme.Animation.quick }
-                }
+                PropertyChanges { target: downloadButton; opacity: Theme.Visible.off }
             }
         }
 
@@ -52,7 +39,7 @@ Item {
 
             property int itemsNotReady: Theme.Capacity.empty
             property int itemsProcessing: Theme.Capacity.empty
-            readonly property int itemsReady: count - itemsNotReady
+            readonly property int itemsReady: count - itemsNotReady - itemsProcessing
 
             Layout.fillWidth: true
             Layout.fillHeight: true
