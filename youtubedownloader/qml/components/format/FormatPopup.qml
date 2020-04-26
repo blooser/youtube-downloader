@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 
 import "../../items" as Items
 
-Popup {
+Items.YDPopup {
     id: root
 
     property var downloadOptions
@@ -44,11 +44,5 @@ Popup {
         }
 
         ScrollIndicator.vertical: ScrollIndicator { }
-    }
-
-    background: Rectangle {
-        border.color: Theme.Colors.third
-        color: Theme.Colors.base
-        radius: Theme.Margins.tiny
     }
 }

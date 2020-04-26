@@ -12,10 +12,12 @@ Theme = {
         "success": "#00b300",
         "error": "#ff1a1a",
         "shadowError": "#99ff1a1a",
+        "shadowBlack": "#99000000",
         "linkReady": "#b3b3ff"
     },
 
     "Margins": {
+        "zero": 0,
         "tiny": 5,
         "small": 10,
         "normal": 15,
