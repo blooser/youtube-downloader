@@ -32,6 +32,10 @@ Item {
                 when: (preDownloadItems.itemsReady === 0)
                 PropertyChanges { target: downloadButton; opacity: Theme.Visible.off }
             }
+
+            transitions: Transition {
+                NumberAnimation { property: "opacity"; duration: Theme.Animation.quick }
+            }
         }
 
         ListView {
