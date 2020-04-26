@@ -16,5 +16,20 @@ ItemDelegate {
         implicitHeight: 40
         color: Theme.Colors.third
         opacity: root.enabled ? Theme.Visible.on : Theme.Visible.disabled
+
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+
+            width: parent.width
+            height: Theme.Size.border
+
+            color: Theme.Colors.second
+
+            visible: !Positioner.isLastItem
+        }
     }
 }
