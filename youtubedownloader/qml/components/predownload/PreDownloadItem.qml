@@ -21,6 +21,8 @@ Rectangle {
     property string linkDuration
     property string selectedFormat
 
+    property var downloadOptions
+
     signal remove()
 
     implicitWidth: changer.implicitWidth
@@ -49,6 +51,7 @@ Rectangle {
             linkUploaderLink: root.linkUploaderLink
             linkDuration: root.linkDuration
             selectedFormat: root.selectedFormat
+            downloadOptions: root.downloadOptions
             onRemove: root.remove()
         }
     }

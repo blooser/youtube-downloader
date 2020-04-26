@@ -17,6 +17,8 @@ Item {
     property alias linkDuration: link.durationText
     property alias selectedFormat: selectedFormat.text
 
+    property var downloadOptions
+
     signal remove()
 
     implicitWidth: mainLayout.implicitWidth
@@ -51,6 +53,8 @@ Item {
 
             Layout.preferredWidth: 65
 
+            downloadOptions: root.downloadOptions
+            link: root.link
         }
 
         Items.YDImageButton {

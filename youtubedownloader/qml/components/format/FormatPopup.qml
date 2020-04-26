@@ -6,12 +6,24 @@ import "../../items" as Items
 Popup {
     id: root
 
-    implicitWidth: 100
+    property var downloadOptions
+    property string link
+
+    signal formatSelected(string format)
 
     modal: true
     focus: true
 
     padding: Theme.Margins.tiny
+
+    implicitWidth: 100
+
+    function optionsWithNewFormat(format) {
+        return {
+            "output_path": downloadOptions.outputPath,
+            "file_format": format
+        }
+    }
 
     contentItem: ListView {
         id: formats
@@ -24,6 +36,11 @@ Popup {
         delegate: FormatItemDelegate {
             width: formats.width
             text: modelData
+            enabled: !downloadManager.exists(link, optionsWithNewFormat(modelData))
+            onClicked: {
+                root.formatSelected(modelData)
+                root.close()
+            }
         }
 
         ScrollIndicator.vertical: ScrollIndicator { }

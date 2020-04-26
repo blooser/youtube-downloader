@@ -67,6 +67,8 @@ Item {
                 linkUploaderLink: uploaderUrl
                 linkDuration: duration
 
+                downloadOptions: options
+
                 thumbnailUrl: thumbnail
                 selectedFormat: options.fileFormat
                 destinationFile: "%1/%2.%3".arg(options.outputPath).arg(title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python

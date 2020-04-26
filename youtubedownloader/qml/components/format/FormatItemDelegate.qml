@@ -15,5 +15,6 @@ ItemDelegate {
         implicitWidth: 100
         implicitHeight: 40
         color: Theme.Colors.third
+        opacity: root.enabled ? Theme.Visible.on : Theme.Visible.disabled
     }
 }
