@@ -9,6 +9,13 @@ Popup {
     property var downloadOptions
     property string link
 
+    property var optionsWithNewFormat: function (format) {
+        return {
+            "output_path": downloadOptions.outputPath,
+            "file_format": format
+        }
+    }
+
     signal formatSelected(string format)
 
     modal: true
@@ -17,13 +24,6 @@ Popup {
     padding: Theme.Margins.tiny
 
     implicitWidth: 100
-
-    function optionsWithNewFormat(format) {
-        return {
-            "output_path": downloadOptions.outputPath,
-            "file_format": format
-        }
-    }
 
     contentItem: ListView {
         id: formats

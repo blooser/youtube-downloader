@@ -15,7 +15,6 @@ Item {
     property alias linkUploader: link.uploaderText
     property alias linkUploaderLink: link.uploaderLink
     property alias linkDuration: link.durationText
-    property alias selectedFormat: selectedFormat.text
 
     property var downloadOptions
 
@@ -54,8 +53,8 @@ Item {
 
             Layout.preferredWidth: 65
 
-            downloadOptions: root.downloadOptions
             link: root.link
+            downloadOptions: root.downloadOptions
 
             onChangeFormat: root.changeFormat(format)
         }

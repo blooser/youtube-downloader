@@ -19,7 +19,6 @@ Rectangle {
     property string linkUploader
     property string linkUploaderLink
     property string linkDuration
-    property string selectedFormat
 
     property var downloadOptions
 
@@ -51,7 +50,6 @@ Rectangle {
             linkUploader: root.linkUploader
             linkUploaderLink: root.linkUploaderLink
             linkDuration: root.linkDuration
-            selectedFormat: root.selectedFormat
             downloadOptions: root.downloadOptions
             onRemove: root.remove()
             onChangeFormat: root.changeFormat(format)
@@ -69,7 +67,7 @@ Rectangle {
                 linkTitle: root.linkTitle
                 linkUploader: root.linkUploader
                 linkDuration: root.linkDuration
-                selectedFormat: root.selectedFormat
+                downloadOptions: root.downloadOptions
                 onRemove: root.remove()
             }
         }

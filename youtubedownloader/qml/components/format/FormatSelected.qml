@@ -7,14 +7,18 @@ import ".." as Components
 Components.TileText {
     id: root
 
-    property alias downloadOptions: formatPopup.downloadOptions
-    property alias link: formatPopup.link
+    text: downloadOptions.fileFormat
+
+    property var downloadOptions: formatPopup.downloadOptions
+    property var link: formatPopup.link
 
     signal changeFormat(string format)
 
     FormatPopup {
         id: formatPopup
         anchors.centerIn: parent
+        downloadOptions: root.downloadOptions
+        link: root.link
         onFormatSelected: root.changeFormat(format)
     }
 
