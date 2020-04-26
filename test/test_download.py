@@ -49,11 +49,11 @@ class DownloadTest(unittest.TestCase):
         unpacked = Download.unpack(packed)
         self.assertEqual(unpacked.url, download.url)
         self.assertEqual(unpacked.options, download.options)
-        self.assertEqual(unpacked.data.title, download.data.title)
-        self.assertEqual(unpacked.data.uploader, download.data.uploader)
-        self.assertEqual(unpacked.data.uploader_url, download.data.uploader_url)
-        self.assertEqual(unpacked.data.thumbnail, download.data.thumbnail)
-        self.assertEqual(unpacked.data.duration, download.data.duration)
+        self.assertEqual(unpacked.data._title, download.data._title)
+        self.assertEqual(unpacked.data._uploader, download.data._uploader)
+        self.assertEqual(unpacked.data._uploader_url, download.data._uploader_url)
+        self.assertEqual(unpacked.data._thumbnail, download.data._thumbnail)
+        self.assertEqual(unpacked.data._duration, download.data._duration)
         
                     
     def test_downloadInitializesByPreDownload(self):
@@ -71,8 +71,8 @@ class DownloadTest(unittest.TestCase):
         download = Download.fromPreDownload(predownload)
         self.assertEqual(download.url, predownload.url)
         self.assertEqual(download.options, predownload.options)
-        self.assertEqual(download.data.title, predownload.data.title)
-        self.assertEqual(download.data.uploader, predownload.data.uploader)
-        self.assertEqual(download.data.thumbnail, predownload.data.thumbnail)
-        self.assertEqual(download.data.duration, predownload.data.duration)
+        self.assertEqual(download.data._title, predownload.data._title)
+        self.assertEqual(download.data._uploader, predownload.data._uploader)
+        self.assertEqual(download.data._thumbnail, predownload.data._thumbnail)
+        self.assertEqual(download.data._duration, predownload.data._duration)
         

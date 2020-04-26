@@ -25,7 +25,7 @@ class DownloadManagerTest(unittest.TestCase):
                 "uploader": "",
                 "uploader_url": "",
                 "thumbnail": "",
-                "duration": ""
+                "duration": 0
         }
         
     def tearDown(self):

@@ -17,12 +17,21 @@ class DownloadModelTest(unittest.TestCase):
                 "output_path": "/foo/bar/path"
         }
         
+        self.data = {
+                    "title": "test",
+                    "uploader": "unknown",
+                    "uploader_url": "/foo/bar/path1",
+                    "thumbnail": "/foo/bar/src",
+                    "duration": 2500
+        }
+        
     def tearDown(self):
         if os.path.isfile(self.config_path):
             os.remove(self.config_path)
 
     def test_downloadModelSavesAndLoadData(self):
          pre_download = PreDownload("https://www.youtube.com/watch?v=3L65PG_eZFg",  self.options)
+         pre_download.data.collect(self.data)
          download = Download.fromPreDownload(pre_download)
          download_model = DownloadModel(self.config_path)
          download_model.add_download(download)

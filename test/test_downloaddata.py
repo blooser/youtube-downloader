@@ -30,11 +30,11 @@ class DownloadTest(unittest.TestCase):
             self.assertTrue(key in expected_keys)
             
         unpacked = DownloadData.unpack(packed)
-        self.assertEqual(unpacked.title, download_data.title)
-        self.assertEqual(unpacked.uploader, download_data.uploader)
-        self.assertEqual(unpacked.uploader_url, download_data.uploader_url)
-        self.assertEqual(unpacked.thumbnail, download_data.thumbnail)
-        self.assertEqual(unpacked.duration, download_data.duration)
+        self.assertEqual(unpacked._title, download_data._title)
+        self.assertEqual(unpacked._uploader, download_data._uploader)
+        self.assertEqual(unpacked._uploader_url, download_data._uploader_url)
+        self.assertEqual(unpacked._thumbnail, download_data._thumbnail)
+        self.assertEqual(unpacked._duration, download_data._duration)
             
 
 if __name__ == "__main__":
