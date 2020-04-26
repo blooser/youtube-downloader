@@ -9,13 +9,9 @@ import ".." as Components
 Item {
     id: root
 
-    property alias thumbnailUrl: thumbnail.source
-    property alias link: link.link
-    property alias linkTitle: link.titleText
-    property alias linkUploader: link.uploaderText
-    property alias linkUploaderLink: link.uploaderLink
-    property alias linkDuration: link.durationText
+    property string link
 
+    property var downloadData
     property var downloadOptions
 
     signal remove()
@@ -40,12 +36,20 @@ Item {
 
             Layout.preferredWidth: 86
             Layout.preferredHeight: 86
+
+            source: downloadData.thumbnail
         }
 
         Link.LinkInfo {
             id: link
 
             Layout.fillWidth: true
+
+            link: root.link
+            titleText: downloadData.title
+            uploaderText: downloadData.uploader
+            uploaderLink: downloadData.uploaderUrl
+            durationText: downloadData.duration
         }
 
         Format.FormatSelected {

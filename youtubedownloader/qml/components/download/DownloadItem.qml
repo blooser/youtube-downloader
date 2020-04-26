@@ -10,13 +10,8 @@ Items.YDProgressBar {
 
     property alias statusText: downloadItemInfo.statusText
     property alias link: downloadItemInfo.link
-    property alias thumbnailSrc: downloadItemInfo.thumbnailSrc
-    property alias titleText: downloadItemInfo.titleText
-    property alias uploaderText: downloadItemInfo.uploaderText
-    property alias uploaderLink: downloadItemInfo.uploaderLink
-    property alias linkDuration: downloadItemInfo.linkDuration
-
-    property alias selectedFormat: downloadItemInfo.selectedFormat
+    property alias downloadData: downloadItemInfo.downloadData
+    property alias downloadOptions: downloadItemInfo.downloadOptions
 
     signal remove()
     signal open()

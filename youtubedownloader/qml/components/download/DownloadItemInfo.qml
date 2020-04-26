@@ -8,15 +8,11 @@ import ".." as Components
 Item {
     id: root
 
-    property alias statusText: downloadStatus.status
-    property alias thumbnailSrc: thumbnail.source
-    property alias link: link.link
-    property alias titleText: link.titleText
-    property alias uploaderText: link.uploaderText
-    property alias uploaderLink: link.uploaderLink
-    property alias linkDuration: link.durationText
+    property string statusText
+    property string link
 
-    property alias selectedFormat: selectedFormat.text
+    property var downloadData
+    property var downloadOptions
 
     signal remove()
     signal open()
@@ -38,26 +34,37 @@ Item {
 
             Layout.preferredWidth: 86
             Layout.preferredHeight: 86
+
+            source: downloadData.thumbnail
         }
 
         Link.LinkInfo {
             id: link
 
             Layout.fillWidth: true
+
+            link: root.link
+            titleText: downloadData.title
+            uploaderText: downloadData.uploader
+            uploaderLink: downloadData.uploaderUrl
+            durationText: downloadData.duration
         }
 
         DownloadStatus {
             id: downloadStatus
+            status: root.statusText
         }
 
         Components.TileText {
             id: selectedFormat
 
             Layout.preferredWidth: 65
+
+            text: downloadOptions.fileFormat
         }
 
         DownloadButtons {
-            status: statusText
+            status: root.statusText
 
             onOpen: root.open()
             onRedo: root.redo()

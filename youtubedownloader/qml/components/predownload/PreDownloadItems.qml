@@ -62,15 +62,10 @@ Item {
 
                 preDownloadStatus: status
                 link: url
-                linkTitle: title
-                linkUploader: uploader
-                linkUploaderLink: uploaderUrl
-                linkDuration: duration
 
+                downloadData: download_data
                 downloadOptions: options
-
-                thumbnailUrl: thumbnail
-                destinationFile: "%1/%2.%3".arg(options.outputPath).arg(title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python
+                destinationFile: "%1/%2.%3".arg(options.outputPath).arg(download_data.title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python
 
                 onChangeFormat: {
                     options = { // TODO: Make it clean
@@ -79,7 +74,7 @@ Item {
                     }
                 }
 
-                onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(title).arg(uploader))}, function() {
+                onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(download_data.title).arg(download_data.uploader))}, function() {
                     predownloadModel.remove_predownload(index)
                 })
 

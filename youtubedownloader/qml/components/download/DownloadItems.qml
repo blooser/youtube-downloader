@@ -26,19 +26,15 @@ Item {
             to: progress.totalBytes
 
             statusText: progress.downloadStatus
-            thumbnailSrc: thumbnail
             link: url
-            titleText: title
-            uploaderText: uploader
-            uploaderLink: uploaderUrl
-            linkDuration: duration
 
-            selectedFormat: options.fileFormat
+            downloadData: download_data
+            downloadOptions: options
 
             onPause: downloadModel.pause(index)
             onRedo: downloadModel.redo(index)
-            onOpen: Qt.openUrlExternally(Paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(title).arg(options.fileFormat))
-            onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(title).arg(uploader))}, function(){
+            onOpen: Qt.openUrlExternally(Paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(download_data.title).arg(options.fileFormat))
+            onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(download_data.title).arg(download_data.uploader))}, function() {
                 downloadModel.remove_download(index)
             })
         }

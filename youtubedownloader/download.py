@@ -74,7 +74,7 @@ class PreDownload(QObject):
         self.status = "ready" if not self.already_downloaded() else "exists"
 
         if self.options.need_post_process():
-            self.options.calc_post_process_file_size(self.data.duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
+            self.options.calc_post_process_file_size(self.data._duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
 
         self.updated.emit(str(self.id))
 
@@ -96,7 +96,7 @@ class PreDownload(QObject):
 
 
 class PreDownloadModel(QAbstractListModel):
-    COLUMNS = ("url", "status", "title", "uploader", "uploaderUrl", "thumbnail", "duration", "options")
+    COLUMNS = ("url", "status", "download_data", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -147,12 +147,8 @@ class PreDownloadModel(QAbstractListModel):
         return {
             256: b"url",
             257: b"status",
-            258: b"title",
-            259: b"uploader",
-            260: b"uploaderUrl",
-            261: b"thumbnail",
-            262: b"duration",
-            263: b"options"
+            258: b"download_data",
+            259: b"options"
         }
 
     def index(self, row, column, parent):
@@ -211,21 +207,9 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.status
 
         elif role == 258:
-            return predownload.data.title
+            return predownload.data
 
         elif role == 259:
-            return predownload.data.uploader
-
-        elif role == 260:
-            return predownload.data.uploader_url
-
-        elif role == 261:
-            return predownload.data.thumbnail
-
-        elif role == 262:
-            return human_time(predownload.data.duration)
-
-        elif role == 263:
             return predownload.options
 
         return None
@@ -239,7 +223,7 @@ class PreDownloadModel(QAbstractListModel):
 
         # NOTE: Do we want to add option for url changing?
 
-        if role == 263:
+        if role == 259:
             predownload.options = DownloadOptions(value.toVariant())
             self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
             return True
@@ -250,41 +234,61 @@ class PreDownloadModel(QAbstractListModel):
 class DownloadData(QObject):
     def __init__(self, data=None):
         super(DownloadData, self).__init__(None)
-        self.title = str()
-        self.uploader = str()
-        self.uploader_url = str()
-        self.thumbnail = str()
-        self.duration = str()
+        self._title = str()
+        self._uploader = str()
+        self._uploader_url = str()
+        self._thumbnail = str()
+        self._duration = int()
 
         if data is not None:
             self.collect(data)
 
+    @Property(str, constant=True)
+    def title(self):
+        return self._title
+
+    @Property(str, constant=True)
+    def uploader(self):
+        return self._uploader
+
+    @Property(str, constant=True)
+    def uploaderUrl(self):
+        return self._uploader_url
+
+    @Property(str, constant=True)
+    def thumbnail(self):
+        return self._thumbnail
+
+    @Property(str, constant=True)
+    def duration(self):
+        return human_time(self._duration)
+
     @Slot(dict)
     def collect(self, info):
-        self.title = info["title"]
-        self.uploader = info["uploader"]
-        self.uploader_url = info["uploader_url"]
-        self.thumbnail = info["thumbnail"]
-        self.duration = info["duration"]
+        self._title = info["title"]
+        self._uploader = info["uploader"]
+        self._uploader_url = info["uploader_url"]
+        self._thumbnail = info["thumbnail"]
+        self._duration = int(info["duration"])
 
     @staticmethod
     def pack(download_data):
         return {
-            "title": download_data.title,
-            "uploader": download_data.uploader,
-            "uploader_url": download_data.uploader_url,
-            "thumbnail": download_data.thumbnail,
-            "duration": download_data.duration,
+            "title": download_data._title,
+            "uploader": download_data._uploader,
+            "uploader_url": download_data._uploader_url,
+            "thumbnail": download_data._thumbnail,
+            "duration": download_data._duration,
         }
 
     @staticmethod
     def unpack(data):
         download_data = DownloadData()
-        download_data.title = data["title"]
-        download_data.uploader = data["uploader"]
-        download_data.uploader_url = data["uploader_url"]
-        download_data.thumbnail = data["thumbnail"]
-        download_data.duration = data["duration"]
+        download_data._title = data["title"]
+        download_data._uploader = data["uploader"]
+        download_data._uploader_url = data["uploader_url"]
+        download_data._thumbnail = data["thumbnail"]
+        download_data._duration = data["duration"]
         return download_data
 
 
@@ -596,7 +600,7 @@ class DownloadPostProcess(QObject):
 
 
 class DownloadModel(QAbstractListModel):
-    COLUMNS = ("url", "title", "uploader", "uploaderUrl", "duration", "progress", "thumbnail", "options")
+    COLUMNS = ("url", "download_data", "progress", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -664,13 +668,9 @@ class DownloadModel(QAbstractListModel):
     def roleNames(self, index=QModelIndex()):
         return {
             256: b"url",
-            257: b"title",
-            258: b"uploader",
-            259: b"uploaderUrl",
-            260: b"duration",
-            261: b"progress",
-            262: b"thumbnail",
-            263: b"options"
+            257: b"download_data",
+            258: b"progress",
+            259: b"options"
         }
 
     def clear(self):
@@ -726,24 +726,12 @@ class DownloadModel(QAbstractListModel):
             return download.url
 
         elif role == 257:
-            return download.data.title
+            return download.data
 
         elif role == 258:
-            return download.data.uploader
-
-        elif role == 259:
-            return download.data.uploader_url
-
-        elif role == 260:
-            return human_time(download.data.duration)
-
-        elif role == 261:
             return download.progress
 
-        elif role == 262:
-            return download.data.thumbnail
-
-        elif role == 263:
+        elif role == 259:
             return download.options
 
         return None

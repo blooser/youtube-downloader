@@ -13,13 +13,9 @@ Rectangle {
 
     property string destinationFile
     property string preDownloadStatus
-    property string thumbnailUrl
     property string link
-    property string linkTitle
-    property string linkUploader
-    property string linkUploaderLink
-    property string linkDuration
 
+    property var downloadData
     property var downloadOptions
 
     signal remove()
@@ -44,12 +40,8 @@ Rectangle {
     Component {
         id: itemInfo
         PreDownloadItemInfo {
-            thumbnailUrl: root.thumbnailUrl
             link: root.link
-            linkTitle: root.linkTitle
-            linkUploader: root.linkUploader
-            linkUploaderLink: root.linkUploaderLink
-            linkDuration: root.linkDuration
+            downloadData: root.downloadData
             downloadOptions: root.downloadOptions
             onRemove: root.remove()
             onChangeFormat: root.changeFormat(format)
@@ -63,10 +55,7 @@ Rectangle {
             PreDownloadItemInfo {
                 anchors.fill: parent
                 opacity: Theme.Visible.disabled
-                thumbnailUrl: root.thumbnailUrl
-                linkTitle: root.linkTitle
-                linkUploader: root.linkUploader
-                linkDuration: root.linkDuration
+                downloadData: root.downloadData
                 downloadOptions: root.downloadOptions
                 onRemove: root.remove()
             }
