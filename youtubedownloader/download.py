@@ -230,6 +230,22 @@ class PreDownloadModel(QAbstractListModel):
 
         return None
 
+    def setData(self, index, value, role):
+        if not index.isValid():
+            return False
+
+        row = index.row()
+        predownload = self.predownloads[row]
+
+        # NOTE: Do we want to add option for url changing?
+
+        if role == 263:
+            predownload.options = DownloadOptions(value.toVariant())
+            self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
+            return True
+
+        return False
+
 
 class DownloadData(QObject):
     def __init__(self, data=None):
