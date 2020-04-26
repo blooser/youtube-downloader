@@ -24,6 +24,7 @@ Rectangle {
     property var downloadOptions
 
     signal remove()
+    signal changeFormat(string format)
 
     implicitWidth: changer.implicitWidth
     implicitHeight: Math.max(changer.implicitHeight, 86)
@@ -53,6 +54,7 @@ Rectangle {
             selectedFormat: root.selectedFormat
             downloadOptions: root.downloadOptions
             onRemove: root.remove()
+            onChangeFormat: root.changeFormat(format)
         }
     }
 

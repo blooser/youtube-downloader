@@ -20,6 +20,7 @@ Item {
     property var downloadOptions
 
     signal remove()
+    signal changeFormat(string format)
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -55,6 +56,8 @@ Item {
 
             downloadOptions: root.downloadOptions
             link: root.link
+
+            onChangeFormat: root.changeFormat(format)
         }
 
         Items.YDImageButton {

@@ -73,6 +73,13 @@ Item {
                 selectedFormat: options.fileFormat
                 destinationFile: "%1/%2.%3".arg(options.outputPath).arg(title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python
 
+                onChangeFormat: {
+                    options = { // TODO: Make it clean
+                        "output_path": options.outputPath,
+                        "file_format": format
+                    }
+                }
+
                 onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(title).arg(uploader))}, function() {
                     predownloadModel.remove_predownload(index)
                 })
