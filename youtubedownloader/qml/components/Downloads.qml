@@ -24,7 +24,7 @@ Item {
         }
 
         Separator {
-            visible: (predownloadModel.size && downloadModel.size)
+
         }
 
         Download.DownloadItems {
