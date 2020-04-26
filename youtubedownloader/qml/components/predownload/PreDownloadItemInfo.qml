@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.12
 
 import "../../items" as Items
 import "../link" as Link
+import "../format" as Format
 import ".." as Components
 
 Item {
@@ -45,7 +46,7 @@ Item {
             Layout.fillWidth: true
         }
 
-        Components.TileText {
+        Format.FormatSelected {
             id: selectedFormat
 
             Layout.preferredWidth: 65

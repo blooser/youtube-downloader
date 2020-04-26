@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.14
 import Qt.labs.platform 1.1
 
 import "../../items" as Items
-import ".." as Components
+import "../format" as Format
 
 Item {
     id: root
@@ -22,7 +22,7 @@ Item {
 
         anchors.fill: parent
 
-        Components.FileFormat {
+        Format.FormatFile {
             id: fileFormat
 
             Layout.alignment: Qt.AlignHCenter
