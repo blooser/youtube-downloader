@@ -6,6 +6,8 @@ import "../../items" as Items
 ItemDelegate {
     id: root
 
+    highlighted: formatItemDelegateMouseArea.containsMouse
+
     contentItem: Items.YDText {
         text: root.text
         font: root.font
@@ -14,7 +16,7 @@ ItemDelegate {
     background: Rectangle {
         implicitWidth: 100
         implicitHeight: 40
-        color: Theme.Colors.third
+        color: root.highlighted ? Theme.Colors.highlight : Theme.Colors.third
         opacity: root.enabled ? Theme.Visible.on : Theme.Visible.disabled
 
         Rectangle {
@@ -31,5 +33,12 @@ ItemDelegate {
 
             visible: !Positioner.isLastItem
         }
+    }
+
+    MouseArea {
+        id: formatItemDelegateMouseArea
+        anchors.fill: parent
+        acceptedButtons: Qt.NoButton // NOTE: Only hover
+        hoverEnabled: true
     }
 }
