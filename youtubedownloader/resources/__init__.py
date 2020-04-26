@@ -13,7 +13,7 @@ class Resources(QObject):
         super(Resources, self).__init__(None)
 
         self.logger = create_logger(__name__)
-        self.logger.info("YD Logo: {logo}".format(logo=Resources.YD_LOGO))
+        self.logger.info("YD Logo loaded {status}".format(status=os.path.exists(Resources.YD_LOGO)))
 
         self.icon_paths = Paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
         self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
