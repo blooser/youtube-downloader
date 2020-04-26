@@ -145,14 +145,14 @@ class PreDownloadModel(QAbstractListModel):
 
     def roleNames(self, index=QModelIndex()):
         return {
-            0: b"url",
-            1: b"status",
-            2: b"title",
-            3: b"uploader",
-            4: b"uploaderUrl",
-            5: b"thumbnail",
-            6: b"duration",
-            7: b"options"
+            256: b"url",
+            257: b"status",
+            258: b"title",
+            259: b"uploader",
+            260: b"uploaderUrl",
+            261: b"thumbnail",
+            262: b"duration",
+            263: b"options"
         }
 
     def index(self, row, column, parent):
@@ -204,28 +204,28 @@ class PreDownloadModel(QAbstractListModel):
 
         predownload = self.predownloads[index.row()]
 
-        if role == 0:
+        if role == 256:
             return predownload.url
 
-        elif role == 1:
+        elif role == 257:
             return predownload.status
 
-        elif role == 2:
+        elif role == 258:
             return predownload.data.title
 
-        elif role == 3:
+        elif role == 259:
             return predownload.data.uploader
 
-        elif role == 4:
+        elif role == 260:
             return predownload.data.uploader_url
 
-        elif role == 5:
+        elif role == 261:
             return predownload.data.thumbnail
 
-        elif role == 6:
+        elif role == 262:
             return human_time(predownload.data.duration)
 
-        elif role == 7:
+        elif role == 263:
             return predownload.options
 
         return None
@@ -647,14 +647,14 @@ class DownloadModel(QAbstractListModel):
 
     def roleNames(self, index=QModelIndex()):
         return {
-            0: b"url",
-            1: b"title",
-            2: b"uploader",
-            3: b"uploaderUrl",
-            4: b"duration",
-            5: b"progress",
-            6: b"thumbnail",
-            7: b"options"
+            256: b"url",
+            257: b"title",
+            258: b"uploader",
+            259: b"uploaderUrl",
+            260: b"duration",
+            261: b"progress",
+            262: b"thumbnail",
+            263: b"options"
         }
 
     def clear(self):
@@ -706,28 +706,28 @@ class DownloadModel(QAbstractListModel):
 
         download = self.downloads[index.row()]
 
-        if role == 0:
+        if role == 256:
             return download.url
 
-        elif role == 1:
+        elif role == 257:
             return download.data.title
 
-        elif role == 2:
+        elif role == 258:
             return download.data.uploader
 
-        elif role == 3:
+        elif role == 259:
             return download.data.uploader_url
 
-        elif role == 4:
+        elif role == 260:
             return human_time(download.data.duration)
 
-        elif role == 5:
+        elif role == 261:
             return download.progress
 
-        elif role == 6:
+        elif role == 262:
             return download.data.thumbnail
 
-        elif role == 7:
+        elif role == 263:
             return download.options
 
         return None
