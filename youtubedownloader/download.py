@@ -265,11 +265,11 @@ class DownloadData(QObject):
 
     @Slot(dict)
     def collect(self, info):
-        self._title = info["title"]
-        self._uploader = info["uploader"]
-        self._uploader_url = info["uploader_url"]
-        self._thumbnail = info["thumbnail"]
-        self._duration = int(info["duration"])
+        self._title = info["title"] if "title" in info else ""
+        self._uploader = info["uploader"] if "uploader" in info else ""
+        self._uploader_url = info["uploader_url"] if "uploader_url" in info else ""
+        self._thumbnail = info["thumbnail"] if "thumbnail" in info else ""
+        self._duration = int(info["duration"]) if "duration" in info else ""
 
     @staticmethod
     def pack(download_data):
