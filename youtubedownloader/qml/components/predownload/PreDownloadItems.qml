@@ -69,7 +69,7 @@ Item {
 
                 thumbnailUrl: thumbnail
                 selectedFormat: options.fileFormat
-                destinationFile: "%1/%2.%3".arg(options.outputPath).arg(title).arg(options.fileFormat)
+                destinationFile: "%1/%2.%3".arg(options.outputPath).arg(title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python
 
                 onRemove: dialogManager.open_dialog("ConfirmDialog", {"text": qsTr("Are you sure you want to delete <b>%1</b> by <b>%2</b>?".arg(title).arg(uploader))}, function() {
                     predownloadModel.remove_predownload(index)
