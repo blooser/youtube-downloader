@@ -43,6 +43,7 @@ Theme = {
     },
 
     "FontSize": {
+        "micro": 10,
         "tiny": 14,
         "small": 16,
         "normal": 18,

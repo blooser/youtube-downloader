@@ -28,14 +28,18 @@ Flipable {
         id: frontText
 
         estimatedTime: downloadProgress.estimatedTime
+        downloadedBytes: Paths.humanSize(downloadProgress.downloadedBytes)
         totalBytes: Paths.humanSize(downloadProgress.totalBytes)
+        speed: downloadProgress.downloadSpeed
     }
 
     back: DownloadStatusDetails {
         id: backText
 
         estimatedTime: downloadProgress.estimatedTime
+        downloadedBytes: Paths.humanSize(downloadProgress.downloadedBytes)
         totalBytes: Paths.humanSize(downloadProgress.totalBytes)
+        speed: downloadProgress.downloadSpeed
     }
 
     transform: Rotation {

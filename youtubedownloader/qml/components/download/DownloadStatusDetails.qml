@@ -9,10 +9,12 @@ Rectangle {
 
     property alias status: statusText.text
     property alias estimatedTime: estimatedTime.text
+    property alias downloadedBytes: downloadedBytes.text
     property alias totalBytes: totalBytes.text
+    property alias speed: speed.text
 
     implicitWidth: mainLayout.implicitWidth + Theme.Margins.small // TODO: Use Pane
-    implicitHeight: mainLayout.implicitHeight  + Theme.Margins.small
+    implicitHeight: mainLayout.implicitHeight + Theme.Margins.small
 
     color: Theme.Colors.third
     radius: Theme.Margins.tiny
@@ -22,6 +24,28 @@ Rectangle {
 
         anchors.fill: parent
         spacing: Theme.Margins.zero
+
+        RowLayout {
+            spacing: Theme.Margins.zero
+
+            Layout.fillWidth: true
+
+            visible: (status.includes("downloading"))
+
+            Items.YDText {
+                id: downloadedBytes
+                Layout.fillWidth: true
+                Layout.preferredWidth: 0
+                font.pixelSize: Theme.FontSize.micro
+            }
+
+            Items.YDText {
+                id: totalBytes
+                Layout.fillWidth: true
+                Layout.preferredWidth: 0
+                font.pixelSize: Theme.FontSize.micro
+            }
+        }
 
         Items.YDText {
             id: statusText
@@ -38,18 +62,16 @@ Rectangle {
 
             Items.YDText {
                 id: estimatedTime
-                Layout.alignment: Qt.AlignHCenter
                 Layout.fillWidth: true
                 Layout.preferredWidth: 0
-                font.pixelSize: Theme.FontSize.tiny
+                font.pixelSize: Theme.FontSize.micro
             }
 
             Items.YDText {
-                id: totalBytes
-                Layout.alignment: Qt.AlignHCenter
+                id: speed
                 Layout.fillWidth: true
                 Layout.preferredWidth: 0
-                font.pixelSize: Theme.FontSize.tiny
+                font.pixelSize: Theme.FontSize.micro
             }
         }
     }
