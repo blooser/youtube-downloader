@@ -7,6 +7,7 @@ import ".." as Components
 Item {
     id: root
 
+    property alias thumbnailSource: thumbnail.source
     property alias link: title.link
     property alias titleText: title.text
     property alias uploaderText: uploader.text
@@ -16,32 +17,45 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    ColumnLayout {
+    RowLayout {
         id: mainLayout
 
         anchors.fill: parent
 
-        Items.YDLink {
-            id: title
+        spacing: Theme.Margins.normal
 
-            Layout.fillWidth: true
-            font.pixelSize: Theme.FontSize.normal
-            horizontalAlignment: Text.AlignLeft
+        Items.YDImage {
+            id: thumbnail
+
+            Layout.preferredWidth: 86
+            Layout.preferredHeight: 86
         }
 
-        RowLayout {
-            spacing: Theme.Margins.small
+        ColumnLayout {
+            spacing: Theme.Margins.tiny
 
             Items.YDLink {
-                id: uploader
+                id: title
 
+                Layout.fillWidth: true
+                font.pixelSize: Theme.FontSize.normal
                 horizontalAlignment: Text.AlignLeft
             }
 
-            Components.IconText {
-                id: duration
+            RowLayout {
+                spacing: Theme.Margins.small
 
-                iconSource: Resources.icons.time
+                Items.YDLink {
+                    id: uploader
+
+                    horizontalAlignment: Text.AlignLeft
+                }
+
+                Components.IconText {
+                    id: duration
+
+                    iconSource: Resources.icons.time
+                }
             }
         }
     }

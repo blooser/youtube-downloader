@@ -29,20 +29,12 @@ Item {
 
         spacing: Theme.Margins.normal
 
-        Items.YDImage {
-            id: thumbnail
-
-            Layout.preferredWidth: 86
-            Layout.preferredHeight: 86
-
-            source: downloadData.thumbnail
-        }
-
         Link.LinkInfo {
             id: link
 
             Layout.fillWidth: true
 
+            thumbnailSource: downloadData.thumbnail
             link: root.link
             titleText: downloadData.title
             uploaderText: downloadData.uploader
