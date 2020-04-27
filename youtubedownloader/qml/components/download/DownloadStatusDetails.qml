@@ -13,6 +13,8 @@ Rectangle {
     property alias totalBytes: totalBytes.text
     property alias speed: speed.text
 
+    readonly property bool downloading: (status.includes("downloading"))
+
     implicitWidth: mainLayout.implicitWidth + Theme.Margins.small // TODO: Use Pane
     implicitHeight: mainLayout.implicitHeight + Theme.Margins.small
 
@@ -30,7 +32,7 @@ Rectangle {
 
             Layout.fillWidth: true
 
-            visible: (status.includes("downloading"))
+            visible: root.downloading
 
             Items.YDText {
                 id: downloadedBytes
@@ -58,7 +60,7 @@ Rectangle {
 
             Layout.fillWidth: true
 
-            visible: (status.includes("downloading"))
+            visible: root.downloading
 
             Items.YDText {
                 id: estimatedTime
