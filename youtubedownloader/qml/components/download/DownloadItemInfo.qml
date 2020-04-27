@@ -8,9 +8,9 @@ import ".." as Components
 Item {
     id: root
 
-    property string statusText
     property string link
 
+    property var downloadProgress
     property var downloadData
     property var downloadOptions
 
@@ -52,7 +52,7 @@ Item {
 
         DownloadStatus {
             id: downloadStatus
-            status: root.statusText
+            downloadProgress: root.downloadProgress
         }
 
         Components.TileText {
@@ -64,7 +64,7 @@ Item {
         }
 
         DownloadButtons {
-            status: root.statusText
+            status: root.downloadProgress.downloadStatus
 
             onOpen: root.open()
             onRedo: root.redo()

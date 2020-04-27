@@ -8,8 +8,9 @@ import ".." as Components
 Items.YDProgressBar {
     id: root
 
-    property alias statusText: downloadItemInfo.statusText
     property alias link: downloadItemInfo.link
+
+    property alias downloadProgress: downloadItemInfo.downloadProgress
     property alias downloadData: downloadItemInfo.downloadData
     property alias downloadOptions: downloadItemInfo.downloadOptions
 

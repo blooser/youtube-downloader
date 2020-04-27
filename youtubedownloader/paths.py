@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QObject, QTimer, Slot, Signal
+from PySide2.QtCore import QObject, QTimer, QLocale, Slot, Signal
 
 import sys, os, pathlib
 
@@ -40,6 +40,11 @@ class Paths(QObject):
                 files[pathlib.PurePath(filename).stem] = Paths.FILE_PREFIX + os.path.join(core_path, filename)
 
         return files
+
+    @Slot(int, result="QString")
+    def humanSize(self, size):
+        locale = QLocale()
+        return locale.formattedDataSize(size)
 
     @Slot(str, result="QString")
     def cleanPath(self, path):

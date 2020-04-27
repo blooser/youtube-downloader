@@ -22,12 +22,12 @@ Item {
             width: downloadItems.width
 
             from: 0
-            value: progress.downloadedBytes
-            to: progress.totalBytes
+            value: downloadProgress.downloadedBytes
+            to: downloadProgress.totalBytes
 
-            statusText: progress.downloadStatus
             link: url
 
+            downloadProgress: progress
             downloadData: download_data
             downloadOptions: options
 

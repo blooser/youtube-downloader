@@ -7,27 +7,35 @@ Flipable {
 
     property bool flipped: false
 
-    property string status
+    property var downloadProgress
+
+    readonly property string status: downloadProgress.downloadStatus
 
     implicitWidth: frontText.implicitWidth
     implicitHeight: frontText.implicitHeight
 
     onStatusChanged: {
         if (flipped) {
-            frontText.text = status
+            frontText.status = status
         } else {
-            backText.text = status
+            backText.status = status
         }
 
         flipped = !flipped
     }
 
-    front: Components.TileText {
+    front: DownloadStatusDetails {
         id: frontText
+
+        estimatedTime: downloadProgress.estimatedTime
+        totalBytes: Paths.humanSize(downloadProgress.totalBytes)
     }
 
-    back: Components.TileText {
+    back: DownloadStatusDetails {
         id: backText
+
+        estimatedTime: downloadProgress.estimatedTime
+        totalBytes: Paths.humanSize(downloadProgress.totalBytes)
     }
 
     transform: Rotation {
@@ -43,7 +51,6 @@ Flipable {
     }
 
     state: "front"
-
     states: [
         State {
             name: "front"
