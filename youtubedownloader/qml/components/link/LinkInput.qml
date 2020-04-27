@@ -23,6 +23,7 @@ Item {
 
             Layout.fillWidth: true
             placeholderText: qsTr("Enter youtube link")
+            placeholderTextColor: Theme.Colors.placeholder
 
             onTextEdited: Settings.inputLink = text
 

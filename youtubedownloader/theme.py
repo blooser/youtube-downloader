@@ -7,6 +7,7 @@ Theme = {
         "third": "#0080ff",
         "highlight": "#3399ff",
         "text": "white",
+        "placeholder": "#19334d",
         "textStyle": "black",
         "blank": "transparent",
         "success": "#00b300",
