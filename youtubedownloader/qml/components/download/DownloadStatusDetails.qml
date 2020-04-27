@@ -37,14 +37,14 @@ Rectangle {
             Items.YDText {
                 id: downloadedBytes
                 Layout.fillWidth: true
-                Layout.preferredWidth: 0
+                Layout.preferredWidth: Theme.Size.none
                 font.pixelSize: Theme.FontSize.micro
             }
 
             Items.YDText {
                 id: totalBytes
                 Layout.fillWidth: true
-                Layout.preferredWidth: 0
+                Layout.preferredWidth: Theme.Size.none
                 font.pixelSize: Theme.FontSize.micro
             }
         }
@@ -65,14 +65,14 @@ Rectangle {
             Items.YDText {
                 id: estimatedTime
                 Layout.fillWidth: true
-                Layout.preferredWidth: 0
+                Layout.preferredWidth: Theme.Size.none
                 font.pixelSize: Theme.FontSize.micro
             }
 
             Items.YDText {
                 id: speed
                 Layout.fillWidth: true
-                Layout.preferredWidth: 0
+                Layout.preferredWidth: Theme.Size.none
                 font.pixelSize: Theme.FontSize.micro
             }
         }

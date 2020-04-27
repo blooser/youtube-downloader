@@ -21,7 +21,7 @@ Item {
         delegate: DownloadItem {
             width: downloadItems.width
 
-            from: 0
+            from: Theme.Size.none
             value: downloadProgress.downloadedBytes
             to: downloadProgress.totalBytes
 

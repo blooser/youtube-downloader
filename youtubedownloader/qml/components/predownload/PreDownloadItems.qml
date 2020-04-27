@@ -29,7 +29,7 @@ Item {
             state: "hidden"
             states: State {
                 name: "hidden"
-                when: (preDownloadItems.itemsReady === 0)
+                when: (preDownloadItems.itemsReady === Theme.Size.none)
                 PropertyChanges { target: downloadButton; opacity: Theme.Visible.off }
             }
 
