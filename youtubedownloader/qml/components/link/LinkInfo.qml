@@ -24,6 +24,7 @@ Item {
         Items.YDLink {
             id: title
 
+            Layout.fillWidth: true
             font.pixelSize: Theme.FontSize.normal
             horizontalAlignment: Text.AlignLeft
         }
