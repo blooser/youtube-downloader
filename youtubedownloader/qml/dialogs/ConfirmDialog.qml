@@ -4,6 +4,7 @@ import QtQuick.Controls 2.14
 
 import "../items" as Items
 import "../components/link" as Link
+import "../components" as Components
 
 YDDialog {
     id: root
@@ -17,15 +18,8 @@ YDDialog {
 
     standardButtons: Dialog.Cancel | Dialog.Yes
 
-    contentItem: ColumnLayout {
-        spacing: Theme.Margins.tiny
-
-        Items.YDText {
-            Layout.fillWidth: true
-
-            text: qsTr("Are you sure you want to delete?")
-            font.bold: true
-        }
+    contentItem: Components.Header {
+        header: qsTr("Are you sure you want to delete?")
 
         Link.LinkInfo {
             Layout.fillWidth: true
