@@ -13,8 +13,8 @@ YDDialog {
 
     implicitHeight: 220
 
-    dialog: "ConfirmDialog"
-    headerText: qsTr("Confirmation")
+    dialog: "ConfirmDeleteDialog"
+    headerText: qsTr("Delete confirmation")
 
     standardButtons: Dialog.Cancel | Dialog.Yes
 

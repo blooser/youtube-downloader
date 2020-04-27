@@ -74,7 +74,7 @@ Item {
                     }
                 }
 
-                onRemove: dialogManager.open_dialog("ConfirmDialog", {"downloadData":  downloadData}, function() {
+                onRemove: dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData":  downloadData}, function() {
                     predownloadModel.remove_predownload(index)
                 })
 

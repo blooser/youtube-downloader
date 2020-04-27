@@ -34,7 +34,7 @@ Item {
             onPause: downloadModel.pause(index)
             onRedo: downloadModel.redo(index)
             onOpen: Qt.openUrlExternally(Paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(download_data.title).arg(options.fileFormat))
-            onRemove: dialogManager.open_dialog("ConfirmDialog", {"downloadData": downloadData }, function() {
+            onRemove: dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData": downloadData }, function() {
                 downloadModel.remove_download(index)
             })
         }
