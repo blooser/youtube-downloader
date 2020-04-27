@@ -74,7 +74,7 @@ class PreDownload(QObject):
         self.status = "ready" if not self.already_downloaded() else "exists"
 
         if self.options.need_post_process():
-            self.options.calc_post_process_file_size(self.data._duration) # TODO: Add choice to select bitrate, mp3 in the only one which need post process?
+            self.options.calc_post_process_file_size(self.data._duration)
 
         self.updated.emit(str(self.id))
 
@@ -394,7 +394,6 @@ class DownloadOptions(QObject):
             "postprocessors": [{
                "key": 'FFmpegExtractAudio',
                "preferredcodec": 'flac',
-               "preferredquality": "192",
             }]
         },
 
@@ -403,7 +402,7 @@ class DownloadOptions(QObject):
             "postprocessors": [{
                "key": 'FFmpegExtractAudio',
                "preferredcodec": 'mp3',
-               "preferredquality": "192",
+               "preferredquality": "320",
             }]
         },
 
@@ -412,7 +411,6 @@ class DownloadOptions(QObject):
             "postprocessors": [{
                 "key": 'FFmpegExtractAudio',
                 "preferredcodec": 'wav',
-                "preferredquality": "192",
             }]
         }
     }
@@ -427,7 +425,7 @@ class DownloadOptions(QObject):
             "format": "bestaudio/best"
         }
 
-        self.post_process_file_size = int(options["post_process_file_size"]) if "post_process_file_size" in options else 0
+        self.post_process_file_size = int(options["post_process_file_size"]) if "post_process_file_size" in options else 1
 
     def __eq__(self, other):
         return self.file_format == other.file_format and self.output_path == other.output_path
@@ -441,7 +439,8 @@ class DownloadOptions(QObject):
         return self.output_path
 
     def calc_post_process_file_size(self, duration):
-        self.post_process_file_size = (((192 * duration)/8) * 1000)
+        if self.file_format == "mp3":
+            self.post_process_file_size = (((320 * duration)/8) * 1000)
 
     def to_ydl_opts(self):
         template = self.ydl_opts
