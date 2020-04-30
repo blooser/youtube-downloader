@@ -33,6 +33,10 @@ ItemDelegate {
 
             visible: !Positioner.isLastItem
         }
+
+        Behavior on color {
+            ColorAnimation { duration: Theme.Animation.hover }
+        }
     }
 
     MouseArea {

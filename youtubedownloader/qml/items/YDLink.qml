@@ -26,6 +26,6 @@ YDText {
     }
 
     transitions: Transition {
-        ColorAnimation { duration: Theme.Animation.quick }
+        ColorAnimation { duration: Theme.Animation.hover }
     }
 }

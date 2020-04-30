@@ -39,6 +39,7 @@ Theme = {
     },
 
     "Animation": {
+        "hover": 50,
         "quick": 250,
         "medium": 500
     },
