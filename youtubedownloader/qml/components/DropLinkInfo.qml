@@ -28,8 +28,8 @@ Item {
                 bold: true
             }
 
-            style: Text.Outline
-            styleColor: Theme.Colors.third
+            style: Text.Raised
+            styleColor: Theme.Colors.textStyle
         }
 
         Items.YDImage {

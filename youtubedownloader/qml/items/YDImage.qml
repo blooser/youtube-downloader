@@ -9,7 +9,7 @@ Image {
 
     YDBusyIndicator {
         anchors.fill: parent
-        visible: running
         running: (root.status === Image.Loading)
+        visible: running
     }
 }

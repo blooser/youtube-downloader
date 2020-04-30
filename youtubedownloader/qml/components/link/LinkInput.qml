@@ -2,6 +2,7 @@ import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
 import "../../items" as Items
+import "../../util/regex.js" as Regex
 
 Item {
     id: root
@@ -28,7 +29,7 @@ Item {
             onTextEdited: Settings.inputLink = text
 
             validator: RegularExpressionValidator {
-                regularExpression: /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/gm
+                regularExpression: Regex.YOUTUBE_LINK_REGEX
             }
 
             Keys.onEnterPressed: addButton.clicked()

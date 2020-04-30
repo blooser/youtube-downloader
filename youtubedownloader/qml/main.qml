@@ -6,6 +6,7 @@ import "items" as Items
 import "components" as Components
 import "components/download" as Download
 import "components/link" as Link
+import "util/regex.js" as Regex
 
 ApplicationWindow {
     id: root
@@ -53,6 +54,13 @@ ApplicationWindow {
                 dialogManager.open_dialog("DropUrlDialog", {}, null)
             } else {
                 dialogManager.close_dialog("DropUrlDialog")
+            }
+        }
+        onDropped: {
+            for (let url of drop.urls) {
+                if (Regex.isYoutubeLink(url) && !downloadManager.exists(url, downloadOptions.options)) {
+                    downloadManager.predownload(url, downloadOptions.options)
+                }
             }
         }
     }
