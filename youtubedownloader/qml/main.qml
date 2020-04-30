@@ -52,7 +52,7 @@ ApplicationWindow {
             if (containsDrag) {
                 dialogManager.open_dialog("DropUrlDialog", {}, null)
             } else {
-                dialogManager.close("DropUrlDialog")
+                dialogManager.close_dialog("DropUrlDialog")
             }
         }
     }
