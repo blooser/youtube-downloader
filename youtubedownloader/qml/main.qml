@@ -46,6 +46,17 @@ ApplicationWindow {
         }
     }
 
+    DropArea {
+        anchors.fill: parent
+        onContainsDragChanged: {
+            if (containsDrag) {
+                dialogManager.open_dialog("DropUrlDialog", {}, null)
+            } else {
+                dialogManager.close("DropUrlDialog")
+            }
+        }
+    }
+
     Connections {
         target: dialogManager
 
