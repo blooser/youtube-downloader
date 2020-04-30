@@ -14,5 +14,5 @@ YDDialog {
     standardButtons: Dialog.NoButton
     background: null
 
-    contentItem: Components.DropLinkInfo {}
+    contentItem: Components.DropUrlInfo {}
 }
