@@ -1,4 +1,4 @@
-# This Python file uses the following encoding: utf-8
+﻿# This Python file uses the following encoding: utf-8
 
 Theme = {
     "Colors": {
@@ -45,6 +45,7 @@ Theme = {
     },
 
     "FontSize": {
+        "groupBoxLabel": 8,
         "micro": 10,
         "tiny": 14,
         "small": 16,

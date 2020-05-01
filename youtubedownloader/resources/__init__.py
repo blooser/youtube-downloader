@@ -1,4 +1,4 @@
-from PySide2.QtCore import QObject, Qt, QStandardPaths, Slot, Signal, Property
+﻿from PySide2.QtCore import QObject, Qt, QStandardPaths, Slot, Signal, Property
 
 import sys, os, pathlib
 
@@ -21,3 +21,7 @@ class Resources(QObject):
     @Property("QVariantMap", constant=True)
     def icons(self):
         return self.icon_paths
+
+    @Property("QUrl", constant=True)
+    def logo(self):
+        return os.path.join(Paths.FILE_PREFIX, Resources.YD_LOGO)

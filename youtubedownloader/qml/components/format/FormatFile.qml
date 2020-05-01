@@ -30,6 +30,7 @@ Item {
 
         Items.YDGroupBox {
             Layout.fillWidth: true
+            labelText: qsTr("Video + Audio")
 
             RowLayout {
                 id: videos
@@ -38,6 +39,7 @@ Item {
 
         Items.YDGroupBox {
             Layout.fillWidth: true
+            labelText: qsTr("Audio")
 
             RowLayout {
                 id: audios
