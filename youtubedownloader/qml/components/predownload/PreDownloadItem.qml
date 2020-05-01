@@ -50,25 +50,12 @@ Rectangle {
 
     Component {
         id: alreadyExistsIndicator
-        PreDownloadItemInfo {
+        PreDownloadItemAlreadyExistsIndicator {
+            link: root.link
             downloadData: root.downloadData
             downloadOptions: root.downloadOptions
             onRemove: root.remove()
             onChangeFormat: root.changeFormat(format)
-
-            Items.YDText {
-                anchors {
-                    top: parent.top
-                    horizontalCenter: parent.horizontalCenter
-                }
-
-                font {
-                    bold: true
-                    pixelSize: Theme.FontSize.tiny
-                }
-
-                text: qsTr("Destination file exists")
-            }
         }
     }
 
