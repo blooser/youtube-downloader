@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.12
 
@@ -9,12 +9,17 @@ Item {
 
     signal fileFormatChanged(string fileFormat)
 
+    readonly property var parentByFileFormat: {
+        "video": videos,
+        "audio": audios,
+        "": undefined
+    }
+
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
     ButtonGroup {
         id: buttonGroup
-        buttons: mainLayout.children
         onClicked: root.fileFormatChanged(button.text)
     }
 
@@ -23,14 +28,35 @@ Item {
 
         spacing: Theme.Margins.tiny
 
-        Repeater {
-            model: Settings.fileFormats
+        GroupBox {
+            Layout.fillWidth: true
 
-            Items.YDButton {
-                checked: (text === Settings.fileFormat)
-                checkable: true
-                text: modelData
+            RowLayout {
+                id: videos
             }
+        }
+
+        GroupBox {
+            Layout.fillWidth: true
+
+            RowLayout {
+                id: audios
+            }
+        }
+    }
+
+    Component {
+        id: fileFormatButton
+
+        Items.YDButton {
+            checked: (text === Settings.fileFormat)
+            checkable: true
+        }
+    }
+
+    Component.onCompleted: {
+        for (let fileFormat of Settings.fileFormats) {
+            buttonGroup.buttons.push(fileFormatButton.createObject(parentByFileFormat[Paths.getFileType(fileFormat)], {"text": fileFormat}))
         }
     }
 }
