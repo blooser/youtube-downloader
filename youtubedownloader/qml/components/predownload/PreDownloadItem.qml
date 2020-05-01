@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
 import yd.items 0.1
@@ -50,16 +50,35 @@ Rectangle {
 
     Component {
         id: alreadyExistsIndicator
-        PreDownloadItemAlreadyExistsIndicator {
-            existsPath: root.destinationFile
-            PreDownloadItemInfo {
-                anchors.fill: parent
-                opacity: Theme.Visible.disabled
-                downloadData: root.downloadData
-                downloadOptions: root.downloadOptions
-                enabled: false
+        PreDownloadItemInfo {
+            downloadData: root.downloadData
+            downloadOptions: root.downloadOptions
+            onRemove: root.remove()
+            onChangeFormat: root.changeFormat(format)
+
+            Items.YDText {
+                anchors {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                }
+
+                font {
+                    bold: true
+                    pixelSize: Theme.FontSize.tiny
+                }
+
+                text: qsTr("Destination file exists")
             }
         }
+    }
+
+    states: State {
+        when: (preDownloadStatus === "exists")
+        PropertyChanges { target: root; color: Theme.Colors.shadowError }
+    }
+
+    transitions: Transition {
+        ColorAnimation { duration: Theme.Animation.quick }
     }
 
     Dynamic.Changer {

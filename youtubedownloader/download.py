@@ -1,4 +1,5 @@
-# This Python file uses the following encoding: utf-8
+﻿# This Python file uses the following encoding: utf-8
+# -*- coding: utf-8 -*-
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
 from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
