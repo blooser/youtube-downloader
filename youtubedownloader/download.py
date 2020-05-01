@@ -67,16 +67,18 @@ class PreDownload(QObject):
         destination_file = "{root}/{title}.{ext}".format(root=self.options.output_path, title=self.data.title, ext=self.options.file_format)
         return os.path.isfile(destination_file)
 
-    @Slot(dict)
-    def prepare_data(self, info):
-        self.data.collect(info)
-
+    def update(self):
         self.status = "ready" if not self.already_downloaded() else "exists"
 
         if self.options.need_post_process():
             self.options.calc_post_process_file_size(self.data._duration)
 
         self.updated.emit(str(self.id))
+
+    @Slot(dict)
+    def prepare_data(self, info):
+        self.data.collect(info)
+        self.update()
 
     @staticmethod
     def pack(predownload):
@@ -225,6 +227,7 @@ class PreDownloadModel(QAbstractListModel):
 
         if role == 259:
             predownload.options = DownloadOptions(value.toVariant())
+            predownload.update()
             self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
             return True
 
@@ -441,6 +444,8 @@ class DownloadOptions(QObject):
     def calc_post_process_file_size(self, duration):
         if self.file_format == "mp3":
             self.post_process_file_size = (((320 * duration)/8) * 1000)
+        else:
+            self.post_process_file_size = 1 # TODO: Try to calculate other file formats size
 
     def to_ydl_opts(self):
         template = self.ydl_opts
