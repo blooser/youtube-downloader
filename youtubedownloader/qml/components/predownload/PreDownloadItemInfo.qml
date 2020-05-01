@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
 import "../../items" as Items
@@ -71,6 +71,7 @@ Item {
         font.pixelSize: Theme.FontSize.micro
         anchors {
             bottom: root.bottom
+            bottomMargin: Theme.Size.borderBold
             horizontalCenter: root.horizontalCenter
         }
     }
