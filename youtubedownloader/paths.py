@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QObject, QTimer, QLocale, Slot, Signal
+from PySide2.QtCore import QObject, QTimer, QLocale, QUrl, Slot, Signal
 
 import sys, os, pathlib
 
@@ -49,6 +49,23 @@ class Paths(QObject):
     @Slot(str, result="QString")
     def cleanPath(self, path):
         return path.replace(Paths.FILE_PREFIX, "")
+
+    @Slot(str, result="QString")
+    def getPathType(self, path):
+        if path.startswith("/") or path.startswith("file://"):
+            return "file"
+
+        if path.startswith("http://") or path.startswith("https://"):
+            return "remote"
+
+        return ""
+
+    @Slot(str, result="QVariantList")
+    def readFile(self, file):
+        with open(QUrl(file).path(), "r") as f:
+            data = f.readlines()
+
+        return data
 
 
 class FileExpect(QObject):

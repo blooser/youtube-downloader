@@ -47,6 +47,32 @@ ApplicationWindow {
         }
     }
 
+    QtObject {
+        id: predownloadDropProcess
+
+        property var addPreDownload: function(url) {
+            const pathType = Paths.getPathType(url)
+            if (pathType === "remote") {
+                if (Regex.isYoutubeLink(url) && !downloadManager.exists(url, downloadOptions.options)) {
+                    downloadManager.predownload(url, downloadOptions.options)
+                }
+            } else if(pathType === "file") {
+                let youtubeUrls = Regex.filterUrlsForYoutubeOnly((Paths.readFile(url)))
+                for (let youtubeUrl of youtubeUrls) {
+                    if (!downloadManager.exists(youtubeUrl, downloadOptions.options)) {
+                        downloadManager.predownload(youtubeUrl, downloadOptions.options)
+                    }
+                }
+            }
+        }
+
+        property var addPreDownloads: function(urls) {
+            for (let url of urls) {
+                addPreDownload(url)
+            }
+        }
+    }
+
     DropArea {
         anchors.fill: parent
         onContainsDragChanged: {
@@ -56,13 +82,7 @@ ApplicationWindow {
                 dialogManager.close_dialog("DropUrlDialog")
             }
         }
-        onDropped: {
-            for (let url of drop.urls) {
-                if (Regex.isYoutubeLink(url) && !downloadManager.exists(url, downloadOptions.options)) {
-                    downloadManager.predownload(url, downloadOptions.options)
-                }
-            }
-        }
+        onDropped: predownloadDropProcess.addPreDownloads(drop.urls)
     }
 
     Connections {
