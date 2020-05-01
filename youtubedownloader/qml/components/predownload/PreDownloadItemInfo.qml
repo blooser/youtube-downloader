@@ -64,4 +64,14 @@ Item {
             onClicked: root.remove()
         }
     }
+
+    Items.YDText {
+        text: "%1/%2.%3".arg(downloadOptions.outputPath).arg(downloadData.title).arg(downloadOptions.fileFormat)
+
+        font.pixelSize: Theme.FontSize.micro
+        anchors {
+            bottom: root.bottom
+            horizontalCenter: root.horizontalCenter
+        }
+    }
 }

@@ -15,9 +15,9 @@ class ResourcesTest(unittest.TestCase):
         resources = Resources()
         
         resources_icons = resources.icon_paths()
-        self.assertEqual(len(resources_icons), 7)
+        self.assertEqual(len(resources_icons), 8)
         
-        expected_keys = ["download", "delete", "plus", "folder", "redo", "pause", "youtube", "arrowDown"]
+        expected_keys = ["download", "delete", "plus", "folder", "redo", "pause", "youtube", "arrowDown", "check"]
         for key in resources_icons.keys():
                 self.assertTrue(key in expected_keys)
                 

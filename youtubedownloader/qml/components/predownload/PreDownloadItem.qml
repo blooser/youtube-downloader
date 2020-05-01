@@ -57,7 +57,7 @@ Rectangle {
                 opacity: Theme.Visible.disabled
                 downloadData: root.downloadData
                 downloadOptions: root.downloadOptions
-                onRemove: root.remove()
+                enabled: false
             }
         }
     }
