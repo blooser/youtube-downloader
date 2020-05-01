@@ -48,7 +48,7 @@ class Paths(QObject):
 
     @Slot(str, result="QString")
     def cleanPath(self, path):
-        return path.replace(Paths.FILE_PREFIX, "")
+        return QUrl(path).path()
 
     @Slot(str, result="QString")
     def getPathType(self, path):
