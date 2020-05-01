@@ -28,7 +28,7 @@ Item {
 
         spacing: Theme.Margins.tiny
 
-        GroupBox {
+        Items.YDGroupBox {
             Layout.fillWidth: true
 
             RowLayout {
@@ -36,7 +36,7 @@ Item {
             }
         }
 
-        GroupBox {
+        Items.YDGroupBox {
             Layout.fillWidth: true
 
             RowLayout {
