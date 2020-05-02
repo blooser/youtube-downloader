@@ -227,7 +227,7 @@ class PreDownloadModel(QAbstractListModel):
         # NOTE: Do we want to add option for url changing?
 
         if role == 259:
-            predownload.options = DownloadOptions(value.toVariant())
+            predownload.options.update(value.toVariant())
             predownload.update()
             self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
             return True
@@ -456,6 +456,13 @@ class DownloadOptions(QObject):
 
     def need_post_process(self):
         return self.file_format in ["flac", "mp3", "wav"]
+
+    def update(self, options):
+        if "file_format" in options:
+            self.file_format = options["file_format"]
+
+        if "output_path" in options:
+            self.output_path = options["output_path"]
 
     @staticmethod
     def pack(download_options):
