@@ -419,7 +419,7 @@ class DownloadOptions(QObject):
         }
     }
 
-    changed = Signal(str)
+    changed = Signal()
 
     def __init__(self, options):
         super(DownloadOptions, self).__init__(None)
@@ -463,6 +463,8 @@ class DownloadOptions(QObject):
 
         if "output_path" in options:
             self.output_path = options["output_path"]
+
+        self.changed.emit()
 
     @staticmethod
     def pack(download_options):
