@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.14
 
 import "../../items" as Items
@@ -24,7 +24,7 @@ Item {
 
         spacing: Theme.Margins.normal
 
-        Items.YDImage {
+        Items.YDThumbnail {
             id: thumbnail
 
             Layout.preferredWidth: 86
