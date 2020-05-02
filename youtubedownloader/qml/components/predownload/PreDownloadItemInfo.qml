@@ -15,7 +15,9 @@ Item {
     property var downloadOptions
 
     signal remove()
+
     signal changeFormat(string format)
+    signal changeOutputPath(string path)
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -65,7 +67,7 @@ Item {
         }
     }
 
-    Items.YDText {
+    Items.YDTextButton {
         text: "%1/%2.%3".arg(downloadOptions.outputPath).arg(downloadData.title).arg(downloadOptions.fileFormat)
 
         font.pixelSize: Theme.FontSize.micro
@@ -74,5 +76,11 @@ Item {
             bottomMargin: Theme.Size.borderBold
             horizontalCenter: root.horizontalCenter
         }
+
+        onClicked: dialogManager.open_dialog("SelectDirectoryDialog", {"folder": downloadOptions.outputPath}, function(path){
+            if (path !== downloadOptions.outputPath) {
+                root.changeOutputPath(Paths.cleanPath(path))
+            }
+        })
     }
 }

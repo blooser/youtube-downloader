@@ -20,6 +20,7 @@ Rectangle {
 
     signal remove()
     signal changeFormat(string format)
+    signal changeOutputPath(string path)
 
     implicitWidth: changer.implicitWidth
     implicitHeight: Math.max(changer.implicitHeight, 86)
@@ -45,6 +46,7 @@ Rectangle {
             downloadOptions: root.downloadOptions
             onRemove: root.remove()
             onChangeFormat: root.changeFormat(format)
+            onChangeOutputPath: root.changeOutputPath(path)
         }
     }
 
@@ -56,6 +58,7 @@ Rectangle {
             downloadOptions: root.downloadOptions
             onRemove: root.remove()
             onChangeFormat: root.changeFormat(format)
+            onChangeOutputPath: root.changeOutputPath(path)
         }
     }
 

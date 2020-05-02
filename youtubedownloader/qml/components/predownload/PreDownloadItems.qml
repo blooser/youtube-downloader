@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
 import "../../items" as Items
@@ -68,9 +68,14 @@ Item {
                 destinationFile: "%1/%2.%3".arg(options.outputPath).arg(download_data.title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python
 
                 onChangeFormat: {
-                    options = { // TODO: Make it clean
-                        "output_path": options.outputPath,
+                    options = { // NOTE: It will update key, not override whole options
                         "file_format": format
+                    }
+                }
+
+                onChangeOutputPath: {
+                    options = {
+                        "output_path": path,
                     }
                 }
 
