@@ -1,14 +1,11 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
+
+import "../util/regex.js" as Regex
 
 YDText {
     id: root
 
     property string link
-
-    readonly property var isUrl: function (url) {
-        let matches = url.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)
-        return (matches !== null && matches.length > Theme.Size.none)
-    }
 
     MouseArea {
         id: linkMouseArea
@@ -16,7 +13,7 @@ YDText {
         anchors.fill: parent
 
         hoverEnabled: true
-        enabled: isUrl(link)
+        enabled: Regex.isUrl(link)
         onClicked: Qt.openUrlExternally(link)
     }
 
