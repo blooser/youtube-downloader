@@ -64,6 +64,11 @@ class PreDownload(QObject):
     def start(self):
         self.task.start()
 
+    def stop(self):
+        if self.task.isRunning():
+            self.task.exit()
+            self.task.wait() # NOTE: Should not be costly enough
+
     def already_downloaded(self):
         destination_file = "{root}/{title}.{ext}".format(root=self.options.output_path, title=self.data.title, ext=self.options.file_format)
         return os.path.isfile(destination_file)
@@ -189,6 +194,7 @@ class PreDownloadModel(QAbstractListModel):
             return
 
         self.beginRemoveRows(QModelIndex(), row, row)
+        self.predownloads[row].stop()
         self.predownloads.pop(row)
         self.endRemoveRows()
 

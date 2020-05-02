@@ -68,7 +68,7 @@ Item {
                 destinationFile: "%1/%2.%3".arg(options.outputPath).arg(download_data.title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python
 
                 onChangeFormat: {
-                    options = { // NOTE: It will update key, not override whole options
+                    options = { // NOTE: It will update key, not override whole options, check PreDownloadModel's setData implementation
                         "file_format": format
                     }
                 }
@@ -79,13 +79,24 @@ Item {
                     }
                 }
 
-                onRemove: dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData":  downloadData}, function() {
-                    predownloadModel.remove_predownload(index)
-                })
+                onRemove: {
+                    if (status === "processing") {
+                        predownloadModel.remove_predownload(index) // NOTE: Instant
+                        return
+                    }
+
+                    dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData":  downloadData}, function() {
+                        predownloadModel.remove_predownload(index)
+                    })
+                }
 
                 Component.onDestruction: {
                     if (predownloadIsNotReady) {
                         preDownloadItems.itemsNotReady -= 1
+                    }
+
+                    if (predownloadIsProcessing) {
+                        preDownloadItems.itemsProcessing -= 1
                     }
                 }
             }

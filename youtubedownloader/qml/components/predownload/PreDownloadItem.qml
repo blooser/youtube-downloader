@@ -35,7 +35,9 @@ Rectangle {
 
     Component {
         id: collectingInfoIndicator
-        PreDownloadItemCollectingInfoIndicator {}
+        PreDownloadItemCollectingInfoIndicator {
+            onRemove: root.remove()
+        }
     }
 
     Component {
