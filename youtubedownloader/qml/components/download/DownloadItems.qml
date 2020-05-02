@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 
 Item {
     id: root
@@ -14,6 +14,7 @@ Item {
             margins: Theme.Margins.tiny
         }
 
+        boundsBehavior: Flickable.StopAtBounds
         clip: true
         spacing: Theme.Margins.tiny
         model: downloadModel

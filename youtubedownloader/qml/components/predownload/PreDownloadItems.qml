@@ -48,6 +48,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
+            boundsBehavior: Flickable.StopAtBounds
             clip: true
             spacing: Theme.Margins.tiny
             model: predownloadModel
