@@ -20,7 +20,7 @@ class PreDownloadTaskTest(unittest.TestCase):
     def test_preDownloadTaskCollectsInfoFromURL(self):
         predownload_task = PreDownloadTask(self.url)
         download_data = DownloadData()
-        predownload_task.collected_info.connect(download_data.collect, Qt.DirectConnection)
+        predownload_task.finished.connect(lambda: download_data.collect(predownload_task.info), Qt.DirectConnection)
 
         predownload_task.start()
         while predownload_task.isRunning():
