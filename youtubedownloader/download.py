@@ -482,6 +482,7 @@ class DownloadTask(QThread):
         self.ydl_opts = self.options.to_ydl_opts()
 
         self.paused = False
+        self.error = None
 
         self.ydl_opts["progress_hooks"] = [self.process]
 
@@ -515,7 +516,7 @@ class DownloadTask(QThread):
             with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
                 ydl.download([self.url])
         except youtube_dl.utils.DownloadError as download_error:
-            self.progress.emit({"status": str(download_error)})
+            self.error = str(download_error)
 
 
 class Download(QObject):
@@ -532,7 +533,7 @@ class Download(QObject):
         self.task = DownloadTask(self.url, self.options)
 
         self.task.progress.connect(self.update, Qt.QueuedConnection)
-        self.task.finished.connect(lambda: self.update({"status": "finished"} if not self.task.paused else {}))
+        self.task.finished.connect(self.handle_finished)
 
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
@@ -549,11 +550,22 @@ class Download(QObject):
 
     def pause(self):
         if self.task.isRunning():
-            self.update({"status": "paused"})
             self.task.paused = True
 
     def running(self):
         return self.task.isRunning()
+
+    @Slot(int) # BUG: QThread's finished returns exit code?
+    def handle_finished(self):
+        if self.task.paused:
+            self.update({"status": "paused"})
+            return
+
+        if self.task.error:
+            self.update({"status": self.task.error})
+            return
+
+        self.update({"status": "finished"})
 
     @Slot(str)
     def update(self, progress):
