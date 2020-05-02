@@ -31,15 +31,19 @@ class PreDownloadTask(QThread):
     def __init__(self, url):
         super(PreDownloadTask, self).__init__(None)
         self.url = url
+        self.info = None
+        self.error = None
 
     def __eq__(self, other):
         return self.url == other.url
 
     def run(self):
-        with youtube_dl.YoutubeDL() as ydl:
-            info = ydl.extract_info(self.url, download=False)
+        try:
+            with youtube_dl.YoutubeDL() as ydl:
+                self.info = ydl.extract_info(self.url, download=False)
 
-        self.collected_info.emit(info)
+        except youtube_dl.utils.DownloadError as download_error:
+            self.error = str(download_error)
 
 
 class PreDownload(QObject):
@@ -56,12 +60,15 @@ class PreDownload(QObject):
         self.data = DownloadData()
         self.task = PreDownloadTask(self.url)
 
-        self.task.collected_info.connect(self.prepare_data)
+        self.task.finished.connect(self.handle_finished)
 
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
 
     def start(self):
+        if self.task.error:
+            self.task.error = None
+
         self.task.start()
 
     def stop(self):
@@ -81,10 +88,15 @@ class PreDownload(QObject):
 
         self.updated.emit(str(self.id))
 
-    @Slot(dict)
-    def prepare_data(self, info):
-        self.data.collect(info)
-        self.update()
+    @Slot(int)
+    def handle_finished(self):
+        if self.task.info:
+            self.data.collect(self.task.info)
+            self.update()
+            return
+
+        if self.task.error:
+            self.status = self.task.error
 
     @staticmethod
     def pack(predownload):
@@ -570,7 +582,7 @@ class Download(QObject):
     def running(self):
         return self.task.isRunning()
 
-    @Slot(int) # BUG: QThread's finished returns exit code?
+    @Slot(int)
     def handle_finished(self):
         if self.task.paused:
             self.update({"status": "paused"})

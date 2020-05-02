@@ -41,6 +41,13 @@ Rectangle {
     }
 
     Component {
+        id: itemError
+        PreDownloadItemError {
+            error: root.preDownloadStatus
+        }
+    }
+
+    Component {
         id: itemInfo
         PreDownloadItemInfo {
             link: root.link
@@ -65,7 +72,7 @@ Rectangle {
     }
 
     states: State {
-        when: (preDownloadStatus === "exists")
+        when: (preDownloadStatus === "exists" || preDownloadStatus.includes("ERROR"))
         PropertyChanges { target: root; color: Theme.Colors.shadowError }
     }
 
@@ -87,12 +94,16 @@ Rectangle {
             Change {
                 component: itemInfo
                 when: (preDownloadStatus === "ready")
-
             },
 
             Change {
                 component: alreadyExistsIndicator
                 when: (preDownloadStatus === "exists")
+            },
+
+            Change {
+                component: itemError
+                when: (preDownloadStatus.includes("ERROR"))
             }
         ]
     }
