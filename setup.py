@@ -1,5 +1,8 @@
 ﻿from setuptools import setup
 
+with open("README.md", "r") as readme:
+    long_description = readme.read()
+
 setup (
     name="Youtube Downloader",
     version="0.0.1",
@@ -8,10 +11,11 @@ setup (
     url="https://www.github.com/blooser/youtube-downloader",
     author_email="blooser@protonmail.com",
     description="youtube-dl GUI simplify",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=[
         "youtubedownloader", "youtubedownloader.resources"
     ],
-
     package_data = {
         "": ["*.svg", "icons/*.svg", "qml/*.qml", "qml/*/*", "qml/*/*/*"]
     },
