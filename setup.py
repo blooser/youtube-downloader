@@ -1,4 +1,6 @@
-from setuptools import setup, find_packages
+﻿from setuptools import setup
+from os import walk
+import os.path
 
 setup (
     name="Youtube Downloader",
@@ -8,9 +10,12 @@ setup (
     url="https://www.github.com/blooser/youtube-downloader",
     author_email="blooser@protonmail.com",
     description="youtube-dl GUI simplify",
-    packages=find_packages(),
+    packages=[
+        "youtubedownloader", "youtubedownloader.resources"
+    ],
+
     package_data = {
-        "": ["*.svg", "icons/*.svg"]
+        "": ["*.svg", "icons/*.svg", "qml/*.qml", "qml/*/*", "qml/*/*/*"]
     },
     classifiers = [
         "Programming Language :: Python :: 3",
