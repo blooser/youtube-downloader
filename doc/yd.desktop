@@ -7,4 +7,4 @@ Exec=youtubedownloader
 Terminal=false
 Type=Application
 StartupNotify=false
-
+Categories=Multimedia;AudioVideo;Qt
