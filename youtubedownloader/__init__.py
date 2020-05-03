@@ -1,4 +1,4 @@
-__version__ = "0.0.1"
+﻿__version__ = "0.0.1"
 
 from .download import (
     PreDownload,
@@ -35,6 +35,3 @@ from .component_changer import (
 from .resources import (
     Resources
 )
-
-# NOTE: Necessary for Qt Creator, at this moment
-from .__main__ import yd_run

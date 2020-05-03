@@ -1,6 +1,4 @@
 ﻿from setuptools import setup
-from os import walk
-import os.path
 
 setup (
     name="Youtube Downloader",
@@ -17,11 +15,18 @@ setup (
     package_data = {
         "": ["*.svg", "icons/*.svg", "qml/*.qml", "qml/*/*", "qml/*/*/*"]
     },
+    data_files = [
+        ("/usr/share/applications", ["doc/yd.desktop"]),
+        ("/usr/share/icons", ["youtubedownloader/resources/yd.svg"])
+    ],
     classifiers = [
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GPL License",
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: X11 Applications :: Qt"
     ],
+    entry_points = {
+        "console_scripts": ["youtubedownloader = youtubedownloader:main"]
+    },
     python_requires=">=3.6"
 )

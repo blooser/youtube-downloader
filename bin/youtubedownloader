@@ -1,0 +1,3 @@
+import youtubedownloader
+
+youtubedownloader.main()
