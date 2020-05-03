@@ -11,5 +11,12 @@ setup (
     packages=find_packages(),
     package_data = {
         "": ["*.svg", "icons/*.svg"]
-    } 
+    },
+    classifiers = [
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GPL License",
+        "Development Status :: 2 - Pre-Alpha",
+        "Environment :: X11 Applications :: Qt"
+    ],
+    python_requires=">=3.6"
 )
