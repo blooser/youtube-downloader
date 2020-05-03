@@ -25,7 +25,7 @@ setup (
     ],
     classifiers = [
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GPL License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: X11 Applications :: Qt"
     ],
