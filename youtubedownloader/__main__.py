@@ -15,36 +15,37 @@ from .theme import Theme
 from .paths import Paths
 from .settings import Settings
 
-QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+def main():
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
-app = QApplication(sys.argv)
-app.setApplicationName("youtube downloader")
-app.setApplicationVersion("0.0.1")
-app.setOrganizationName("blooser")
-app.setWindowIcon(QIcon(Resources.YD_LOGO))
+    app = QApplication(sys.argv)
+    app.setApplicationName("youtube downloader")
+    app.setApplicationVersion("0.0.1")
+    app.setOrganizationName("blooser")
+    app.setWindowIcon(QIcon(Resources.YD_LOGO))
 
-download_manager = DownloadManager()
-settings = Settings()
-dialog_manager = DialogManager()
-resources = Resources()
-paths = Paths()
+    download_manager = DownloadManager()
+    settings = Settings()
+    dialog_manager = DialogManager()
+    resources = Resources()
+    paths = Paths()
 
-qmlRegisterType(Change, "yd.items", 0, 1, "Change")
-qmlRegisterType(ComponentChanger, "yd.items", 0, 1, "ComponentChanger")
+    qmlRegisterType(Change, "yd.items", 0, 1, "Change")
+    qmlRegisterType(ComponentChanger, "yd.items", 0, 1, "ComponentChanger")
 
-qml_file = os.path.join(os.path.dirname(__file__), "qml/main.qml")
-engine = QQmlApplicationEngine()
-engine.rootContext().setContextProperty("Theme", Theme)
-engine.rootContext().setContextProperty("Resources", resources)
-engine.rootContext().setContextProperty("Settings", settings)
-engine.rootContext().setContextProperty("downloadManager", download_manager)
-engine.rootContext().setContextProperty("dialogManager", dialog_manager)
-engine.rootContext().setContextProperty("Paths", paths)
-download_manager.setQMLContext(engine)
-engine.load(qml_file)
+    qml_file = os.path.join(os.path.dirname(__file__), "qml/main.qml")
+    engine = QQmlApplicationEngine()
+    engine.rootContext().setContextProperty("Theme", Theme)
+    engine.rootContext().setContextProperty("Resources", resources)
+    engine.rootContext().setContextProperty("Settings", settings)
+    engine.rootContext().setContextProperty("downloadManager", download_manager)
+    engine.rootContext().setContextProperty("dialogManager", dialog_manager)
+    engine.rootContext().setContextProperty("Paths", paths)
+    download_manager.setQMLContext(engine)
+    engine.load(qml_file)
 
-if not engine.rootObjects():
-    sys.exit(-1)
+    if not engine.rootObjects():
+        sys.exit(-1)
 
-sys.exit(app.exec_())
+    sys.exit(app.exec_())
 

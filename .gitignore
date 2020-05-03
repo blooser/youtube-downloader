@@ -221,3 +221,6 @@ ENV/
 env.bak/
 venv.bak/
 pip-selfcheck.json
+
+# Executable
+run.py

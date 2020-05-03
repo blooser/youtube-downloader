@@ -35,3 +35,7 @@ from .component_changer import (
 from .resources import (
     Resources
 )
+
+from .__main__ import (
+    main
+)
