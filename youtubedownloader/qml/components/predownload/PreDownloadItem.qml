@@ -44,6 +44,7 @@ Rectangle {
         id: itemError
         PreDownloadItemError {
             error: root.preDownloadStatus
+            onRemove: root.remove()
         }
     }
 
@@ -72,7 +73,7 @@ Rectangle {
     }
 
     states: State {
-        when: (preDownloadStatus === "exists" || preDownloadStatus.includes("ERROR"))
+        when: (preDownloadStatus === "exists" || preDownloadStatus.includes("unsupported") || preDownloadStatus.includes("ERROR"))
         PropertyChanges { target: root; color: Theme.Colors.shadowError }
     }
 
@@ -101,9 +102,10 @@ Rectangle {
                 when: (preDownloadStatus === "exists")
             },
 
+
             Change {
                 component: itemError
-                when: (preDownloadStatus.includes("ERROR"))
+                when: (preDownloadStatus.includes("ERROR") || preDownloadStatus.includes("unsupported"))
             }
         ]
     }

@@ -91,8 +91,14 @@ class PreDownload(QObject):
     @Slot(int)
     def handle_finished(self):
         if self.task.info:
-            self.data.collect(self.task.info)
-            self.update()
+            if self.task.info["is_live"]:
+                self.status = "unsupported: livestream"
+                self.updated.emit(str(self.id))
+
+            else:
+                self.data.collect(self.task.info)
+                self.update()
+
             return
 
         if self.task.error:

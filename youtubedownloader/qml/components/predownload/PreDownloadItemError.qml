@@ -8,13 +8,15 @@ Item {
 
     property alias error: error.text
 
-    Row {
+    signal remove()
+
+    RowLayout {
         anchors.centerIn: parent
         spacing: Theme.Margins.tiny
 
         Items.YDImage {
-            width: Theme.Size.icon
-            height: Theme.Size.icon
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
             source: Resources.icons.dizzy
         }
 
@@ -22,5 +24,20 @@ Item {
             id: error
             horizontalAlignment: Qt.AlignLeft
         }
+    }
+
+    Items.YDImageButton {
+        anchors {
+            right: parent.right
+            rightMargin: Theme.Margins.normal
+            verticalCenter: parent.verticalCenter
+        }
+
+        width: Theme.Size.icon
+        height: Theme.Size.icon
+
+        imageSource: Resources.icons.delete
+
+        onClicked: root.remove()
     }
 }

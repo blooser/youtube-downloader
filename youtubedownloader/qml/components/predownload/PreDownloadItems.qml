@@ -56,9 +56,12 @@ Item {
             delegate: PreDownloadItem {
                 width: preDownloadItems.width
 
+                // TODO: Make it consistent
                 property bool predownloadIsNotReady: (status === "exists")
                 property bool predownloadIsProcessing: (status === "processing")
+                property bool predownloadIsNotSupported: (status.includes("unsupported"))
                 onPredownloadIsNotReadyChanged: preDownloadItems.itemsNotReady += (predownloadIsNotReady) ? 1 : -1
+                onPredownloadIsNotSupportedChanged: preDownloadItems.itemsNotReady += (predownloadIsNotSupported) ? 1 : 0
                 onPredownloadIsProcessingChanged: preDownloadItems.itemsProcessing += (predownloadIsProcessing) ? 1 : -1
 
                 preDownloadStatus: status
@@ -81,7 +84,7 @@ Item {
                 }
 
                 onRemove: {
-                    if (status === "processing") {
+                    if (status !== "ready" || status !== "exists") {
                         predownloadModel.remove_predownload(index) // NOTE: Instant
                         return
                     }
@@ -92,7 +95,7 @@ Item {
                 }
 
                 Component.onDestruction: {
-                    if (predownloadIsNotReady) {
+                    if (predownloadIsNotReady || predownloadIsNotSupported) {
                         preDownloadItems.itemsNotReady -= 1
                     }
 
