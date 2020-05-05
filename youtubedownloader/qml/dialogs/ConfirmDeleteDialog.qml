@@ -23,12 +23,14 @@ YDDialog {
 
         Link.LinkInfo {
             Layout.fillWidth: true
-            Layout.maximumWidth: 500
+            Layout.maximumWidth: 750
 
             thumbnailSource: downloadData.thumbnail
             titleText: downloadData.title
             uploaderText: downloadData.uploader
             durationText: downloadData.duration
+            viewCount: downloadData.viewCount.toLocaleString(Qt.locale(), "f", 0)
+            uploadDate: downloadData.uploadDate
         }
     }
 

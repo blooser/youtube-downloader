@@ -24,6 +24,7 @@ def human_time(time):
 
     return QTime.fromMSecsSinceStartOfDay(time * 1000).toString(format)
 
+
 def human_date(date):
     if not date:
         return ""
