@@ -44,6 +44,8 @@ Item {
             uploaderText: downloadData.uploader
             uploaderLink: downloadData.uploaderUrl
             durationText: downloadData.duration
+            viewCount: downloadData.viewCount.toLocaleString(Qt.locale(), "f", 0)
+            uploadDate: downloadData.uploadDate
         }
 
         Format.FormatSelected {

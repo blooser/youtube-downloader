@@ -13,6 +13,8 @@ Item {
     property alias uploaderText: uploader.text
     property alias uploaderLink: uploader.link
     property alias durationText: duration.text
+    property alias viewCount: viewCount.text
+    property alias uploadDate: uploadDate.text
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -55,6 +57,18 @@ Item {
                     id: duration
 
                     iconSource: Resources.icons.time
+                }
+
+                Components.IconText {
+                    id: viewCount
+
+                    iconSource: Resources.icons.eye
+                }
+
+                Components.IconText {
+                    id: uploadDate
+
+                    iconSource: Resources.icons.calendar
                 }
             }
         }

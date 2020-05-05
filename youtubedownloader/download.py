@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
+from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QDate, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
 
 import os.path
 import pathlib
@@ -23,6 +23,12 @@ def human_time(time):
     format = "hh:mm:ss" if time >= 60 * 60 else "mm:ss"
 
     return QTime.fromMSecsSinceStartOfDay(time * 1000).toString(format)
+
+def human_date(date):
+    if not date:
+        return ""
+
+    return QDate.fromString(date, "yyyyMMdd").toString(Qt.RFC2822Date)
 
 
 class PreDownloadTask(QThread):
@@ -267,6 +273,8 @@ class DownloadData(QObject):
         self._uploader_url = str()
         self._thumbnail = str()
         self._duration = int()
+        self._upload_date = str()
+        self._view_count = int()
 
         if data is not None:
             self.collect(data)
@@ -291,6 +299,14 @@ class DownloadData(QObject):
     def duration(self):
         return human_time(self._duration)
 
+    @Property(str, constant=True)
+    def uploadDate(self):
+        return human_date(self._upload_date)
+
+    @Property(int, constant=True)
+    def viewCount(self):
+        return self._view_count
+
     @Slot(dict)
     def collect(self, info):
         self._title = info["title"] if "title" in info else ""
@@ -298,6 +314,8 @@ class DownloadData(QObject):
         self._uploader_url = info["uploader_url"] if "uploader_url" in info else ""
         self._thumbnail = info["thumbnail"] if "thumbnail" in info else ""
         self._duration = int(info["duration"]) if "duration" in info else ""
+        self._upload_date = info["upload_date"] if "upload_date" in info else ""
+        self._view_count = int(info["view_count"]) if "view_count" in info else ""
 
     @staticmethod
     def pack(download_data):
@@ -307,6 +325,8 @@ class DownloadData(QObject):
             "uploader_url": download_data._uploader_url,
             "thumbnail": download_data._thumbnail,
             "duration": download_data._duration,
+            "upload_date": download_data._upload_date,
+            "view_count": download_data._view_count
         }
 
     @staticmethod
@@ -317,6 +337,8 @@ class DownloadData(QObject):
         download_data._uploader_url = data["uploader_url"]
         download_data._thumbnail = data["thumbnail"]
         download_data._duration = data["duration"]
+        download_data._upload_date = data["upload_date"]
+        download_data._view_count = data["view_count"]
         return download_data
 
 

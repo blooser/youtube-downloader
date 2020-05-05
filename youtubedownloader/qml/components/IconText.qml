@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.14
 
 import "../items" as Items
@@ -16,7 +16,7 @@ Item {
         id: mainLayout
 
         anchors.fill: parent
-        spacing: 1
+        spacing: Theme.Margins.tiny
 
         Items.YDImage {
             id: icon
