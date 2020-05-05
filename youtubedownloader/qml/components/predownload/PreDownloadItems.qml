@@ -84,14 +84,15 @@ Item {
                 }
 
                 onRemove: {
-                    if (status !== "ready" || status !== "exists") {
-                        predownloadModel.remove_predownload(index) // NOTE: Instant
+                    if (status.includes("ready") || status.includes("exists")) {
+                        dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData":  downloadData}, function() {
+                            predownloadModel.remove_predownload(index)
+                        })
+
                         return
                     }
 
-                    dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData":  downloadData}, function() {
-                        predownloadModel.remove_predownload(index)
-                    })
+                    predownloadModel.remove_predownload(index) // NOTE: Instant
                 }
 
                 Component.onDestruction: {
