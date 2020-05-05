@@ -30,6 +30,8 @@ class PreDownloadTaskTest(unittest.TestCase):
         self.assertEqual(download_data._uploader, "Trap Boost")
         self.assertTrue(download_data._thumbnail)
         self.assertEqual(download_data._duration, 262)
+        self.assertTrue(download_data._upload_date)
+        self.assertTrue(download_data._view_count)
 
 
 if __name__ == "__main__":
