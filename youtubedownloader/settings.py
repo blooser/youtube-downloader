@@ -1,10 +1,9 @@
-# This Python file uses the following encoding: utf-8
+﻿# This Python file uses the following encoding: utf-8
 
 from PySide2.QtCore import QObject, QSettings, QStandardPaths, Signal, Property
 
 class Settings(QObject):
     CONFIG_PATH = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.yddownloadersettings"
-    FILE_FORMATS = ["webm", "mp4", "mkv", "m4a", "mp3", "flac", "wav"]
 
     input_link_changed = Signal(str)
     output_path_changed = Signal(str)
@@ -73,7 +72,6 @@ class Settings(QObject):
         self.file_format = file_format
         self.file_format_changed.emit(self.file_format)
 
-    fileFormats = Property("QVariantList", read_file_formats, constant=True)
     inputLink = Property(str, read_input_link, set_input_link, notify=input_link_changed)
     outputPath = Property(str, read_output_path, set_output_path, notify=output_path_changed)
     fileFormat = Property(str, read_file_format, set_file_format, notify=file_format_changed)
