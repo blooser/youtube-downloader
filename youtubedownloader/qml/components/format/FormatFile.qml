@@ -50,7 +50,7 @@ Item {
     Component {
         id: fileFormatButton
 
-        Items.YDButton {
+        Items.YDButtonWithHelp {
             checked: (text === Settings.fileFormat)
             checkable: true
         }
