@@ -17,6 +17,7 @@ Item {
         id: mainLayout
 
         anchors.fill: parent
+        spacing: Theme.Margins.tiny
 
         Items.YDText {
             id: mediaType
@@ -38,9 +39,11 @@ Item {
 
         Items.YDLink {
             id: readMore
+
             Layout.fillWidth: true
-            text: "Read More"
+
             horizontalAlignment: Text.AlignRight
+            text: "Read More"
         }
     }
 }

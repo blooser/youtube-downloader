@@ -58,9 +58,10 @@ Item {
     }
 
     Component.onCompleted: {
-        let index = 0
-        for (let fileFormat of Settings.fileFormats) {
-            buttonGroup.buttons.push(fileFormatButton.createObject(parentByFileFormat[Paths.getFileType(fileFormat)], {"text": fileFormat}))
+        let descriptionModel = Qt.createComponent("FormatFileDescriptionModel.qml").createObject(root)
+        for (let index = 0; index < descriptionModel.count; ++index) {
+            let format = descriptionModel.get(index).format
+            buttonGroup.buttons.push(fileFormatButton.createObject(parentByFileFormat[Paths.getFileType(format)], {"text": format}))
         }
     }
 }
