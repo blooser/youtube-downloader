@@ -11,4 +11,4 @@ It allows for customizing your downloads:
 
 ## Usage
 
-Youtube downloader's goal is a comfort, downloading a video from youtube is that kind of problem which everyone of us had at least once in life. Using this software is human friendly, to add your download you can just past link into input and hit enter or press button but I strongly recommend to just drag a youtube video's thumbnail and drop it into youtube downloader.
+Youtube downloader's goal is a comfort, Using this software is human friendly, to add your download you can just past link into input and hit enter or press button but I strongly recommend to just drag a youtube video's thumbnail and drop it into youtube downloader.
