@@ -53,10 +53,12 @@ Item {
         Items.YDButtonWithHelp {
             checked: (text === Settings.fileFormat)
             checkable: true
+            onHelp: dialogManager.open_dialog("FileFormatsDialog", {"format": text}, null)
         }
     }
 
     Component.onCompleted: {
+        let index = 0
         for (let fileFormat of Settings.fileFormats) {
             buttonGroup.buttons.push(fileFormatButton.createObject(parentByFileFormat[Paths.getFileType(fileFormat)], {"text": fileFormat}))
         }
