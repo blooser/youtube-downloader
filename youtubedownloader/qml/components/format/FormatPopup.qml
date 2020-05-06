@@ -31,14 +31,14 @@ Items.YDPopup {
         boundsBehavior: Flickable.StopAtBounds
         clip: true
         implicitHeight: contentHeight
-        model: Settings.fileFormats
+        model: FormatFileDescriptionModel {}
 
         delegate: FormatItemDelegate {
             width: formats.width
-            text: modelData
-            enabled: !downloadManager.exists(link, optionsWithNewFormat(modelData))
+            text: format
+            enabled: !downloadManager.exists(link, optionsWithNewFormat(format))
             onClicked: {
-                root.formatSelected(modelData)
+                root.formatSelected(format)
                 root.close()
             }
         }
