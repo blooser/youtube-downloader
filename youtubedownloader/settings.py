@@ -1,6 +1,8 @@
 ﻿# This Python file uses the following encoding: utf-8
 
-from PySide2.QtCore import QObject, QSettings, QStandardPaths, Signal, Property
+from PySide2.QtCore import QObject, QSettings, QSize, QStandardPaths, Signal, Property
+
+import atexit
 
 class Settings(QObject):
     CONFIG_PATH = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.yddownloadersettings"
@@ -20,8 +22,7 @@ class Settings(QObject):
 
         self.load()
 
-    def __del__(self):
-        self.save()
+        atexit.register(self.save)
 
     def load(self):
         settings = QSettings(self.settings_path)
