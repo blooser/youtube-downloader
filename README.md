@@ -1,5 +1,3 @@
-<img src="youtubedownloader/resources/yd.svg" width="64" height="64">
-
 # Youtube Downloader
 
 Youtube downloader is a GUI helper for youtube-dl. It provides a graphical interface to add, track and remove videos from youtube. 
