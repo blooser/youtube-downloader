@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.14
 
@@ -11,7 +11,6 @@ import "util/regex.js" as Regex
 ApplicationWindow {
     id: root
 
-    width: 1050; height: 750
     visible: true
 
     title: qsTr("Youtube Downloader")
@@ -123,5 +122,19 @@ ApplicationWindow {
                 foundDialog.destroy()
             }
         }
+    }
+
+    Component.onCompleted: {
+        root.width = Settings.windowRect.width
+        root.height = Settings.windowRect.height
+        root.x = Settings.windowRect.x
+        root.y = Settings.windowRect.y
+    }
+
+    Component.onDestruction: {
+        Settings.windowRect.width = root.width
+        Settings.windowRect.height = root.height
+        Settings.windowRect.x = root.x
+        Settings.windowRect.y = root.y
     }
 }
