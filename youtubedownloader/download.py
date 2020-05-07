@@ -314,9 +314,9 @@ class DownloadData(QObject):
         self._uploader = info["uploader"] if "uploader" in info else ""
         self._uploader_url = info["uploader_url"] if "uploader_url" in info else ""
         self._thumbnail = info["thumbnail"] if "thumbnail" in info else ""
-        self._duration = int(info["duration"]) if "duration" in info else ""
+        self._duration = int(info["duration"]) if "duration" in info and info["duration"] != "" else ""
         self._upload_date = info["upload_date"] if "upload_date" in info else ""
-        self._view_count = int(info["view_count"]) if "view_count" in info else ""
+        self._view_count = int(info["view_count"]) if "view_count" in info and info["view_count"] != "" else ""
 
     @staticmethod
     def pack(download_data):
@@ -361,11 +361,11 @@ class DownloadProgress(QObject):
 
     @Property(int, notify=changed)
     def downloadedBytes(self):
-        return int(self.downloaded_bytes)
+        return self.downloaded_bytes
 
     @Property(int, notify=changed)
     def totalBytes(self):
-        return int(self.total_bytes)
+        return self.total_bytes
 
     @Property(str, notify=changed)
     def estimatedTime(self):
@@ -380,11 +380,11 @@ class DownloadProgress(QObject):
         if "status" in data:
             self.status = data["status"]
 
-        if "downloaded_bytes" in data:
-            self.downloaded_bytes = data["downloaded_bytes"]
+        if "downloaded_bytes" in data and data["downloaded_bytes"] != "":
+            self.downloaded_bytes = int(data["downloaded_bytes"])
 
-        if "total_bytes" in data:
-            self.total_bytes = data["total_bytes"]
+        if "total_bytes" in data and data["total_bytes"] != "":
+            self.total_bytes = int(data["total_bytes"])
 
         if "_eta_str" in data:
             self.estimated_time = data["_eta_str"]
