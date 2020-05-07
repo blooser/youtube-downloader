@@ -33,9 +33,12 @@ setup (
         "console_scripts": ["youtubedownloader = youtubedownloader:main"]
     },
     install_requires = [
-        "logger>=1.4",
         "PySide2>=5.14.1",
         "youtube-dl"
+    ],
+    dependency_links = [
+        "https://pypi.org/project/PySide2/5.14.1/#files",
+        "https://pypi.org/project/youtube_dl/#files"
     ],
     keywords = "qt qml pyside2 youtube download youtube-dl",
     python_requires=">=3.6"
