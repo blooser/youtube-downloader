@@ -4,9 +4,9 @@ with open("README.md", "r") as readme:
     long_description = readme.read()
 
 setup (
-    name="Youtube Downloader",
+    name="youtube-downloader",
     version="0.0.1",
-    license="GPL",
+    license="GPLv3",
     author="blooser",
     url="https://www.github.com/blooser/youtube-downloader",
     author_email="blooser@protonmail.com",
@@ -32,5 +32,11 @@ setup (
     entry_points = {
         "console_scripts": ["youtubedownloader = youtubedownloader:main"]
     },
+    install_requires = [
+        "logger",
+        "PySide2",
+        "youtube-dl"
+    ],
+    keywords = "qt qml pyside2 youtube download youtube-dl",
     python_requires=">=3.6"
 )
