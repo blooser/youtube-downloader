@@ -2,6 +2,7 @@
 
 from PySide2.QtCore import QObject, QSettings, QStandardPaths, Signal, Property
 
+import os.path
 import atexit
 
 class Settings(QObject):
@@ -20,7 +21,8 @@ class Settings(QObject):
         self.output_path = QStandardPaths.writableLocation(QStandardPaths.DownloadLocation)
         self.file_format = "webm"
 
-        self.load()
+        if os.path.isfile(Settings.CONFIG_PATH):
+            self.load()
 
         atexit.register(self.save)
 
