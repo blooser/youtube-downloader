@@ -9,10 +9,7 @@ Item {
     ListView {
         id: downloadItems
 
-        anchors {
-            fill: parent
-            margins: Theme.Margins.tiny
-        }
+        anchors.fill: parent
 
         boundsBehavior: Flickable.StopAtBounds
         clip: true
