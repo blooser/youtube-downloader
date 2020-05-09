@@ -30,7 +30,7 @@ setup (
         "Environment :: X11 Applications :: Qt"
     ],
     entry_points = {
-        "console_scripts": ["youtubedownloader = youtubedownloader:main"]
+        "console_scripts": ["youtube-downloader = youtubedownloader:main"]
     },
     install_requires = [
         "PySide2==5.14.1",
