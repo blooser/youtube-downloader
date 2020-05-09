@@ -1,4 +1,3 @@
-
 # Youtube Downloader
 
 Youtube downloader is a GUI helper for [youtube-dl](https://github.com/ytdl-org/youtube-dl/). It provides a graphical interface to add, track and remove videos from youtube. 
@@ -24,6 +23,25 @@ It allows for customizing your downloads:
 Youtube downloader’s goal is comfort. To add your download you can just paste the link into the input and hit enter or press button but I strongly recommend to drag a youtube video’s thumbnail and drop it into youtube downloader.
 
 ![drop](https://thumbs.gfycat.com/BoldSnappyEarthworm-size_restricted.gif)
+
+## Installation
+
+Prepare youtube downloader to work
+
+### Manual
+
+```bash
+git clone https://github.com/blooser/youtube-downloader
+cd youtube-downloader
+python setup.py build
+sudo setup.py install
+```
+
+### PyPi
+
+```bash
+pip install youtube-downloader
+```
 
 ## License
 
