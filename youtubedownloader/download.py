@@ -383,6 +383,10 @@ class DownloadProgress(QObject):
     def downloadSpeed(self):
         return self.speed
 
+    def invalide(self):
+        self.status = "no file"
+        self.downloaded_bytes = 0
+
     @Slot(dict)
     def update(self, data):
         if "status" in data:
@@ -601,8 +605,13 @@ class Download(QObject):
         self.task.progress.connect(self.update, Qt.QueuedConnection)
         self.task.finished.connect(self.handle_finished)
 
+
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
+
+    def check_if_redownload_needed(self):
+        if not os.path.isfile(self.destination_file):
+            self.progress.invalide()
 
     def start(self):
         if self.running():
@@ -652,6 +661,7 @@ class Download(QObject):
     def unpack(data):
         download =  Download(data["url"], data["options"], data["data"])
         download.progress = DownloadProgress.unpack(data["progress"])
+        download.check_if_redownload_needed()
         return download
 
     @classmethod

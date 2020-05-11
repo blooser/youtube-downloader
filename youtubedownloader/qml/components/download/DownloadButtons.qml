@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
 import "../../items" as Items
@@ -45,7 +45,7 @@ Item {
     state: "repose"
     states: [
         State {
-            when: (status.includes("ERROR") || (status === "paused"))
+            when: (status.includes("ERROR") || (status === "paused") || (status == "no file"))
             name: "repose"
             PropertyChanges { target: downloadButton; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; opacity: Theme.Visible.on; imageSource: Resources.icons.redo; onClicked: root.redo() }
         },
