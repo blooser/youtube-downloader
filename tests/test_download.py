@@ -19,11 +19,11 @@ class DownloadTest(unittest.TestCase):
         }
         
         self.data = {
-                "title": "test",
-                "uploader": "test1",
-                "uploader_url": "/foo/bar/uploader",
-                "thumbnail": "None",
-                "duration": 60,
+            "title": "test",
+            "uploader": "test1",
+            "uploader_url": "/foo/bar/uploader",
+            "thumbnail": "None",
+            "duration": 60,
         }
             
     def test_downloadEqOperator(self):
@@ -42,7 +42,7 @@ class DownloadTest(unittest.TestCase):
         packed = Download.pack(download)
         self.assertTrue(isinstance(packed, dict))
         
-        expected_keys = ["url", "options", "data", "progress"]
+        expected_keys = ["url", "destination_file", "options", "data", "progress"]
         for key in packed.keys():
             self.assertTrue(key in expected_keys)
             
@@ -58,18 +58,20 @@ class DownloadTest(unittest.TestCase):
                     
     def test_downloadInitializesByPreDownload(self):
         data = {
-                "title": "test1",
-                "uploader": "admin",
-                "uploader_url": "/foo/bar/uploader",
-                "thumbnail": "None",
-                "duration": 60
+            "title": "test1",
+            "uploader": "admin",
+            "uploader_url": "/foo/bar/uploader",
+            "thumbnail": "None",
+            "duration": 60
         }
         
         predownload = PreDownload(self.url, self.options)
         predownload.data.collect(data)
+        predownload.update()
         
         download = Download.fromPreDownload(predownload)
         self.assertEqual(download.url, predownload.url)
+        self.assertEqual(download.destination_file, predownload.destination_file)
         self.assertEqual(download.options, predownload.options)
         self.assertEqual(download.data._title, predownload.data._title)
         self.assertEqual(download.data._uploader, predownload.data._uploader)

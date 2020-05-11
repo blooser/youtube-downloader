@@ -13,16 +13,16 @@ class PreDownloadTest(unittest.TestCase):
     def setUp(self):
         self.url = "https://www.youtube.com/watch?v=xSUQcQYgQCY"
         self.options = {
-                "file_format": "mp3",
-                "output_path": "/foo/bar/path1"
+            "file_format": "mp3",
+            "output_path": "/foo/bar/path1"
         }
         
         self.data = {
-                "title": "Test",
-                "uploader": "Me",
-                "uploader_url": "/foo/bar/uploader",
-                "thumbnail": "/foo/bar/path1",
-                "duration": 250
+            "title": "Test",
+            "uploader": "Me",
+            "uploader_url": "/foo/bar/uploader",
+            "thumbnail": "/foo/bar/path1",
+            "duration": 250
         }
         
     def test_preDownloadEqOperator(self):
@@ -42,15 +42,16 @@ class PreDownloadTest(unittest.TestCase):
         
         packed = PreDownload.pack(predownload)
         self.assertTrue(isinstance(packed, dict))
-        expected_keys = ["url", "status", "data", "options"]
+        expected_keys = ["url", "destination_file", "status", "data", "options"]
         for key in packed.keys():
             self.assertTrue(key in expected_keys)
             
         unpacked = PreDownload.unpack(packed)
-        self.assertEqual(unpacked.url, self.url)
-        self.assertEqual(unpacked.status, "ready")
+        self.assertEqual(unpacked.url, predownload.url)
+        self.assertEqual(unpacked.destination_file, predownload.destination_file)
+        self.assertEqual(unpacked.status, predownload.status)
         self.assertEqual(unpacked.options, DownloadOptions(self.options))
-        self.assertEqual(unpacked.data._title, self.data["title"])
-        self.assertEqual(unpacked.data._uploader, self.data["uploader"])
-        self.assertEqual(unpacked.data._thumbnail, self.data["thumbnail"])
-        self.assertEqual(unpacked.data._duration, self.data["duration"])
+        self.assertEqual(unpacked.data._title, predownload.data._title)
+        self.assertEqual(unpacked.data._uploader, predownload.data._uploader)
+        self.assertEqual(unpacked.data._thumbnail, predownload.data._thumbnail)
+        self.assertEqual(unpacked.data._duration, predownload.data._duration)
