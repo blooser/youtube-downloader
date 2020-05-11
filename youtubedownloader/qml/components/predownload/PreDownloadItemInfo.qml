@@ -10,6 +10,7 @@ Item {
     id: root
 
     property string link
+    property string destinationFile
 
     property var downloadData
     property var downloadOptions
@@ -70,7 +71,7 @@ Item {
     }
 
     Items.YDTextButton {
-        text: "%1/%2.%3".arg(downloadOptions.outputPath).arg(downloadData.title).arg(downloadOptions.fileFormat)
+        text: destinationFile
 
         font.pixelSize: Theme.FontSize.micro
         anchors {

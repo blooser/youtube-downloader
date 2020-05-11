@@ -52,6 +52,7 @@ Rectangle {
         id: itemInfo
         PreDownloadItemInfo {
             link: root.link
+            destinationFile: root.destinationFile
             downloadData: root.downloadData
             downloadOptions: root.downloadOptions
             onRemove: root.remove()
@@ -64,6 +65,7 @@ Rectangle {
         id: alreadyExistsIndicator
         PreDownloadItemAlreadyExistsIndicator {
             link: root.link
+            destinationFile: root.destinationFile
             downloadData: root.downloadData
             downloadOptions: root.downloadOptions
             onRemove: root.remove()

@@ -24,6 +24,7 @@ Item {
             to: downloadProgress.totalBytes
 
             link: url
+            destinationFile: destination_file
 
             downloadProgress: progress
             downloadData: download_data
@@ -31,7 +32,7 @@ Item {
 
             onPause: downloadModel.pause(index)
             onRedo: downloadModel.redo(index)
-            onOpen: Qt.openUrlExternally(Paths.cleanPath("%1/%2.%3").arg(options.outputPath).arg(download_data.title).arg(options.fileFormat))
+            onOpen: Qt.openUrlExternally(destination_file)
             onRemove: dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData": downloadData }, function() {
                 downloadModel.remove_download(index)
             })

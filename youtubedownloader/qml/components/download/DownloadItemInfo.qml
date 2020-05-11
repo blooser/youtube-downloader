@@ -9,6 +9,7 @@ Item {
     id: root
 
     property string link
+    property string destinationFile
 
     property var downloadProgress
     property var downloadData
@@ -68,7 +69,7 @@ Item {
     }
 
     Items.YDText {
-        text: "%1/%2.%3".arg(downloadOptions.outputPath).arg(downloadData.title).arg(downloadOptions.fileFormat)
+        text: destinationFile
 
         font.pixelSize: Theme.FontSize.micro
         anchors {

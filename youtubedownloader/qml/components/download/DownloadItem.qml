@@ -9,6 +9,7 @@ Items.YDProgressBar {
     id: root
 
     property alias link: downloadItemInfo.link
+    property alias destinationFile: downloadItemInfo.destinationFile
 
     property alias downloadProgress: downloadItemInfo.downloadProgress
     property alias downloadData: downloadItemInfo.downloadData

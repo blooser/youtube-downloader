@@ -69,7 +69,7 @@ Item {
 
                 downloadData: download_data
                 downloadOptions: options
-                destinationFile: "%1/%2.%3".arg(options.outputPath).arg(download_data.title).arg(options.fileFormat) // TOOD: Make a separate variable for this in Python
+                destinationFile: destination_file
 
                 onChangeFormat: {
                     options = { // NOTE: It will update key, not override whole options, check PreDownloadModel's setData implementation

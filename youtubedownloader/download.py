@@ -62,6 +62,7 @@ class PreDownload(QObject):
         self.status = "processing"
         self.id = hash(url)
         self.url = url
+        self.destination_file = str()
         self.options = DownloadOptions(options)
 
         self.data = DownloadData()
@@ -83,12 +84,13 @@ class PreDownload(QObject):
             self.task.exit()
             self.task.wait() # NOTE: Should not be costly enough
 
-    def already_downloaded(self):
-        destination_file = "{root}/{title}.{ext}".format(root=self.options.output_path, title=self.data.title, ext=self.options.file_format)
-        return os.path.isfile(destination_file)
+    def destination_file_exists(self):
+        return os.path.isfile(self.destination_file)
 
     def update(self):
-        self.status = "ready" if not self.already_downloaded() else "exists"
+        self.destination_file = os.path.join(self.options.output_path, Paths.new_extension(self.data.title, self.options.file_format))
+
+        self.status = "ready" if not self.destination_file_exists() else "exists"
 
         if self.options.need_post_process():
             self.options.calc_post_process_file_size(self.data._duration)
@@ -115,6 +117,7 @@ class PreDownload(QObject):
     def pack(predownload):
         return {
             "url": predownload.url,
+            "destination_file": predownload.destination_file,
             "status": predownload.status,
             "data": DownloadData.pack(predownload.data),
             "options": DownloadOptions.pack(predownload.options)
@@ -123,13 +126,14 @@ class PreDownload(QObject):
     @staticmethod
     def unpack(data):
         predownload = PreDownload(data["url"], data["options"])
+        predownload.destination_file = data["destination_file"]
         predownload.status = data["status"]
         predownload.data = DownloadData.unpack(data["data"])
         return predownload
 
 
 class PreDownloadModel(QAbstractListModel):
-    COLUMNS = ("url", "status", "download_data", "options")
+    COLUMNS = ("url", "destination_file", "status", "download_data", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -179,9 +183,10 @@ class PreDownloadModel(QAbstractListModel):
     def roleNames(self, index=QModelIndex()):
         return {
             256: b"url",
-            257: b"status",
-            258: b"download_data",
-            259: b"options"
+            257: b"destination_file",
+            258: b"status",
+            259: b"download_data",
+            260: b"options"
         }
 
     def index(self, row, column, parent):
@@ -238,12 +243,15 @@ class PreDownloadModel(QAbstractListModel):
             return predownload.url
 
         elif role == 257:
-            return predownload.status
+            return predownload.destination_file
 
         elif role == 258:
-            return predownload.data
+            return predownload.status
 
         elif role == 259:
+            return predownload.data
+
+        elif role == 260:
             return predownload.options
 
         return None
@@ -257,7 +265,7 @@ class PreDownloadModel(QAbstractListModel):
 
         # NOTE: Do we want to add option for url changing?
 
-        if role == 259:
+        if role == 260:
             predownload.options.update(value.toVariant())
             predownload.update()
             self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
@@ -588,6 +596,8 @@ class Download(QObject):
         self.progress = DownloadProgress()
         self.task = DownloadTask(self.url, self.options)
 
+        self.destination_file = os.path.join(self.options.output_path, Paths.new_extension(self.data.title, self.options.file_format))
+
         self.task.progress.connect(self.update, Qt.QueuedConnection)
         self.task.finished.connect(self.handle_finished)
 
@@ -632,6 +642,7 @@ class Download(QObject):
     def pack(download):
         return {
             "url": download.url,
+            "destination_file": download.destination_file,
             "options": DownloadOptions.pack(download.options),
             "data": DownloadData.pack(download.data),
             "progress": DownloadProgress.pack(download.progress),
@@ -673,7 +684,7 @@ class DownloadPostProcess(QObject):
 
 
 class DownloadModel(QAbstractListModel):
-    COLUMNS = ("url", "download_data", "progress", "options")
+    COLUMNS = ("url", "destination_file", "download_data", "progress", "options")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -741,9 +752,10 @@ class DownloadModel(QAbstractListModel):
     def roleNames(self, index=QModelIndex()):
         return {
             256: b"url",
-            257: b"download_data",
-            258: b"progress",
-            259: b"options"
+            257: b"destination_file",
+            258: b"download_data",
+            259: b"progress",
+            260: b"options"
         }
 
     def clear(self):
@@ -799,12 +811,15 @@ class DownloadModel(QAbstractListModel):
             return download.url
 
         elif role == 257:
-            return download.data
+            return download.destination_file
 
         elif role == 258:
-            return download.progress
+            return download.data
 
         elif role == 259:
+            return download.progress
+
+        elif role == 260:
             return download.options
 
         return None
