@@ -610,7 +610,7 @@ class Download(QObject):
         return self.url == other.url and self.options == other.options
 
     def check_if_redownload_needed(self):
-        if not os.path.isfile(self.destination_file):
+        if not os.path.isfile(self.destination_file) and self.progress.status == "finished":
             self.progress.invalide()
 
     def start(self):
