@@ -41,6 +41,7 @@ ApplicationWindow {
         Browser.BrowserTabs {
             Layout.fillWidth: true
 
+            visible: Firefox.running
             options: downloadOptions.options
             onAddTab: downloadManager.predownload(url, downloadOptions.options)
         }

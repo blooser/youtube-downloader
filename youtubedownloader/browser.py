@@ -15,16 +15,24 @@ class Firefox(QObject):
         super(Firefox, self).__init__(None)
 
         self.logger = create_logger(__name__)
-
-        self._tabs_location = subprocess.check_output(Firefox.TABS_LOCATION_COMMAND, shell=True).decode("utf-8").replace("\n", "")
-        self.logger.info("Firefox tabs found={tabs_location}".format(tabs_location=(bool(self._tabs_location != ""))))
-
-        self._firefox_tabs_file_watcher = QFileSystemWatcher()
-
         self._tabs = []
-        self.get_firefox_tabs(self._tabs_location)
 
-        self._firefox_tabs_file_watcher.fileChanged.connect(self.get_firefox_tabs, Qt.QueuedConnection)
+        try:
+            self._tabs_location = subprocess.check_output(Firefox.TABS_LOCATION_COMMAND, shell=True).decode("utf-8").replace("\n", "")
+            self.logger.info("Firefox detected={tabs_location}".format(tabs_location=(bool(self._tabs_location != ""))))
+
+            self._firefox_tabs_file_watcher = QFileSystemWatcher()
+            self.get_firefox_tabs(self._tabs_location)
+            self._firefox_tabs_file_watcher.fileChanged.connect(self.get_firefox_tabs, Qt.QueuedConnection)
+
+            self._running = True
+
+        except subprocess.CalledProcessError as error:
+            self._running = False
+
+    @Property(bool, constant=True)
+    def running(self):
+        return self._running
 
     @Slot(str)
     def get_firefox_tabs(self, path):
