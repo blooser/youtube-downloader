@@ -5,6 +5,7 @@ from .logger import create_logger
 
 import os, os.path, json, lz4.block, subprocess
 
+
 class Firefox(QObject):
     TABS_LOCATION_COMMAND = ["find ~/.mozilla/firefox*/*.default/sessionstore-backups/recovery.jsonlz4"]
     MOZILLA_MAGIC_NUMBER = 8 # NOTE: https://gist.github.com/mnordhoff/25e42a0d29e5c12785d0
@@ -16,7 +17,11 @@ class Firefox(QObject):
 
         self.logger = create_logger(__name__)
         self._tabs = []
+        self._name = "Firefox"
 
+        self.detect()
+
+    def detect(self):
         try:
             self._tabs_location = subprocess.check_output(Firefox.TABS_LOCATION_COMMAND, shell=True).decode("utf-8").replace("\n", "")
             self.logger.info("Firefox detected={tabs_location}".format(tabs_location=(bool(self._tabs_location != ""))))
@@ -25,18 +30,21 @@ class Firefox(QObject):
             self.get_firefox_tabs(self._tabs_location)
             self._firefox_tabs_file_watcher.fileChanged.connect(self.get_firefox_tabs, Qt.QueuedConnection)
 
-            self._running = True
+            self._detected = True
 
         except subprocess.CalledProcessError as error:
-            self._running = False
+            self._detected = False
 
-    @Property(bool, constant=True)
-    def running(self):
-        return self._running
+    @Property(str, constant=True)
+    def name(self):
+        return self._name
 
     @Slot(str)
     def get_firefox_tabs(self, path):
         self._tabs = []
+
+        while not os.path.isfile(path): # NOTE: It looks like the signal is faster before the file is moved
+            continue
 
         if not path in (self._firefox_tabs_file_watcher.files()):
             self._firefox_tabs_file_watcher.addPath(self._tabs_location)
@@ -64,3 +72,27 @@ class Firefox(QObject):
         self.tabs_changed.emit()
 
     tabs = Property("QVariantList", read_tabs, set_tabs, notify=tabs_changed)
+
+
+# TODO: Add Google Chrome...and Opera?
+
+class Browsers(QObject):
+    def __init__(self):
+        super(Browsers, self).__init__(None)
+
+        self._browsers = []
+        self.logger = create_logger(__name__)
+
+        self.populate()
+
+    def populate(self):
+        for browser in [Firefox()]:
+            if browser._detected:
+                self._browsers.append(browser)
+
+        self.logger.info("Populated {browsers} browsers".format(browsers=len(self._browsers)))
+
+    @Property("QVariantList", constant=True)
+    def browsers(self):
+        return self._browsers
+

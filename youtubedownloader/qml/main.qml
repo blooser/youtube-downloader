@@ -38,10 +38,9 @@ ApplicationWindow {
             margins: Theme.Margins.normal
         }
 
-        Browser.BrowserTabs {
+        Browser.Browsers {
             Layout.fillWidth: true
 
-            visible: Firefox.running
             options: downloadOptions.options
             onAddTab: downloadManager.predownload(url, downloadOptions.options)
         }

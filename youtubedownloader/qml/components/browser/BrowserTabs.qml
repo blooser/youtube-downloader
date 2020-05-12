@@ -6,6 +6,7 @@ import "../../util/regex.js" as Regex
 Flickable {
     id: root
 
+    property var browser
     property var options
 
     signal addTab(string url)
@@ -23,7 +24,7 @@ Flickable {
         anchors.fill: parent
 
         Repeater {
-            model: Firefox.tabs
+            model: browser.tabs
 
             BrowserTab {
                 Layout.alignment: Qt.AlignLeft
