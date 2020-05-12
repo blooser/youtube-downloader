@@ -9,7 +9,7 @@ Rectangle {
 
     signal clicked()
 
-    color: Theme.Colors.blank
+    color: Theme.Colors.base
     radius: Theme.Margins.tiny
     border {
         width: Theme.Size.border
@@ -19,6 +19,13 @@ Rectangle {
     implicitWidth: textItem.implicitWidth
     implicitHeight: textItem.implicitHeight
 
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        acceptedButtons: Qt.NoButton
+        hoverEnabled: true
+    }
+
     Items.YDTextButton {
         id: textItem
 
@@ -27,5 +34,14 @@ Rectangle {
         font.pixelSize: Theme.FontSize.micro
 
         onClicked: root.clicked()
+    }
+
+    states: State {
+        when: mouseArea.containsMouse
+        PropertyChanges { target: root; color: Theme.Colors.third }
+    }
+
+    transitions: Transition {
+        ColorAnimation { duration: Theme.Animation.hover }
     }
 }
