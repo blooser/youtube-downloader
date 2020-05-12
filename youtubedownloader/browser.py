@@ -20,9 +20,9 @@ class Firefox(QObject):
         self.logger.info("Firefox tabs found={tabs_location}".format(tabs_location=(bool(self._tabs_location != ""))))
 
         self._firefox_tabs_file_watcher = QFileSystemWatcher()
-        self.get_firefox_tabs(self._tabs_location)
 
         self._tabs = []
+        self.get_firefox_tabs(self._tabs_location)
 
         self._firefox_tabs_file_watcher.fileChanged.connect(self.get_firefox_tabs, Qt.QueuedConnection)
 

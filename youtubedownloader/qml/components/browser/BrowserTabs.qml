@@ -6,6 +6,10 @@ import "../../util/regex.js" as Regex
 Flickable {
     id: root
 
+    property var options
+
+    signal addTab(string url)
+
     implicitHeight: mainLayout.implicitHeight
 
     contentWidth: mainLayout.implicitWidth
@@ -24,8 +28,17 @@ Flickable {
             BrowserTab {
                 Layout.alignment: Qt.AlignLeft
                 tabTitle: modelData.title
-                visible: Regex.isYoutubeLink(modelData.url)
+                visible: Regex.isYoutubeLink(modelData.url) && !downloadManager.exists(modelData.url, root.options)
+                onClicked: {
+                    if (!downloadManager.exists(modelData.url, root.options)) {
+                        root.addTab(modelData.url)
+                    }
+                }
             }
         }
+    }
+
+    Behavior on implicitHeight {
+        NumberAnimation { duration: Theme.Animation.quick }
     }
 }

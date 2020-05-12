@@ -40,13 +40,16 @@ ApplicationWindow {
 
         Browser.BrowserTabs {
             Layout.fillWidth: true
+
+            options: downloadOptions.options
+            onAddTab: downloadManager.predownload(url, downloadOptions.options)
         }
 
         Link.LinkInput {
             Layout.fillWidth: true
 
             options: downloadOptions.options
-            onAddLink: console.log(Firefox.tabs)//downloadManager.predownload(link, downloadOptions.options)
+            onAddLink: downloadManager.predownload(link, downloadOptions.options)
         }
 
         Download.DownloadOptions {
