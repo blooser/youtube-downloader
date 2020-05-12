@@ -14,6 +14,7 @@ from .resources import Resources
 from .theme import Theme
 from .paths import Paths
 from .settings import Settings
+from .browser import Firefox
 
 def main():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -29,6 +30,7 @@ def main():
     dialog_manager = DialogManager()
     resources = Resources()
     paths = Paths()
+    firefox = Firefox()
 
     qmlRegisterType(Change, "yd.items", 0, 1, "Change")
     qmlRegisterType(ComponentChanger, "yd.items", 0, 1, "ComponentChanger")
@@ -41,6 +43,7 @@ def main():
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("Paths", paths)
+    engine.rootContext().setContextProperty("Firefox", firefox)
     download_manager.setQMLContext(engine)
     engine.load(qml_file)
 

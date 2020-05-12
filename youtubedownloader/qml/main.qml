@@ -8,6 +8,7 @@ import "items" as Items
 import "components" as Components
 import "components/download" as Download
 import "components/link" as Link
+import "components/browser" as Browser
 import "util/regex.js" as Regex
 
 ApplicationWindow {
@@ -37,11 +38,15 @@ ApplicationWindow {
             margins: Theme.Margins.normal
         }
 
+        Browser.BrowserTabs {
+            Layout.fillWidth: true
+        }
+
         Link.LinkInput {
             Layout.fillWidth: true
 
             options: downloadOptions.options
-            onAddLink: downloadManager.predownload(link, downloadOptions.options)
+            onAddLink: console.log(Firefox.tabs)//downloadManager.predownload(link, downloadOptions.options)
         }
 
         Download.DownloadOptions {
