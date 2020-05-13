@@ -8,6 +8,7 @@ import "items" as Items
 import "components" as Components
 import "components/download" as Download
 import "components/link" as Link
+import "components/browser" as Browser
 import "util/regex.js" as Regex
 
 ApplicationWindow {
@@ -35,6 +36,13 @@ ApplicationWindow {
         anchors {
             fill: parent
             margins: Theme.Margins.normal
+        }
+
+        Browser.Browsers {
+            Layout.fillWidth: true
+
+            options: downloadOptions.options
+            onAddTab: downloadManager.predownload(url, downloadOptions.options)
         }
 
         Link.LinkInput {
