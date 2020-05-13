@@ -1,10 +1,11 @@
+
 # Youtube Downloader
 
 Youtube downloader is a GUI helper for [youtube-dl](https://github.com/ytdl-org/youtube-dl/). It provides a graphical interface to add, track and remove videos from youtube. 
 
 ## Preview
 
-![preview](https://i.imgur.com/8Pl7xOr.png)
+![preview](https://imgur.com/Mz01ecJ.png)
 
 ## Dependency
 
@@ -23,6 +24,10 @@ It allows for customizing your downloads:
 Youtube downloader’s goal is comfort. To add your download you can just paste the link into the input and hit enter or press button but I strongly recommend to drag a youtube video’s thumbnail and drop it into youtube downloader.
 
 ![drop](https://thumbs.gfycat.com/BoldSnappyEarthworm-size_restricted.gif)
+
+## Web Browser integration
+
+Youtube Downloader is integrated with Firefox, that's mean it will read currently opened tabs with YouTube's links. It provides a feature to quick download currently played videos from YouTube.
 
 ## Installation
 
