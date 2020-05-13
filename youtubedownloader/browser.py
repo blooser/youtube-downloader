@@ -7,7 +7,7 @@ import os, os.path, json, lz4.block, subprocess
 
 
 class Firefox(QObject):
-    SESSION_LOCATION_COMMAND = ["find ~/.mozilla/firefox*/*.default/sessionstore-backups/recovery.jsonlz4"]
+    SESSION_LOCATION_COMMAND = ["find ~/.mozilla/firefox*/*.*/sessionstore-backups/recovery.jsonlz4"]
     MOZILLA_MAGIC_NUMBER = 8 # NOTE: https://gist.github.com/mnordhoff/25e42a0d29e5c12785d0
 
     tabs_changed = Signal("QVariantList")
