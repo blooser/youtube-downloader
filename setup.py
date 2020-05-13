@@ -5,7 +5,7 @@ with open("README.md", "r") as readme:
 
 setup (
     name="youtube-downloader",
-    version="0.2.0",
+    version="0.2.1",
     license="GPLv3",
     author="blooser",
     url="https://www.github.com/blooser/youtube-downloader",
