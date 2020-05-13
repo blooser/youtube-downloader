@@ -48,7 +48,7 @@ Item {
                     ToolTip.delay: 500
                     ToolTip.timeout: 2000
                     ToolTip.visible: hovered
-                    ToolTip.text: qsTr("Current opened tabs in %1").arg(modelData.name)
+                    ToolTip.text: qsTr("Current opened YouTube tabs in %1").arg(modelData.name)
                 }
             }
         }
