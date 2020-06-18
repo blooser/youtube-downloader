@@ -37,6 +37,7 @@ Items.YDImage {
         ThumbnailDownload {
             to: FileDownloader.currentDownload.progress.totalBytes
             value: FileDownloader.currentDownload.progress.readBytes
+            outputUrl: FileDownloader.currentDownload.outputUrl
         }
     }
 

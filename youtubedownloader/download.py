@@ -889,15 +889,16 @@ class FileDownload(QObject):
 
         request = QNetworkRequest(url)
 
-        self.output = QFile(output_url)
+        self.output_url =  output_url
+        self.output = QFile(self.output_url)
         if not self.output.open(QIODevice.WriteOnly):
-            self.logger.info("Could not open: {url}".format(url=output_url))
+            self.logger.info("Could not open: {url}".format(url=self.output_url))
             return
 
         self.current_download = manager.get(request)
         self.current_download_progress = FileDownloadProgress()
         self.current_download.downloadProgress.connect(self.current_download_progress.update)
-        self.current_download.readyRead.connect(self.saveFile, Qt.QueuedConnection)
+        self.current_download.readyRead.connect(self.saveFile)
         self.current_download.finished.connect(self.download_finished)
 
         self.logger = create_logger(__name__)
@@ -910,6 +911,10 @@ class FileDownload(QObject):
     def download_finished(self):
         self.output.close()
         self.finished.emit()
+
+    @Property(str, constant=True)
+    def outputUrl(self):
+        return self.output_url
 
     @Property(QObject, constant=True)
     def progress(self):
