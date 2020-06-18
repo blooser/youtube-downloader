@@ -4,12 +4,17 @@ from .download import (
     PreDownload,
     PreDownloadTask,
     PreDownloadModel,
+
     Download,
     DownloadData,
     DownloadOptions,
     DownloadProgress,
     DownloadModel,
     DownloadManager,
+
+    FileDownloader,
+    FileDownload,
+    FileDownloadProgress
 )
 
 from .paths import (

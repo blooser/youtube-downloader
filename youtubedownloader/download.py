@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFileSystemWatcher, QModelIndex, QDateTime, QDate, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
+from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFile, QIODevice, QFileSystemWatcher, QModelIndex, QDateTime, QDate, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
+from PySide2.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
 
 import os.path
 import pathlib
@@ -878,3 +879,79 @@ class DownloadManager(QObject):
     def setQMLContext(self, engine):
         engine.rootContext().setContextProperty("downloadModel", self.download_model)
         engine.rootContext().setContextProperty("predownloadModel", self.predownload_model)
+
+
+class FileDownload(QObject):
+    def __init__(self, manager: QNetworkAccessManager, url: str, output_url: str):
+        super(FileDownload, self).__init__(None)
+
+        request = QNetworkRequest(url)
+
+        self.current_download = manager.get(request)
+        self.current_download_progress = FileDownloadProgress()
+        self.output_url = output_url
+
+        self.current_download.downloadProgress.connect(self.current_download_progress.update)
+        self.current_download.readyRead.connect(self.saveFile)
+        self.current_download.finished.connect(self.deleteLater)
+
+        self.logger = create_logger(__name__)
+
+    @Slot()
+    def saveFile(self):
+        file = QFile(self.output_url)
+
+        if not file.open(QIODevice.WriteOnly):
+            self.logger.info("Failed to open file {file}".format(file=output_url))
+            return
+
+        file.write(self.current_download.readAll())
+        file.close()
+
+    @Property(QObject, constant=True)
+    def progress(self):
+        return self.current_download_progress
+
+
+class FileDownloadProgress(QObject):
+    updated = Signal()
+
+    def __init__(self):
+        super(FileDownloadProgress, self).__init__(None)
+
+        self.read_bytes = int()
+        self.total_bytes = int()
+
+    @Slot(int, int)
+    def update(self, read_bytes: int, total_bytes: int):
+        self.read_bytes = read_bytes
+        self.total_bytes = total_bytes
+        self.updated.emit()
+
+    @Property(int, notify=updated)
+    def readBytes(self):
+        return self.read_bytes
+
+    @Property(int, notify=updated)
+    def totalBytes(self):
+        return self.total_bytes
+
+
+class FileDownloader(QObject):
+    currentDownloadChanged = Signal()
+
+    def __init__(self):
+        super(FileDownloader, self).__init__(None)
+
+        self.manager = QNetworkAccessManager()
+        self.current_download = None
+
+    @Slot(str, str)
+    def download(self, url: str, output_url: str):
+        self.current_download = FileDownload(self.manager, url, output_url)
+        self.current_download.destroyed.connect(lambda: self.currentDownloadChanged.emit())
+        self.currentDownloadChanged.emit()
+
+    @Property("QVariant", notify=currentDownloadChanged)
+    def currentDownload(self):
+        return self.current_download
