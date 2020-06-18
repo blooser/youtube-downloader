@@ -882,8 +882,6 @@ class DownloadManager(QObject):
 
 
 class FileDownload(QObject):
-    finished = Signal()
-
     def __init__(self, manager: QNetworkAccessManager, url: str, output_url: str):
         super(FileDownload, self).__init__(None)
 
@@ -910,7 +908,6 @@ class FileDownload(QObject):
     @Slot()
     def download_finished(self):
         self.output.close()
-        self.finished.emit()
 
     @Property(str, constant=True)
     def outputUrl(self):
