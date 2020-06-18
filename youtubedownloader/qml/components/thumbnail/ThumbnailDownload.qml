@@ -23,6 +23,10 @@ Item {
         }
 
         opacity: (url !== "" && progress.value === progress.to && progress.to !== 0)
+
+        Behavior on opacity {
+            NumberAnimation { duration: Theme.Animation.quick }
+        }
     }
 
     Items.YDProgressBar {
