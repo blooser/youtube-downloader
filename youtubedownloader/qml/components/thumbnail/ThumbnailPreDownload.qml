@@ -5,10 +5,12 @@ import "../../items" as Items
 Item {
     id: root
 
-    signal download()
+    property string url
 
-    Items.YDButton {
-        text: qsTr("Download")
+    signal download(string fileName)
+
+    Column {
+        spacing: Theme.Margins.tiny
 
         anchors {
             horizontalCenter: root.horizontalCenter
@@ -16,6 +18,22 @@ Item {
             bottomMargin: Theme.Margins.big
         }
 
-        onClicked: root.download()
+        ThumbnailFileName {
+            id: fileName
+
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: Paths.fileName(url)
+        }
+
+        Items.YDButton {
+            text: qsTr("Download")
+
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            onClicked: root.download(fileName.text)
+
+            enabled: (fileName.text !== "")
+        }
     }
 }

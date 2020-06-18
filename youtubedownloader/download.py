@@ -891,6 +891,8 @@ class FileDownload(QObject):
 
         self.output_url =  output_url
         self.output = QFile(self.output_url)
+
+        self.logger = create_logger(__name__)
         if not self.output.open(QIODevice.WriteOnly):
             self.logger.info("Could not open: {url}".format(url=self.output_url))
             return
@@ -900,8 +902,6 @@ class FileDownload(QObject):
         self.current_download.downloadProgress.connect(self.current_download_progress.update)
         self.current_download.readyRead.connect(self.saveFile)
         self.current_download.finished.connect(self.download_finished)
-
-        self.logger = create_logger(__name__)
 
     @Slot()
     def saveFile(self):
@@ -961,7 +961,7 @@ class FileDownloader(QObject):
 
     @Slot(str, str)
     def download(self, url: str, output_url: str):
-        self.current_download = FileDownload(self.manager, url, os.path.join(output_url, Paths.file_name(url)))
+        self.current_download = FileDownload(self.manager, url, output_url)
         self.currentDownloadChanged.emit()
 
     @Property("QVariant", notify=currentDownloadChanged)

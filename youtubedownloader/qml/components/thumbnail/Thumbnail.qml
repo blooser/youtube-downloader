@@ -25,8 +25,9 @@ Items.YDImage {
         id: preDownload
 
         ThumbnailPreDownload {
+            url: root.source
             onDownload: dialogManager.open_dialog("SelectDirectoryDialog", {}, function (url) {
-                FileDownloader.download(root.source, Paths.cleanPath(url))
+                FileDownloader.download(root.source, String("%1/%2").arg(Paths.cleanPath(url)).arg(fileName))
             })
         }
     }

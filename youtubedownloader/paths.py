@@ -1,5 +1,5 @@
 ﻿# This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QObject, QTimer, QLocale, QUrl, Slot, Signal
+from PySide2.QtCore import QObject, QTimer, QFileInfo, QLocale, QUrl, Slot, Signal
 
 import sys, os, pathlib
 
@@ -53,6 +53,10 @@ class Paths(QObject):
     @Slot(str, result="QString")
     def cleanPath(self, path):
         return QUrl(path).path()
+
+    @Slot(str, result="QString")
+    def fileName(self, path):
+        return QUrl(path).fileName()
 
     @Slot(str, result="QString")
     def getFileType(self, format):
