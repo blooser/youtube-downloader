@@ -2,7 +2,7 @@
 import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.14
 
-import "../components" as Components
+import "../components/thumbnail" as Thumbnail
 import "../items" as Items
 
 YDDialog {
@@ -17,12 +17,7 @@ YDDialog {
     header: null
     footer: null
     standardButtons: Dialog.NoButton
-    contentItem: Items.YDImage {
+    contentItem: Thumbnail.Thumbnail {
         source: root.url
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: root.close()
-        }
     }
 }
