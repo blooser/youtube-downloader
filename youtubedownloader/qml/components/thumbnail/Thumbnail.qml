@@ -9,11 +9,13 @@ import "../dynamic" as Dynamic
 Items.YDImage {
     id: root
 
+    signal close()
+
     Component {
         id: preDownload
 
         ThumbnailPreDownload {
-            onClose: console.log("Close")
+            onClose: root.close()
             onDownload: console.log("Download")
         }
     }
@@ -24,8 +26,7 @@ Items.YDImage {
         changes: [
             Change {
                 component: preDownload
-                when: 1 === 1 // TODO: For test, change it
+                when: (FileDownloader.currentDownload === undefined)
             }
         ]
-    }
-}
+    }}
