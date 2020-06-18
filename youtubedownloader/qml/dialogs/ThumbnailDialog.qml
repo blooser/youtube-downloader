@@ -19,7 +19,6 @@ YDDialog {
     standardButtons: Dialog.NoButton
     contentItem: Thumbnail.Thumbnail {
         source: root.url
-
         onClose: root.close()
     }
 }

@@ -882,31 +882,34 @@ class DownloadManager(QObject):
 
 
 class FileDownload(QObject):
+    finished = Signal()
+
     def __init__(self, manager: QNetworkAccessManager, url: str, output_url: str):
         super(FileDownload, self).__init__(None)
 
         request = QNetworkRequest(url)
 
+        self.output = QFile(output_url)
+        if not self.output.open(QIODevice.WriteOnly):
+            self.logger.info("Could not open: {url}".format(url=output_url))
+            return
+
         self.current_download = manager.get(request)
         self.current_download_progress = FileDownloadProgress()
-        self.output_url = output_url
-
         self.current_download.downloadProgress.connect(self.current_download_progress.update)
-        self.current_download.readyRead.connect(self.saveFile)
-        self.current_download.finished.connect(self.deleteLater)
+        self.current_download.readyRead.connect(self.saveFile, Qt.QueuedConnection)
+        self.current_download.finished.connect(self.download_finished)
 
         self.logger = create_logger(__name__)
 
     @Slot()
     def saveFile(self):
-        file = QFile(self.output_url)
+        self.output.write(self.current_download.readAll())
 
-        if not file.open(QIODevice.WriteOnly):
-            self.logger.info("Failed to open file {file}".format(file=output_url))
-            return
-
-        file.write(self.current_download.readAll())
-        file.close()
+    @Slot()
+    def download_finished(self):
+        self.output.close()
+        self.finished.emit()
 
     @Property(QObject, constant=True)
     def progress(self):
@@ -946,10 +949,14 @@ class FileDownloader(QObject):
         self.manager = QNetworkAccessManager()
         self.current_download = None
 
+    @Slot()
+    def clear(self):
+        self.current_download = None
+        self.currentDownloadChanged.emit()
+
     @Slot(str, str)
     def download(self, url: str, output_url: str):
-        self.current_download = FileDownload(self.manager, url, output_url)
-        self.current_download.destroyed.connect(lambda: self.currentDownloadChanged.emit())
+        self.current_download = FileDownload(self.manager, url, os.path.join(output_url, Paths.file_name(url)))
         self.currentDownloadChanged.emit()
 
     @Property("QVariant", notify=currentDownloadChanged)

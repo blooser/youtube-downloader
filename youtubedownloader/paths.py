@@ -32,6 +32,10 @@ class Paths(QObject):
                                      ext=new_ext)
 
     @staticmethod
+    def file_name(path):
+        return pathlib.PurePath(path).name
+
+    @staticmethod
     def collect_files(core_path):
         files = {}
 
