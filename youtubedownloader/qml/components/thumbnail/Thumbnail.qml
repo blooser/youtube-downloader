@@ -27,7 +27,7 @@ Items.YDImage {
         ThumbnailPreDownload {
             url: root.source
             onDownload: dialogManager.open_dialog("SelectDirectoryDialog", {}, function (url) {
-                FileDownloader.download(root.source, String("%1/%2").arg(Paths.cleanPath(url)).arg(fileName))
+                fileDownloader.download(root.source, String("%1/%2").arg(Paths.cleanPath(url)).arg(fileName))
             })
         }
     }
@@ -36,9 +36,9 @@ Items.YDImage {
         id: download
 
         ThumbnailDownload {
-            to: FileDownloader.currentDownload.progress.totalBytes
-            value: FileDownloader.currentDownload.progress.readBytes
-            outputUrl: FileDownloader.currentDownload.outputUrl
+            to: fileDownloader.currentDownload.progress.totalBytes
+            value: fileDownloader.currentDownload.progress.readBytes
+            outputUrl: fileDownloader.currentDownload.outputUrl
         }
     }
 
@@ -48,19 +48,19 @@ Items.YDImage {
         changes: [
             Change {
                 component: preDownload
-                when: (FileDownloader.currentDownload === undefined)
+                when: (fileDownloader.currentDownload === undefined)
             },
 
             Change {
                 component: download
-                when: (FileDownloader.currentDownload !== undefined)
+                when: (fileDownloader.currentDownload !== undefined)
             }
         ]
     }
 
     Component.onDestruction: {
-        if (FileDownloader.currentDownload !== undefined) {
-            FileDownloader.clear()
+        if (fileDownloader.currentDownload !== undefined) {
+            fileDownloader.clear()
         }
     }
 }

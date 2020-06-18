@@ -44,7 +44,7 @@ def main():
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("Paths", paths)
-    engine.rootContext().setContextProperty("FileDownloader", file_downloader)
+    engine.rootContext().setContextProperty("fileDownloader", file_downloader)
     engine.rootContext().setContextProperty("WebBrowsers", browsers)
     download_manager.setQMLContext(engine)
     engine.load(qml_file)
