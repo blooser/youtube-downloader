@@ -9,6 +9,7 @@ TextField {
     id: root
 
     color: Theme.Colors.text
+    placeholderText: qsTr("Enter thumbnail's filename")
 
     background: Rectangle {
         implicitWidth: 200

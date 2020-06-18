@@ -9,7 +9,7 @@ Item {
 
     signal download(string fileName)
 
-    Column {
+    Row {
         spacing: Theme.Margins.tiny
 
         anchors {
@@ -21,15 +21,11 @@ Item {
         ThumbnailFileName {
             id: fileName
 
-            anchors.horizontalCenter: parent.horizontalCenter
-
             text: Paths.fileName(url)
         }
 
         Items.YDButton {
             text: qsTr("Download")
-
-            anchors.horizontalCenter: parent.horizontalCenter
 
             onClicked: root.download(fileName.text)
 
