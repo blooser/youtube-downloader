@@ -113,6 +113,7 @@ class PreDownload(QObject):
 
         if self.task.error:
             self.status = self.task.error
+            self.updated.emit(str(self.id))
 
     @staticmethod
     def pack(predownload):
