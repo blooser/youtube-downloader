@@ -5,17 +5,26 @@ import yd.items 0.1
 import "../../items" as Items
 import "../dynamic" as Dynamic
 
-
 Items.YDImage {
     id: root
 
     signal close()
 
+    ThumbnailCloseButton {
+        anchors {
+            right: root.right
+            rightMargin: -(width/2)
+            top: root.top
+            topMargin: -(height/2)
+        }
+
+        onClose: root.close()
+    }
+
     Component {
         id: preDownload
 
         ThumbnailPreDownload {
-            onClose: root.close()
             onDownload: dialogManager.open_dialog("SelectDirectoryDialog", {}, function (url) {
                 FileDownloader.download(root.source, Paths.cleanPath(url))
             })

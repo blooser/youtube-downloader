@@ -5,13 +5,7 @@ import "../../items" as Items
 Item {
     id: root
 
-    signal close()
     signal download()
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: root.close()
-    }
 
     Items.YDButton {
         text: qsTr("Download")
