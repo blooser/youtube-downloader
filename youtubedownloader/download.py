@@ -33,6 +33,15 @@ def human_date(date):
     return QDate.fromString(date, "yyyyMMdd").toString(Qt.RFC2822Date)
 
 
+def singleVideoIfPlaylist(url):
+    index = url.find("&list=")
+
+    if index != -1:
+        url = url[:index]
+
+    return url
+
+
 class PreDownloadTask(QThread):
     collected_info = Signal(dict)
 
@@ -858,7 +867,7 @@ class DownloadManager(QObject):
     @Slot(str, "QVariantMap")
     def predownload(self, url, options):
         if url:
-            predownload = PreDownload(url, options)
+            predownload = PreDownload(singleVideoIfPlaylist(url), options)
             self.predownload_model.add_predownload(predownload)
             predownload.start()
 
