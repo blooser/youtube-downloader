@@ -18,6 +18,8 @@ It allows for customizing your downloads:
 - Select where a single download should be stored
 - What kind of file it should be
 - Pause and resume 
+- Download thumbnail
+
 
 ## Usage
 

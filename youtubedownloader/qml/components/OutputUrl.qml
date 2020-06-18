@@ -20,6 +20,8 @@ Item {
 
         Items.YDText {
             Layout.fillWidth: true
+            style: Text.Outline
+            styleColor: Theme.Colors.textStyle
             text: root.url
         }
 
