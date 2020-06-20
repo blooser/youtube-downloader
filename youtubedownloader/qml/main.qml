@@ -105,8 +105,8 @@ ApplicationWindow {
     Connections {
         target: dialogManager
 
-        onOpen: dialogCreator.open(dialog, properties, callback)
-        onClose: dialogCreator.close(dialog)
+        function onOpen(dialog, properties, callback) { dialogCreator.open(dialog, properties, callback) }
+        function onClose(dialog) { dialogCreator.close(dialog) }
     }
 
     QtObject {
