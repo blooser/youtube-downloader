@@ -33,7 +33,7 @@ setup (
         "console_scripts": ["youtube-downloader = youtubedownloader:main"]
     },
     install_requires = [
-        "PySide2==5.14.1",
+        "PySide2",
         "lz4",
         "youtube-dl"
     ],
