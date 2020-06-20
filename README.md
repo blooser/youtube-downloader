@@ -1,8 +1,7 @@
 
 <div align="center">
-	<img src="https://raw.githubusercontent.com/blooser/youtube-downloader/14fbb83b2cfeccc256ae709c04c9d53cff7e3c0d/youtubedownloader/resources/yd-with-text.svg" width="350" height="350>
+	<img src="https://raw.githubusercontent.com/blooser/youtube-downloader/2be980cf31b253b0788e97b477b4a8ebba56a731/youtubedownloader/resources/yd-with-text.svg" width="350" height="350">
 </div>
-
 
 Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_interface) helper for [youtube-dl](https://github.com/ytdl-org/youtube-dl/). It provides a graphical interface to download videos from YouTube.com with conveniences like track the download, pause, or select the media format.
 
