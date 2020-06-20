@@ -1,7 +1,10 @@
 
-# Youtube Downloader
+<div align="center">
+	<img src="https://raw.githubusercontent.com/blooser/youtube-downloader/14fbb83b2cfeccc256ae709c04c9d53cff7e3c0d/youtubedownloader/resources/yd-with-text.svg" width="350" height="350>
+</div>
 
-Youtube downloader is a GUI helper for [youtube-dl](https://github.com/ytdl-org/youtube-dl/). It provides a graphical interface to add, track and remove videos from youtube. 
+
+Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_interface) helper for [youtube-dl](https://github.com/ytdl-org/youtube-dl/). It provides a graphical interface to download videos from YouTube.com with conveniences like track the download, pause, or select the media format.
 
 ## Preview
 
@@ -38,10 +41,9 @@ Prepare youtube downloader to work
 ### Manual
 
 ```bash
-git clone https://github.com/blooser/youtube-downloader
-cd youtube-downloader
+git clone https://github.com/blooser/youtube-downloader && cd youtube-downloader
 python setup.py build
-sudo setup.py install
+sudo setup.py install 
 ```
 
 ### PyPi
@@ -53,3 +55,4 @@ pip install youtube-downloader
 ## License
 
 Youtube downloader is a free software released under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
