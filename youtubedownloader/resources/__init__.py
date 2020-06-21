@@ -7,7 +7,7 @@ from ..logger import create_logger
 
 class Resources(QObject):
     CORE_PATH = os.path.dirname(__file__)
-    YD_LOGO = os.path.join(CORE_PATH, "yd.svg")
+    YD_LOGO = os.path.join(CORE_PATH, "youtube-downloader.svg")
 
     def __init__(self):
         super(Resources, self).__init__(None)
