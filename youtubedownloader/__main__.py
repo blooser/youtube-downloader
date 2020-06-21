@@ -21,7 +21,7 @@ def main():
 
     app = QApplication(sys.argv)
     app.setApplicationName("youtube downloader")
-    app.setApplicationVersion("0.3.1")
+    app.setApplicationVersion("0.3.2")
     app.setOrganizationName("blooser")
     app.setWindowIcon(QIcon(Resources.YD_LOGO))
 
