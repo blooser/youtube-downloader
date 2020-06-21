@@ -2,9 +2,9 @@
 Name=Youtube Downloader
 GenericName=youtube-dl GUI simplify
 Comment=Download youtube videos 
-Icon=yd
+Icon=youtube-downloader
 Exec=youtube-downloader
 Terminal=false
 Type=Application
 StartupNotify=false
-Categories=Multimedia;AudioVideo;Qt
+Categories=X-Multimedia;AudioVideo;Qt

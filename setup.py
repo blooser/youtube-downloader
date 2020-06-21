@@ -20,8 +20,8 @@ setup (
         "": ["*.svg", "icons/*.svg", "qml/*.qml", "qml/*/*", "qml/*/*/*"]
     },
     data_files = [
-        ("/usr/local/share/applications", ["doc/yd.desktop"]),
-        ("/usr/local/share/icons/hicolor/scalable/apps", ["youtubedownloader/resources/yd.svg"])
+        ("/usr/local/share/applications", ["doc/youtube-downloader.desktop"]),
+        ("/usr/local/share/icons/hicolor/scalable/apps", ["youtubedownloader/resources/youtube-downloader.svg"])
     ],
     classifiers = [
         "Programming Language :: Python :: 3",
