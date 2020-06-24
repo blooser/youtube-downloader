@@ -25,5 +25,12 @@ ListView {
         text: name
     }
 
+    Items.YDText {
+        anchors.centerIn: root
+        text: qsTr("Empty")
+        visible: (root.count === Theme.Capacity.empty)
+        opacity: Theme.Visible.disabled
+    }
+
     ScrollBar.vertical: Items.YDScrollBar {}
 }
