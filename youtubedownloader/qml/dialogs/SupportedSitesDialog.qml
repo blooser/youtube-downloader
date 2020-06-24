@@ -11,7 +11,7 @@ YDDialog {
     implicitHeight: 500
 
     dialog: "SupportedSitesDialog"
-    headerText: qsTr("Supported sites")
+    headerText: qsTr("Supported sites (%1)").arg(supportedSitesModel.size)
 
     standardButtons: Dialog.Ok
 

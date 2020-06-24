@@ -21,6 +21,7 @@ Item {
             Layout.fillWidth: true
 
             placeholderText: qsTr("Search site")
+            focus: true
         }
 
         Sites {

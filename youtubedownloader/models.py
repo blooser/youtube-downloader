@@ -27,7 +27,7 @@ class SupportedSitesModel(QAbstractItemModel):
 
     @Property(int, notify=sizeChanged)
     def size(self):
-        return len(self.predownloads)
+        return len(self.sites)
 
     def index(self, row, column, parent):
         return self.createIndex(row, column, parent)

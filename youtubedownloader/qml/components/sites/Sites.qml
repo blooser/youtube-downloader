@@ -1,4 +1,5 @@
 ﻿import QtQuick 2.14
+import QtQuick.Controls 2.14
 
 import yd.items 0.1
 
@@ -23,4 +24,6 @@ ListView {
         width: root.width
         text: name
     }
+
+    ScrollBar.vertical: Items.YDScrollBar {}
 }
