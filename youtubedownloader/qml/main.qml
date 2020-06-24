@@ -19,6 +19,10 @@ ApplicationWindow {
 
     title: qsTr("Youtube Downloader")
 
+    header: Components.ApplicationHeader {
+
+    }
+
     background: Rectangle {
         color: Theme.Colors.base
     }
