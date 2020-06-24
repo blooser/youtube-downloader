@@ -1,4 +1,6 @@
-﻿function progress(value, to) {
+﻿const WINDOW_MARGIN = 175
+
+function progress(value, to) {
     let number = Math.floor((value/to) * 100)
 
     if (isNaN(number)) {
