@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from .logger import create_logger
 
 import urllib.request
+import urllib.error
 
 
 class SupportedSitesModel(QAbstractItemModel):
@@ -33,16 +34,20 @@ class SupportedSitesModel(QAbstractItemModel):
         return self.createIndex(row, column, parent)
 
     def collect_sites(self):
-        with urllib.request.urlopen(SupportedSitesModel.SUPPORTED_SITES_URL) as response:
-            data = response.read().decode("utf-8")
-            soup = BeautifulSoup(data, "html.parser")
+        try:
+            with urllib.request.urlopen(SupportedSitesModel.SUPPORTED_SITES_URL) as response:
+                data = response.read().decode("utf-8")
+                soup = BeautifulSoup(data, "html.parser")
 
-            for tag in soup.find_all("li"):
-                self.sites.append(tag.b.string)
+                for tag in soup.find_all("li"):
+                    self.sites.append(tag.b.string)
 
-        self.sizeChanged.emit(len(self.sites))
+            self.sizeChanged.emit(len(self.sites))
 
-        self.logger.info("Collected {sites} sites".format(sites=len(self.sites)))
+            self.logger.info("Collected {sites} sites".format(sites=len(self.sites)))
+
+        except urllib.error.URLError as err:
+            self.logger.warning(str(err))
 
     def roleNames(self, index=QModelIndex()):
         return {
@@ -76,8 +81,6 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
         self._string = str()
         self._filter_role_name = str()
 
-        self.logger = create_logger(__name__)
-
         self.sourceModelChanged.connect(lambda: self.set_filter_role_if_need())
 
     def classBegin(self):
@@ -90,9 +93,10 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
         if self.sourceModel() == None:
             return;
 
+        encoded_filter_role_name = self._filter_role_name.encode()
         role_names = self.sourceModel().roleNames()
         for role in role_names:
-            if role_names[role].decode() == self._filter_role_name:
+            if role_names[role] == encoded_filter_role_name:
                 self.setFilterRole(role)
 
     def read_filter_role_name(self):

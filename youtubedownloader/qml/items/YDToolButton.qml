@@ -7,6 +7,7 @@ ToolButton {
     contentItem: YDText {
         text: root.text
         font: root.font
+        opacity: root.enabled ? Theme.Visible.on : Theme.Visible.disabled
     }
 
     background: Rectangle {
