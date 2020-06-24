@@ -50,6 +50,7 @@ Item {
                 Items.YDLink {
                     id: uploader
 
+                    visible: (text !== Theme.String.empty)
                     horizontalAlignment: Text.AlignLeft
                 }
 

@@ -23,13 +23,13 @@ Item {
             id: link
 
             Layout.fillWidth: true
-            placeholderText: qsTr("Enter youtube link")
+            placeholderText: qsTr("Enter supported link")
             placeholderTextColor: Theme.Colors.placeholder
 
             onTextEdited: Settings.inputLink = text
 
             validator: RegularExpressionValidator {
-                regularExpression: Regex.YOUTUBE_LINK_REGEX
+                regularExpression: Regex.URL_REGEX
             }
 
             Keys.onEnterPressed: addButton.clicked()
