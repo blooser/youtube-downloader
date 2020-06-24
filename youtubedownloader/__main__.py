@@ -7,7 +7,7 @@ from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QUrl, QResource
 from PySide2.QtWidgets import QApplication
 
-from .download import DownloadManager, FileDownloader
+from .download import DownloadManager, FileDownloader, SupportedSitesDownloader
 from .component_changer import ComponentChanger, Change
 from .dialog_manager import DialogManager
 from .resources import Resources
@@ -32,6 +32,7 @@ def main():
     paths = Paths()
     browsers = Browsers()
     file_downloader = FileDownloader()
+    supported_sites_downloader = SupportedSitesDownloader()
 
     qmlRegisterType(Change, "yd.items", 0, 1, "Change")
     qmlRegisterType(ComponentChanger, "yd.items", 0, 1, "ComponentChanger")
@@ -45,6 +46,7 @@ def main():
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("Paths", paths)
     engine.rootContext().setContextProperty("fileDownloader", file_downloader)
+    engine.rootContext().setContextProperty("supportedSitesDownloader", supported_sites_downloader)
     engine.rootContext().setContextProperty("WebBrowsers", browsers)
     download_manager.setQMLContext(engine)
     engine.load(qml_file)

@@ -6,5 +6,6 @@ Items.YDToolBar {
 
     Items.YDToolButton {
         text: qsTr("Supported sites")
+        onClicked: dialogManager.open_dialog("SupportedSitesDialog", {}, null)
     }
 }

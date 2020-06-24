@@ -14,7 +14,9 @@ from .download import (
 
     FileDownloader,
     FileDownload,
-    FileDownloadProgress
+    FileDownloadProgress,
+
+    SupportedSitesDownloader
 )
 
 from .paths import (
