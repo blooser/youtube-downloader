@@ -15,12 +15,15 @@ from .download import (
     FileDownloader,
     FileDownload,
     FileDownloadProgress,
-
-    SupportedSitesDownloader
 )
 
 from .paths import (
     Paths
+)
+
+from .models import (
+    SupportedSitesModel,
+    StringFilterModel
 )
 
 from .dialog_manager import (

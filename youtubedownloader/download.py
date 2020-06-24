@@ -5,8 +5,6 @@ from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
 from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFile, QIODevice, QFileSystemWatcher, QModelIndex, QDateTime, QDate, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
 from PySide2.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
 
-from bs4 import BeautifulSoup
-
 import os.path
 import pathlib
 import pickle
@@ -977,25 +975,3 @@ class FileDownloader(QObject):
     @Property("QVariant", notify=currentDownloadChanged)
     def currentDownload(self):
         return self.current_download
-
-
-class SupportedSitesDownloader(QObject):
-    YOUTUBE_DL_SUPPORTED_SITES_URL = "https://ytdl-org.github.io/youtube-dl/supportedsites.html"
-
-    def __init__(self):
-        super(SupportedSitesDownloader, self).__init__(None)
-
-        self.sites = []
-        self.logger = create_logger(__name__)
-        with urllib.request.urlopen(SupportedSitesDownloader.YOUTUBE_DL_SUPPORTED_SITES_URL) as response:
-            data = response.read().decode("utf-8")
-            soup = BeautifulSoup(data, "html.parser")
-
-            for tag in soup.find_all("li"):
-                self.sites.append(tag.b.string)
-
-        self.logger.info("Collected {sites} supported sites".format(sites=len(self.sites)))
-
-    @Property("QVariantList", constant=True)
-    def supportedSites(self):
-        return self.sites

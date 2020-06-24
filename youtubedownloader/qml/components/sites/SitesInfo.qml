@@ -16,6 +16,8 @@ Item {
         spacing: Theme.Margins.big
 
         Items.YDInput {
+            id: siteInput
+
             Layout.fillWidth: true
 
             placeholderText: qsTr("Search site")
@@ -24,6 +26,8 @@ Item {
         Sites {
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            site: siteInput.text
         }
     }
 }
