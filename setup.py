@@ -35,6 +35,7 @@ setup (
     install_requires = [
         "PySide2",
         "lz4",
+        "beautifulsoup4",
         "youtube-dl"
     ],
     keywords = "qt qml pyside2 youtube download youtube-dl",
