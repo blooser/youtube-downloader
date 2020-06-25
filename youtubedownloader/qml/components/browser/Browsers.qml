@@ -45,10 +45,13 @@ Item {
                 Items.YDTabButton {
                     text: modelData.name
 
-                    ToolTip.delay: 500
-                    ToolTip.timeout: 2000
-                    ToolTip.visible: hovered
-                    ToolTip.text: qsTr("Current opened YouTube tabs in %1").arg(modelData.name)
+                    Items.YDToolTip {
+                        delay: 500
+                        timeout: 2000
+                        visible: hovered
+                        text: qsTr("Current opened YouTube tabs in %1").arg(modelData.name)
+                    }
+
                 }
             }
         }
