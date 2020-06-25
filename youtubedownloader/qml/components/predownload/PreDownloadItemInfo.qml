@@ -70,20 +70,16 @@ Item {
         }
     }
 
-    Items.YDTextButton {
-        text: destinationFile
+    PreDownloadDestination {
+        id: preDownloadDestination
 
-        font.pixelSize: Theme.FontSize.micro
         anchors {
             bottom: root.bottom
             bottomMargin: Theme.Size.borderBold
             horizontalCenter: root.horizontalCenter
         }
 
-        onClicked: dialogManager.open_dialog("SelectDirectoryDialog", {"folder": downloadOptions.outputPath}, function(path){
-            if (path !== downloadOptions.outputPath) {
-                root.changeOutputPath(Paths.cleanPath(path))
-            }
-        })
+        destination: destinationFile
+        onChangeDestination: root.changeOutputPath(newDestination)
     }
 }

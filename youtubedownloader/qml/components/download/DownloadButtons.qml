@@ -65,7 +65,7 @@ Item {
         State {
             when: (status === "finished")
             name: "finished"
-            PropertyChanges { target: downloadButton; imageSource: Resources.icons.folder; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; opacity: Theme.Visible.on; onClicked: root.open() }
+            PropertyChanges { target: downloadButton; imageSource: Resources.icons.eye; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; opacity: Theme.Visible.on; onClicked: root.open() }
         }
     ]
 

@@ -26,7 +26,11 @@ Item {
     RowLayout {
         id: mainLayout
 
-        anchors.fill: root
+        anchors {
+            fill: parent
+            leftMargin: Theme.Margins.normal
+            rightMargin: Theme.Margins.normal
+        }
 
         spacing: Theme.Margins.normal
 

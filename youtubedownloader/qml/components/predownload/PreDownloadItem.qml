@@ -104,7 +104,6 @@ Rectangle {
                 when: (preDownloadStatus === "exists")
             },
 
-
             Change {
                 component: itemError
                 when: (preDownloadStatus.includes("ERROR") || preDownloadStatus.includes("unsupported"))

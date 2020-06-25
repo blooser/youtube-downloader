@@ -28,11 +28,7 @@ Items.YDProgressBar {
 
         z: root.z + 1
 
-        anchors {
-            fill: root
-            leftMargin: Theme.Margins.small
-            rightMargin: Theme.Margins.small
-        }
+        anchors.fill: root
 
         onRemove: root.remove()
         onOpen: root.open()
