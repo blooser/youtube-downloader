@@ -18,6 +18,7 @@ YDDialog {
     standardButtons: Dialog.Ok
 
     implicitWidth: 650
+    implicitHeight: 500
 
     contentItem: Format.FormatFileDescriptions {
         id: formatFileDescriptions
@@ -29,7 +30,4 @@ YDDialog {
         }
     }
 
-    Behavior on implicitHeight {
-        NumberAnimation { duration: Theme.Animation.quick }
-    }
 }
