@@ -17,6 +17,8 @@ class HistoryModel(QAbstractItemModel):
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
+    sizeChanged = Signal(int)
+
     def __init__(self, session):
         super(HistoryModel, self).__init__(None)
 
@@ -34,6 +36,10 @@ class HistoryModel(QAbstractItemModel):
         self.session.delete(item)
         self.populate()
 
+    @Property(int, notify=sizeChanged)
+    def size(self):
+        return len(self.data)
+
     def populate(self):
         self.beginResetModel()
 
@@ -42,6 +48,8 @@ class HistoryModel(QAbstractItemModel):
             self.data.append(item)
 
         self.endResetModel()
+
+        self.sizeChanged.emit(self.rowCount())
 
     def index(self, row, column, parent):
         return self.createIndex(row, column, parent)
