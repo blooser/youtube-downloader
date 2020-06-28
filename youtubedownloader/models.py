@@ -17,18 +17,21 @@ class HistoryModel(QAbstractItemModel):
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
-    sizeChanged = Signal(int)
+    sizeChanged = Signal(int, arguments=["size"])
 
     def __init__(self, session):
         super(HistoryModel, self).__init__(None)
 
         self.session = session
-        self.data = []
+        self.items = []
 
-    @Slot(str, str, str, str)
-    def add(self, url, title, uploader, thumbnail):
-        self.session.add(History(url=url, title=title, uploader=uploader, thumbnail=thumbnail))
         self.populate()
+
+    @Slot(str, str, str, str, str)
+    def add(self, url, title, uploader, uploader_url, thumbnail):
+        if self.session.query(History).filter_by(url=url).one() == None:
+            self.session.add(History(url=url, title=title, uploader=uploader, uploader_url=uploader_url, thumbnail=thumbnail))
+            self.populate()
 
     @Slot(str)
     def remove(self, url):
@@ -38,14 +41,14 @@ class HistoryModel(QAbstractItemModel):
 
     @Property(int, notify=sizeChanged)
     def size(self):
-        return len(self.data)
+        return len(self.items)
 
     def populate(self):
         self.beginResetModel()
 
-        self.data = []
-        for item in self.session.query(History).all():
-            self.data.append(item)
+        self.items = []
+        for item in self.session.query(History).order_by(History.date.desc()).all():
+            self.items.append(item)
 
         self.endResetModel()
 
@@ -59,12 +62,13 @@ class HistoryModel(QAbstractItemModel):
             256: b"url",
             257: b"title",
             258: b"uploader",
-            259: b"thumbnail",
-            260: b"date"
+            259: b"uploaderUrl",
+            260: b"thumbnail",
+            261: b"date"
         }
 
     def rowCount(self, index=QModelIndex()):
-        return len(self.data)
+        return len(self.items)
 
     def columnCount(self, index=QModelIndex()):
         return SupportedSitesModel.LAST_COLUMN
@@ -73,7 +77,7 @@ class HistoryModel(QAbstractItemModel):
         if not index.isValid():
             return
 
-        item = self.data[index.row()]
+        item = self.items[index.row()]
 
         if role == 256:
             return item.url
@@ -85,9 +89,12 @@ class HistoryModel(QAbstractItemModel):
             return item.uploader
 
         elif role == 259:
-            return item.thumbnail
+            return item.uploader_url
 
         elif role == 260:
+            return item.thumbnail
+
+        elif role == 261:
             return item.date
 
 

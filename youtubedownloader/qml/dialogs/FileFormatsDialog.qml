@@ -29,5 +29,4 @@ YDDialog {
             formatFileDescriptions.setFormat(format)
         }
     }
-
 }

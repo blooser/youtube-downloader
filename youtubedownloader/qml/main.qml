@@ -9,7 +9,9 @@ import "components" as Components
 import "components/download" as Download
 import "components/link" as Link
 import "components/browser" as Browser
+import "components/history" as History
 import "util/regex.js" as Regex
+import "util/object.js" as Object
 
 ApplicationWindow {
     id: root
@@ -20,7 +22,11 @@ ApplicationWindow {
     title: qsTr("Youtube Downloader")
 
     header: Components.ApplicationHeader {
-
+        onSupportedSites: dialogManager.open_dialog("SupportedSitesDialog", {}, null)
+        onHistory: dialogManager.open_dialog("HistoryDialog", {
+                                                "x": root.width - 800, // NOTE: 800 is a Dialog width
+                                                 "implicitHeight": root.height
+                                             }, null)
     }
 
     background: Rectangle {
@@ -32,6 +38,24 @@ ApplicationWindow {
         property alias y: root.y
         property alias width: root.width
         property alias height: root.height
+    }
+
+    Connections {
+        target: downloadManager
+
+        function onNewDownload(download) {
+            historyModel.add(download.url,
+                             download.data.title,
+                             download.data.uploader,
+                             download.data.uploader_url,
+                             download.data.thumbnail)
+        }
+
+        function onPreDownloadRequest(url) {
+            if (!downloadManager.exists(url, downloadOptions.options)) {
+                downloadManager.predownload(url, downloadOptions.options)
+            }
+        }
     }
 
     ColumnLayout {
@@ -119,19 +143,8 @@ ApplicationWindow {
         property var dialogStack: []
 
         function open(url, properties, callback) {
-            var component = Qt.createComponent(url)
-            if (component.status === Component.Error) {
-                console.warn("Failed to create", url, component.errorString())
-                return
-            }
-
-            if (typeof callback === "function") {
-                properties["callback"] = callback
-            }
-
-            var dialog = component.createObject(root, properties)
+            var dialog = Object.createComponent(url, root, properties, callback)
             dialog.open()
-
             dialogStack.push(dialog)
         }
 

@@ -51,7 +51,6 @@ Item {
                         visible: hovered
                         text: qsTr("Current opened YouTube tabs in %1").arg(modelData.name)
                     }
-
                 }
             }
         }

@@ -24,6 +24,8 @@ Item {
             Layout.alignment: Qt.AlignVCenter
             Layout.preferredWidth: 16
             Layout.preferredHeight: 16
+
+            visible: (textItem.text !== Theme.String.empty)
         }
 
         Items.YDText {

@@ -3,6 +3,10 @@
 import "../items" as Items
 
 Items.YDToolBar {
+    id: root
+
+    signal supportedSites()
+    signal history()
 
     Row {
         anchors.fill: parent
@@ -10,13 +14,14 @@ Items.YDToolBar {
 
         Items.YDToolButton {
             text: qsTr("Supported sites")
-            onClicked: dialogManager.open_dialog("SupportedSitesDialog", {}, null)
             enabled: (supportedSitesModel.size !== Theme.Capacity.empty)
+            onClicked: root.supportedSites()
         }
 
         Items.YDToolButton {
             text: qsTr("History")
             enabled: (historyModel.size !== Theme.Capacity.empty)
+            onClicked: root.history()
         }
     }
 }

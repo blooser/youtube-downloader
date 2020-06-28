@@ -860,6 +860,9 @@ class DownloadDuplicateChecker(object):
 
 
 class DownloadManager(QObject):
+    preDownloadRequest = Signal(str, arguments=["url"])
+    newDownload = Signal("QVariant", arguments=["download"])
+
     def __init__(self, config_path=None):
         super(DownloadManager, self).__init__(None)
         self.predownload_model = PreDownloadModel(config_path)
@@ -879,6 +882,7 @@ class DownloadManager(QObject):
             if predownload.status == "ready":
                 download = Download.fromPreDownload(predownload)
                 self.download_model.add_download(download)
+                self.newDownload.emit(PreDownload.pack(predownload))
                 download.start()
 
         self.predownload_model.remove("ready")
