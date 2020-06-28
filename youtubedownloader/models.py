@@ -29,7 +29,7 @@ class HistoryModel(QAbstractItemModel):
 
     @Slot(str, str, str, str, str)
     def add(self, url, title, uploader, uploader_url, thumbnail):
-        if self.session.query(History).filter_by(url=url).one() == None:
+        if self.session.query(History).filter_by(url=url).one_or_none() == None:
             self.session.add(History(url=url, title=title, uploader=uploader, uploader_url=uploader_url, thumbnail=thumbnail))
             self.populate()
 

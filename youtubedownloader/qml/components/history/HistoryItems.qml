@@ -1,7 +1,12 @@
 ﻿import QtQuick 2.14
 
+import yd.items 0.1
+
+
 Item {
     id: root
+
+    property string searchString
 
     implicitWidth: listView.implicitWidth
     implicitHeight: listView.implicitHeight
@@ -14,7 +19,11 @@ Item {
         clip: true
         spacing: Theme.Margins.tiny
 
-        model: historyModel
+        model: StringFilterModel {
+            sourceModel: historyModel
+            string: root.searchString
+            filterRoleName: "title"
+        }
 
         delegate: HistoryItem {
             width: listView.width
