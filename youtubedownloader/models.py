@@ -5,9 +5,78 @@ from PySide2.QtQml import QQmlParserStatus
 from bs4 import BeautifulSoup
 
 from .logger import create_logger
+from .settings import Settings
+from .database.models import History
 
 import urllib.request
 import urllib.error
+
+
+class HistoryModel(QAbstractItemModel):
+    COLUMNS = ("url", "title", "uploader", "thumbnail")
+    FIRST_COLUMN = 0
+    LAST_COLUMN = len(COLUMNS)
+
+    def __init__(self, session):
+        super(HistoryModel, self).__init__(None)
+
+        self.session = session
+        self.data = []
+
+    @Slot(str, str, str, str)
+    def add(self, url, title, uploader, thumbnail):
+        self.session.add(History(url=url, title=title, uploader=uploader, thumbnail=thumbnail))
+        self.populate()
+
+    @Slot(str)
+    def remove(self, url):
+        item = self.session.query(History).filter_by(url=url).one()
+        self.session.delete(item)
+        self.populate()
+
+    def populate(self):
+        self.beginResetModel()
+
+        self.data = []
+        for item in self.session.query(History).all():
+            self.data.append(item)
+
+        self.endResetModel()
+
+    def index(self, row, column, parent):
+        return self.createIndex(row, column, parent)
+
+    def roleNames(self, index=QModelIndex()):
+        return {
+            256: b"url",
+            257: b"title",
+            258: b"uploader",
+            259: b"thumbnail"
+        }
+
+    def rowCount(self, index=QModelIndex()):
+        return len(self.data)
+
+    def columnCount(self, index=QModelIndex()):
+        return SupportedSitesModel.LAST_COLUMN
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+
+        item = self.data[index.row()]
+
+        if role == 256:
+            return item.url
+
+        elif role == 257:
+            return item.title
+
+        elif role == 258:
+            return item.uploader
+
+        elif role == 259:
+            return item.thumbnail
 
 
 class SupportedSitesModel(QAbstractItemModel):

@@ -23,7 +23,8 @@ from .paths import (
 
 from .models import (
     SupportedSitesModel,
-    StringFilterModel
+    StringFilterModel,
+    HistoryModel
 )
 
 from .dialog_manager import (

@@ -6,7 +6,8 @@ import os.path
 import atexit
 
 class Settings(QObject):
-    CONFIG_PATH = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation) + "/.yddownloadersettings"
+    CONFIG_PATH = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "ydsettings")
+    DB_PATH = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "yddatabase.db")
 
     input_link_changed = Signal(str)
     output_path_changed = Signal(str)
