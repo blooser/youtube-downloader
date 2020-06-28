@@ -7,8 +7,8 @@ Rectangle {
 
     signal close()
 
-    implicitWidth: Theme.Size.icon * 1.5
-    implicitHeight: Theme.Size.icon * 1.5
+    implicitWidth: Theme.Size.icon * 2
+    implicitHeight: Theme.Size.icon * 2
 
     Items.YDImage {
         source: Resources.icons.close
