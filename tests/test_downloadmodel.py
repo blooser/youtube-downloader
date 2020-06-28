@@ -10,7 +10,7 @@ from youtubedownloader import PreDownload, Download, DownloadModel
 class DownloadModelTest(unittest.TestCase):
 
     def setUp(self):
-        self.config_path = "downloadmodelconfig"
+        self.config_path = "downloadmodelconfig_test"
         
         self.options = {
                 "file_format": "mp3",

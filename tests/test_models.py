@@ -29,8 +29,8 @@ class ModelsTest(unittest.TestCase):
         
         history_model = HistoryModel(db.session) # NOTE: Load into RAM
     
-        history_model.add("t0", "t1", "t2", "t3")
-        history_model.add("f0", "f1", "f2", "f3")
+        history_model.add("t0", "t1", "t2", "t3", "t4")
+        history_model.add("f0", "f1", "f2", "f3", "f4")
         
         self.assertEqual(history_model.rowCount(), 2)
         

@@ -12,7 +12,7 @@ class PreDownloadModelTest(unittest.TestCase):
     def setUp(self):
         self.yt_url = "https://www.youtube.com/watch?v=3L65PG_eZFg"
         
-        self.config_path = "predownloadmodelconfig"
+        self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "predownloadconfig_test")
         
         self.options = {
                 "file_format": "mp3",
@@ -21,6 +21,7 @@ class PreDownloadModelTest(unittest.TestCase):
         
         
     def tearDown(self):
+        print("Removing", self.config_path, os.path.isfile(self.config_path))
         if os.path.isfile(self.config_path):
             os.remove(self.config_path)
 

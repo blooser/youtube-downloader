@@ -14,10 +14,11 @@ class ResourcesTest(unittest.TestCase):
     def test_resourcesCollectsIcons(self):
         resources = Resources()
         
-        resources_icons = resources.icon_paths()
-        self.assertEqual(len(resources_icons), 12)
+        resources_icons = resources.icon_paths
+        self.assertEqual(len(resources_icons), 16)
         
-        expected_keys = ["download", "delete", "plus", "folder", "redo", "pause", "youtube", "arrowDown", "check", "dizzy", "eye", "calendar", "question", "close"]
+        expected_keys = ["download", "delete", "plus", "folder", "redo", "pause", "arrowDown", "check", "dizzy", 
+                         "eye", "calendar", "question", "close", "firefox", "time"]
         for key in resources_icons.keys():
                 self.assertTrue(key in expected_keys)
                 

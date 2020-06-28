@@ -10,7 +10,7 @@ from youtubedownloader import DownloadManager, Download, PreDownload
 class DownloadManagerTest(unittest.TestCase):
     
     def setUp(self):
-        self.config_path = "testdownload_manager"
+        self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "downloadmanagerconfig_test")
         
         self.url = "https://www.youtube.com/watch?v=wqeJ5Vkb6JE"
         
