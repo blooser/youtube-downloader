@@ -4,7 +4,8 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import SupportedSitesModel, StringFilterModel
+from youtubedownloader import SupportedSitesModel, StringFilterModel, HistoryModel
+from youtubedownloader.database import Database
 
 class ModelsTest(unittest.TestCase):
     
@@ -22,6 +23,22 @@ class ModelsTest(unittest.TestCase):
         string_filter_model.set_string("youtube")
         self.assertEqual(string_filter_model.rowCount(), 15)
 
+
+    def test_historyModelCommunicatesWithDatabase(self):
+        db = Database(":memory:")
+        
+        history_model = HistoryModel(db.session) # NOTE: Load into RAM
+    
+        history_model.add("t0", "t1", "t2", "t3")
+        history_model.add("f0", "f1", "f2", "f3")
+        
+        self.assertEqual(history_model.rowCount(), 2)
+        
+        history_model.remove("t0")
+        
+        self.assertEqual(history_model.rowCount(), 1)
+        
+    
 
 if __name__ == "__main__":
     unittest.main()
