@@ -13,7 +13,7 @@ import urllib.error
 
 
 class HistoryModel(QAbstractItemModel):
-    COLUMNS = ("url", "title", "uploader", "thumbnail")
+    COLUMNS = ("url", "title", "uploader", "thumbnail", "date")
     FIRST_COLUMN = 0
     LAST_COLUMN = len(COLUMNS)
 
@@ -51,7 +51,8 @@ class HistoryModel(QAbstractItemModel):
             256: b"url",
             257: b"title",
             258: b"uploader",
-            259: b"thumbnail"
+            259: b"thumbnail",
+            260: b"date"
         }
 
     def rowCount(self, index=QModelIndex()):
@@ -77,6 +78,9 @@ class HistoryModel(QAbstractItemModel):
 
         elif role == 259:
             return item.thumbnail
+
+        elif role == 260:
+            return item.date
 
 
 class SupportedSitesModel(QAbstractItemModel):
@@ -136,6 +140,7 @@ class SupportedSitesModel(QAbstractItemModel):
         if role == 256:
             return self.sites[index.row()]
 
+# NOTE: Proxy
 
 class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
     stringChanged = Signal(str, arguments=["string"])

@@ -1,4 +1,5 @@
-﻿from sqlalchemy import Column, Integer, String
+﻿from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.sql.expression import func
 
 from . import Base
 
@@ -10,4 +11,5 @@ class History(Base):
     title = Column(String(80))
     uploader = Column(String(80))
     thumbnail = Column(String(80))
+    date = Column(DateTime(), server_default=func.now())
 

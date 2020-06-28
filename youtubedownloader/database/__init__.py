@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
 class Database(object):
+
     def __init__(self, db_path: str):
         self.db_path = db_path
         self.engine = create_engine("sqlite:///{db_path}".format(db_path=self.db_path))
