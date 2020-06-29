@@ -17,7 +17,7 @@ ListView {
     model: StringFilterModel {
         sourceModel: supportedSitesModel
         string: root.site
-        filterRoleName: "name"
+        filterRoleNames: ["name"]
     }
 
     delegate: Items.YDText {

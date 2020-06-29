@@ -167,7 +167,7 @@ class SupportedSitesModel(QAbstractItemModel):
 
 class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
     stringChanged = Signal(str, arguments=["string"])
-    filterRoleNameChanged = Signal(str, arguments=["filterRoleName"])
+    filterRoleNamesChanged = Signal("QVariantList", arguments=["filterRoleNames"])
 
     def __init__(self):
         super(StringFilterModel, self).__init__(None)
@@ -176,9 +176,8 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
         self.setFilterCaseSensitivity(Qt.CaseInsensitive)
 
         self._string = str()
-        self._filter_role_name = str()
-
-        self.sourceModelChanged.connect(lambda: self.set_filter_role_if_need())
+        self._regex = None
+        self._filter_role_names = []
 
     def classBegin(self):
         pass
@@ -186,27 +185,32 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
     def componentComplete(self):
         pass
 
-    def set_filter_role_if_need(self):
-        if self.sourceModel() == None:
-            return;
-
-        encoded_filter_role_name = self._filter_role_name.encode()
+    def get_role(self, role_name):
         role_names = self.sourceModel().roleNames()
-        for role in role_names:
-            if role_names[role] == encoded_filter_role_name:
-                self.setFilterRole(role)
+        for role in self.sourceModel().roleNames():
+            if role_names[role] == role_name:
+                return role
 
-    def read_filter_role_name(self):
-        return self._filter_role_name
+        return None
 
-    def set_filter_role_name(self, new_filter_role_name):
-        if self._filter_role_name == new_filter_role_name or not new_filter_role_name:
+    def filterAcceptsRow(self, source_row, source_parent):
+        index = self.sourceModel().index(source_row, 0, source_parent)
+
+        for role_name in self._filter_role_names:
+            if self._string.lower() in self.sourceModel().data(index, self.get_role(role_name.encode())).lower():
+                return True
+
+        return False
+
+    def read_filter_role_names(self):
+        return self._filter_role_names
+
+    def set_filter_role_names(self, new_filter_role_names: list):
+        if len(new_filter_role_names) == 0:
             return
 
-        self._filter_role_name = new_filter_role_name
-        self.filterRoleNameChanged.emit(self._filter_role_name)
-
-        self.set_filter_role_if_need()
+        self._filter_role_names = new_filter_role_names
+        self.filterRoleNamesChanged.emit(self._filter_role_names)
 
     def read_string(self):
         return self.string
@@ -218,7 +222,7 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
         self._string = new_string
         self.stringChanged.emit(self._string)
 
-        self.setFilterWildcard("*{string}*".format(string=self._string))
+        self.invalidateFilter()
 
-    filterRoleName = Property(str, read_filter_role_name, set_filter_role_name, notify=filterRoleNameChanged)
+    filterRoleNames = Property("QVariantList", read_filter_role_names, set_filter_role_names, notify=filterRoleNamesChanged)
     string = Property(str, read_string, set_string, notify=stringChanged)

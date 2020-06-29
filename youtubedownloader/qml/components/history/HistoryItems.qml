@@ -22,7 +22,7 @@ Item {
         model: StringFilterModel {
             sourceModel: historyModel
             string: root.searchString
-            filterRoleName: "title"
+            filterRoleNames: ["title", "uploader"]
         }
 
         delegate: HistoryItem {
