@@ -2,6 +2,7 @@
 
 import yd.items 0.1
 
+import "../../items" as Items
 
 Item {
     id: root
@@ -42,5 +43,12 @@ Item {
         removeDisplaced: Transition {
             NumberAnimation { property: "y"; duration: Theme.Animation.quick }
         }
+    }
+
+    Items.YDText {
+        anchors.centerIn: root
+        text: qsTr("Empty")
+        opacity: Theme.Visible.disabled
+        visible: (listView.count === Theme.Capacity.empty)
     }
 }
