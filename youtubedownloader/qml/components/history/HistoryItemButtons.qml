@@ -22,7 +22,7 @@ Item {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
 
-            imageSource: Resources.icons.download
+            imageSource: Resources.icons.plus
             onClicked: root.add()
         }
 
