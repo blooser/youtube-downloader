@@ -36,8 +36,14 @@ class HistoryModel(QAbstractItemModel):
     @Slot(str)
     def remove(self, url):
         item = self.session.query(History).filter_by(url=url).one()
-        self.session.delete(item)
-        self.populate()
+        self.session.delete(item) # NOTE: Delete from database
+
+        index = self.items.index(item)
+        self.beginRemoveRows(QModelIndex(), index, index)
+        self.items.remove(item) # Note: Delete from model's data
+        self.endRemoveRows()
+
+        self.sizeChanged.emit(self.rowCount())
 
     @Property(int, notify=sizeChanged)
     def size(self):
