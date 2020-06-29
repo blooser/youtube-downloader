@@ -28,7 +28,6 @@ class DownloadManagerTest(unittest.TestCase):
                 "duration": 0
         }
         
-    def tearDown(self):
         if os.path.isfile(self.config_path):
             os.remove(self.config_path)
         

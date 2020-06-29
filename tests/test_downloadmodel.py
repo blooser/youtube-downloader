@@ -25,7 +25,6 @@ class DownloadModelTest(unittest.TestCase):
                     "duration": 2500
         }
         
-    def tearDown(self):
         if os.path.isfile(self.config_path):
             os.remove(self.config_path)
 

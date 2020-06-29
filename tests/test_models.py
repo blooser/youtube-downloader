@@ -19,7 +19,7 @@ class ModelsTest(unittest.TestCase):
         
         string_filter_model = StringFilterModel()
         string_filter_model.setSourceModel(supported_sites_model)
-        string_filter_model.set_filter_role_name("name")
+        string_filter_model.set_filter_role_names(["name"])
         string_filter_model.set_string("youtube")
         self.assertEqual(string_filter_model.rowCount(), 15)
 

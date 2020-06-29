@@ -19,13 +19,9 @@ class PreDownloadModelTest(unittest.TestCase):
                 "output_path": "/foo/bar/path"
         }
         
-        
-    def tearDown(self):
-        print("Removing", self.config_path, os.path.isfile(self.config_path))
         if os.path.isfile(self.config_path):
             os.remove(self.config_path)
-
-
+        
     def test_preDownloadModelSavesAndLoadData(self):        
             predownload = PreDownload(self.yt_url, self.options)
             predownload_model = PreDownloadModel(self.config_path)
