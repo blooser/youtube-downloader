@@ -31,12 +31,14 @@ class HistoryModel(QAbstractItemModel):
     def add(self, url, title, uploader, uploader_url, thumbnail):
         if self.session.query(History).filter_by(url=url).one_or_none() == None:
             self.session.add(History(url=url, title=title, uploader=uploader, uploader_url=uploader_url, thumbnail=thumbnail))
+            self.session.commit()
             self.populate()
 
     @Slot(str)
     def remove(self, url):
         item = self.session.query(History).filter_by(url=url).one()
         self.session.delete(item) # NOTE: Delete from database
+        self.session.commit()
 
         index = self.items.index(item)
         self.beginRemoveRows(QModelIndex(), index, index)

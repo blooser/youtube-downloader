@@ -14,6 +14,4 @@ class History(Base):
     thumbnail = Column(String(80))
     date = Column(DateTime(), server_default=func.now())
 
-    def __eq__(self, other):
-        return self.url == other.url
 
