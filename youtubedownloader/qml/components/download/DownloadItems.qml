@@ -37,6 +37,14 @@ Item {
                 downloadModel.remove_download(index)
             })
         }
+
+        remove: Transition {
+            OpacityAnimator { from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
+        }
+
+        removeDisplaced: Transition {
+            NumberAnimation { property: "y"; duration: Theme.Animation.quick }
+        }
     }
 
     Behavior on implicitHeight {
