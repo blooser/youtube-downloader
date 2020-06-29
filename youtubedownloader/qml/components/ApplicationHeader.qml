@@ -1,4 +1,5 @@
 ﻿import QtQuick 2.14
+import QtQuick.Layouts 1.14
 
 import "../items" as Items
 
@@ -8,20 +9,32 @@ Items.YDToolBar {
     signal supportedSites()
     signal history()
 
-    Row {
+    RowLayout {
         anchors.fill: parent
         spacing: Theme.Margins.big
 
-        Items.YDToolButton {
-            text: qsTr("Supported sites")
-            enabled: (supportedSitesModel.size !== Theme.Capacity.empty)
-            onClicked: root.supportedSites()
+        Row {
+            spacing: Theme.Margins.big
+
+            Items.YDToolButton {
+                text: qsTr("Supported sites")
+                enabled: (supportedSitesModel.size !== Theme.Capacity.empty)
+                onClicked: root.supportedSites()
+            }
+
+            Items.YDToolButton {
+                text: qsTr("History")
+                enabled: (historyModel.size !== Theme.Capacity.empty)
+                onClicked: root.history()
+            }
         }
 
-        Items.YDToolButton {
-            text: qsTr("History")
-            enabled: (historyModel.size !== Theme.Capacity.empty)
-            onClicked: root.history()
+        Items.YDText {
+            Layout.alignment: Qt.AlignRight
+            Layout.rightMargin: Theme.Margins.big
+
+            font.pixelSize: Theme.FontSize.micro
+            text: qsTr("Version %1").arg(Qt.application.version)
         }
     }
 }
