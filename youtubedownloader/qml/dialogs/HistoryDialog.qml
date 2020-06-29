@@ -7,8 +7,6 @@ import "../components/history" as History
 YDDialog {
     id: root
 
-    implicitWidth: 800
-
     dialog: "HistoryDialog"
     header: null
     background: Rectangle { color: Theme.Colors.blank }

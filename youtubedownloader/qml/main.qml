@@ -24,7 +24,8 @@ ApplicationWindow {
     header: Components.ApplicationHeader {
         onSupportedSites: dialogManager.open_dialog("SupportedSitesDialog", {}, null)
         onHistory: dialogManager.open_dialog("HistoryDialog", {
-                                                "x": root.width - 800, // NOTE: 800 is a Dialog width
+                                                "x": root.width - (root.width/2),
+                                                "implicitWidth": root.width/2,
                                                 "implicitHeight": root.height
                                              }, null)
     }
