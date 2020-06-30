@@ -176,7 +176,6 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
         self.setFilterCaseSensitivity(Qt.CaseInsensitive)
 
         self._string = str()
-        self._regex = None
         self._filter_role_names = []
 
     def classBegin(self):
