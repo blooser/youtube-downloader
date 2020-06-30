@@ -14,7 +14,7 @@ ListView {
 
     clip: true
     boundsBehavior: Flickable.StopAtBounds
-
+    spacing: Theme.Margins.tiny
     orientation: Qt.Horizontal
 
     model: browser.tabs

@@ -75,7 +75,6 @@ Item {
 
         anchors {
             bottom: root.bottom
-            bottomMargin: Theme.Size.borderBold
             horizontalCenter: root.horizontalCenter
         }
 

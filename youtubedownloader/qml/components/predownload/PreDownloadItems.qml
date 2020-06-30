@@ -59,7 +59,7 @@ Item {
                 // TODO: Make it consistent
                 property bool predownloadIsNotReady: (status === "exists")
                 property bool predownloadIsProcessing: (status === "processing")
-                property bool predownloadIsNotSupported: (status.includes("unsupported"))
+                property bool predownloadIsNotSupported: (status.includes("ERROR"))
                 onPredownloadIsNotReadyChanged: preDownloadItems.itemsNotReady += (predownloadIsNotReady) ? 1 : -1
                 onPredownloadIsNotSupportedChanged: preDownloadItems.itemsNotReady += (predownloadIsNotSupported) ? 1 : 0
                 onPredownloadIsProcessingChanged: preDownloadItems.itemsProcessing += (predownloadIsProcessing) ? 1 : -1

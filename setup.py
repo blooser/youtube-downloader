@@ -5,7 +5,7 @@ with open("README.md", "r") as readme:
 
 setup (
     name="youtube-downloader",
-    version="0.3.2",
+    version="0.4.0",
     license="GPLv3",
     author="blooser",
     url="https://www.github.com/blooser/youtube-downloader",
@@ -35,6 +35,7 @@ setup (
     install_requires = [
         "PySide2",
         "lz4",
+        "sqlalchemy",
         "beautifulsoup4",
         "youtube-dl"
     ],

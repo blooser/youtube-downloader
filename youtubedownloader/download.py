@@ -112,7 +112,7 @@ class PreDownload(QObject):
     def handle_finished(self):
         if self.task.info:
             if "is_live" in self.task.info and self.task.info["is_live"]:
-                self.status = "unsupported: livestream"
+                self.status = "ERROR: Unsupported: livestream"
                 self.updated.emit(str(self.id))
 
             else:
