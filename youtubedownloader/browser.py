@@ -7,6 +7,7 @@ import os, os.path, json, lz4.block, subprocess
 
 
 class Firefox(QObject):
+    NAME = "Firefox"
     SESSION_LOCATION_COMMAND = ["find ~/.mozilla/firefox*/*.*/sessionstore-backups/recovery.jsonlz4"]
     MOZILLA_MAGIC_NUMBER = 8 # NOTE: https://gist.github.com/mnordhoff/25e42a0d29e5c12785d0
 
@@ -17,7 +18,6 @@ class Firefox(QObject):
 
         self.logger = create_logger(__name__)
         self._tabs = []
-        self._name = "Firefox"
 
         self.detect()
 
@@ -37,12 +37,11 @@ class Firefox(QObject):
 
     @Property(str, constant=True)
     def name(self):
-        return self._name
+        return Firefox.NAME
 
     @Slot(str)
     def get_tabs(self, path):
         self._tabs = []
-
         while not os.path.isfile(path): # NOTE: It looks like the signal is faster before the file is moved
             continue
 
