@@ -26,4 +26,18 @@ YDDialog {
             }
         }
     }
+
+    enter: Transition {
+        ParallelAnimation {
+            NumberAnimation { property: "x"; from: root.x + 100; to: root.x; duration: Theme.Animation.quick }
+            NumberAnimation { property: "opacity"; from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }
+        }
+    }
+
+    exit: Transition {
+        ParallelAnimation {
+            NumberAnimation { property: "x"; from: root.x; to: root.x + 100; duration: Theme.Animation.quick }
+            NumberAnimation { property: "opacity"; from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
+        }
+    }
 }
