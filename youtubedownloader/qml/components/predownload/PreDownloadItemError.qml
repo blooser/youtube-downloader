@@ -10,8 +10,17 @@ Item {
 
     signal remove()
 
+    implicitWidth: mainLayout.minimumWidth
+    implicitHeight: mainLayout.implicitHeight
+
     RowLayout {
-        anchors.centerIn: parent
+        id: mainLayout
+
+        anchors {
+            fill: parent
+            margins: Theme.Margins.normal
+        }
+
         spacing: Theme.Margins.tiny
 
         Items.YDImage {
@@ -22,22 +31,21 @@ Item {
 
         Items.YDText {
             id: error
-            horizontalAlignment: Qt.AlignLeft
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+       }
+
+        Items.YDImageButton {
+            Layout.alignment: Qt.AlignRight
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
+
+            width: Theme.Size.icon
+            height: Theme.Size.icon
+
+            imageSource: Resources.icons.delete
+
+            onClicked: root.remove()
         }
-    }
-
-    Items.YDImageButton {
-        anchors {
-            right: parent.right
-            rightMargin: Theme.Margins.normal
-            verticalCenter: parent.verticalCenter
-        }
-
-        width: Theme.Size.icon
-        height: Theme.Size.icon
-
-        imageSource: Resources.icons.delete
-
-        onClicked: root.remove()
     }
 }

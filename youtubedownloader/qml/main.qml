@@ -70,6 +70,7 @@ ApplicationWindow {
         Browser.Browsers {
             Layout.fillWidth: true
 
+            visible: (WebBrowsers.browsers !== Theme.Capacity.empty)
             options: downloadOptions.options
             onAddTab: downloadManager.predownload(url, downloadOptions.options)
         }
