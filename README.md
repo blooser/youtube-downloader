@@ -1,4 +1,5 @@
 
+
 <div align="center">
 	<img src="https://raw.githubusercontent.com/blooser/youtube-downloader/2be980cf31b253b0788e97b477b4a8ebba56a731/youtubedownloader/resources/yd-with-text.svg" width="350" height="350">
 </div>
@@ -7,7 +8,7 @@ Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_inter
 
 ## Preview
 
-![preview](https://imgur.com/Mz01ecJ.png)
+![preview](https://i.imgur.com/d7ZuMct.png)
 
 ## Dependency
 
@@ -21,7 +22,6 @@ It allows for customizing your downloads:
 - What kind of file it should be
 - Pause and resume 
 - Download thumbnail
-
 
 ## Usage
 
