@@ -14,5 +14,9 @@ ToolButton {
         implicitWidth: 40
         implicitHeight: 40
         color: root.enabled || root.checked ? Theme.Colors.third : Theme.Colors.base
+
+        Behavior on color {
+            ColorAnimation { duration: Theme.Animation.quick }
+        }
     }
 }
