@@ -10,8 +10,8 @@ ScrollBar {
     orientation: Qt.Vertical
 
     contentItem: Rectangle {
-        implicitWidth: 6
-        implicitHeight: 100
+        implicitWidth: root.orientation === Qt.Vertical ?  6 : 100
+        implicitHeight: root.orientation === Qt.Vertical ? 100 : 6
         radius: (width/2)
         color: root.pressed ? Theme.Colors.third: Theme.Colors.second
 
