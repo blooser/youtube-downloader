@@ -6,6 +6,7 @@ Item {
     id: root
 
     property string url
+    property string dimension
 
     signal download(string fileName)
 
@@ -30,6 +31,16 @@ Item {
             onClicked: root.download(fileName.text)
 
             enabled: (fileName.text !== "")
+
+            Items.YDText {
+                anchors {
+                    bottom: parent.bottom
+                    horizontalCenter: parent.horizontalCenter
+                }
+
+                font.pixelSize: Theme.FontSize.groupBoxLabel
+                text: root.dimension
+            }
         }
     }
 }

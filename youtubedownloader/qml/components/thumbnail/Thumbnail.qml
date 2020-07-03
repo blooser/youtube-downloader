@@ -26,6 +26,7 @@ Items.YDImage {
 
         ThumbnailPreDownload {
             url: root.source
+            dimension: "%1 x %2".arg(root.width).arg(root.height)
             onDownload: dialogManager.open_dialog("SelectDirectoryDialog", {}, function (url) {
                 fileDownloader.download(root.source, String("%1/%2").arg(Paths.cleanPath(url)).arg(fileName))
             })
