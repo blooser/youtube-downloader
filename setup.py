@@ -14,7 +14,7 @@ setup (
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=[
-        "youtubedownloader", "youtubedownloader.resources"
+        "youtubedownloader", "youtubedownloader.resources", "youtubedownloader.database"
     ],
     package_data = {
         "": ["*.svg", "icons/*.svg", "qml/*.qml", "qml/*/*", "qml/*/*/*"]
