@@ -16,8 +16,8 @@ Rectangle {
         color: Theme.Colors.third
     }
 
-    implicitWidth: textItem.implicitWidth
-    implicitHeight: textItem.implicitHeight
+    implicitWidth: visible ? textItem.implicitWidth : Theme.Size.none
+    implicitHeight: visible ? textItem.implicitHeight : Theme.Size.none
 
     MouseArea {
         id: mouseArea
