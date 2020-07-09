@@ -5,7 +5,7 @@ with open("README.md", "r") as readme:
 
 setup (
     name="youtube-downloader",
-    version="0.4.0",
+    version="0.4.1",
     license="GPLv3",
     author="blooser",
     url="https://www.github.com/blooser/youtube-downloader",
@@ -13,7 +13,7 @@ setup (
     description="youtube-dl GUI simplify",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=[
+    packages= [
         "youtubedownloader", "youtubedownloader.resources", "youtubedownloader.database"
     ],
     package_data = {

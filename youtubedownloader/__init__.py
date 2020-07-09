@@ -1,6 +1,4 @@
-﻿__version__ = "0.1.0"
-
-from .download import (
+﻿from .download import (
     PreDownload,
     PreDownloadTask,
     PreDownloadModel,
