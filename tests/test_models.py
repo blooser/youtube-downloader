@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader.models import SupportedSitesModel, StringFilterModel, HistoryModel
+from youtubedownloader.models import SupportedSitesModel, StringFilterModel, HistoryModel, WebTabsModel
 from youtubedownloader.database import Database
 
 class ModelsTest(unittest.TestCase):
@@ -38,6 +38,18 @@ class ModelsTest(unittest.TestCase):
         
         self.assertEqual(history_model.rowCount(), 1)
         
+    
+    def test_webTabsModelSetTabs(self):
+        web_tabs_model = WebTabsModel()
+        tabs = [
+                {"url": "...",
+                 "title": "..."},
+                {"url": "...",
+                 "title": "..."},
+        ]
+            
+        web_tabs_model.set_tabs(tabs)
+        self.assertEqual(web_tabs_model.rowCount(), 2)
     
 
 if __name__ == "__main__":
