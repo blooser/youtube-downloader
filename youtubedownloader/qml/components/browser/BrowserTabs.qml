@@ -7,7 +7,6 @@ import "../../util/regex.js" as Regex
 ListView {
     id: root
 
-    property var browser
     property var options
 
     signal addTab(string url)
@@ -17,16 +16,16 @@ ListView {
     spacing: Theme.Margins.tiny
     orientation: Qt.Horizontal
 
-    model: browser.tabs
-
     delegate: BrowserTab {
         Layout.alignment: Qt.AlignLeft
         tabTitle: title
-        visible: Regex.isYoutubeLink(url) && !downloadManager.exists(url, root.options)
+
         onClicked: {
             if (!downloadManager.exists(url, root.options)) {
                 root.addTab(url)
             }
         }
+
+        Component.onCompleted: allow = Regex.isYoutubeLink(url)
     }
 }

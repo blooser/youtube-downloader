@@ -65,7 +65,8 @@ class Firefox(QObject):
                 index = int(tab.get("index")) - 1
                 tabs.append({
                         "url": tab.get("entries")[index].get("url"),
-                        "title": tab.get("entries")[index].get("title")
+                        "title": tab.get("entries")[index].get("title"),
+                        "allow": True
                     })
 
         self.tabs_model.set_tabs(tabs)
