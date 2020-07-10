@@ -28,4 +28,16 @@ ListView {
 
         Component.onCompleted: allow = Regex.isYoutubeLink(url)
     }
+
+    populate: Transition {
+        OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.normal }
+    }
+
+    remove: Transition {
+        OpacityAnimator { from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
+    }
+
+    add: Transition {
+        OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }
+    }
 }
