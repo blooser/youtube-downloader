@@ -13,6 +13,13 @@ from .models import WebTabsModel
 import os, os.path, json, lz4.block, subprocess
 
 
+class BrowserTab(object):
+    def __init__(self, url: str, title: str, allow: bool=True):
+        self.url = url
+        self.title = title
+        self.allow = allow
+
+
 class Firefox(QObject):
     NAME: str = "Firefox"
     SESSION_LOCATION_COMMAND: list = ["find ~/.mozilla/firefox*/*.*/sessionstore-backups/recovery.jsonlz4"]
@@ -59,11 +66,10 @@ class Firefox(QObject):
         for window in j_data.get("windows"):
             for tab in window.get("tabs"):
                 index = int(tab.get("index")) - 1
-                tabs.append({
-                        "url": tab.get("entries")[index].get("url"),
-                        "title": tab.get("entries")[index].get("title"),
-                        "allow": True
-                    })
+                tabs.append(BrowserTab(
+                        tab.get("entries")[index].get("url"),
+                        tab.get("entries")[index].get("title"))
+                    )
 
         self.tabs_model.set_tabs(tabs)
 

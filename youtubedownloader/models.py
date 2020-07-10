@@ -209,13 +209,13 @@ class WebTabsModel(QAbstractListModel):
         tab = self.tabs[index.row()]
 
         if role == 256:
-            return tab["url"]
+            return tab.url
 
         elif role == 257:
-            return tab["title"]
+            return tab.title
 
         elif role == 258:
-            return tab["allow"]
+            return tab.allow
 
     def setData(self, index: QModelIndex, value, role: int) -> None:
         if not index.isValid():
@@ -224,7 +224,7 @@ class WebTabsModel(QAbstractListModel):
         row = index.row()
 
         if role == 258:
-            self.tabs[row]["allow"] = value # NOTE: value is bool
+            self.tabs[row].allow = value # NOTE: value is bool
             self.dataChanged.emit(self.index(row, WebTabsModel.FIRST_COLUMN, QModelIndex()), self.index(row, WebTabsModel.LAST_COLUMN, QModelIndex()))
             return True
 
