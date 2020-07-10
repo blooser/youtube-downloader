@@ -1,4 +1,4 @@
-﻿Theme = {
+﻿Theme: dict = {
     "Colors": {
         "base": "#004d99",
         "second": "#0066cc",

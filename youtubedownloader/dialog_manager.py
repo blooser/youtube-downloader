@@ -14,7 +14,7 @@ from .paths import Paths
 from .logger import create_logger
 
 class DialogManager(QObject):
-    DIALOG_PATH = os.path.join(os.path.dirname(__file__), "qml/dialogs")
+    DIALOG_PATH: str = os.path.join(os.path.dirname(__file__), "qml/dialogs")
 
     open = Signal(str, "QVariantMap", "QVariant", arguments=["dialog", "properties", "callback"])
     close = Signal(str, arguments=["dialog"])
@@ -27,11 +27,11 @@ class DialogManager(QObject):
         self.logger.info("Loaded {dialogs} dialogs".format(dialogs=len(self.dialogs)))
 
     @Slot(str, "QVariantMap" ,"QVariant")
-    def open_dialog(self, dialog, properties, callback):
+    def open_dialog(self, dialog: str, properties, callback) -> None:
         self.logger.info("Creating {dialog}".format(dialog=dialog))
         self.open.emit(self.dialogs[dialog], properties, callback)
 
     @Slot(str)
-    def close_dialog(self, dialog):
+    def close_dialog(self, dialog: str) -> None:
         self.logger.info("Closing {dialog}".format(dialog=dialog))
         self.close.emit(dialog)

@@ -15,18 +15,20 @@ from .logger import create_logger
 from .settings import Settings
 from .database.models import History
 
+from sqlalchemy.orm.session import Session
+
 import urllib.request
 import urllib.error
 
 
 class HistoryModel(QAbstractItemModel):
-    COLUMNS = ("url", "title", "uploader", "thumbnail", "date")
-    FIRST_COLUMN = 0
-    LAST_COLUMN = len(COLUMNS)
+    COLUMNS: tuple = ("url", "title", "uploader", "thumbnail", "date")
+    FIRST_COLUMN: int = 0
+    LAST_COLUMN: int = len(COLUMNS)
 
     sizeChanged = Signal(int, arguments=["size"])
 
-    def __init__(self, session):
+    def __init__(self, session: Session):
         super(HistoryModel, self).__init__(None)
 
         self.session = session
@@ -34,15 +36,19 @@ class HistoryModel(QAbstractItemModel):
 
         self.populate()
 
+    @Property(int, notify=sizeChanged)
+    def size(self) -> int:
+        return len(self.items)
+
     @Slot(str, str, str, str, str)
-    def add(self, url, title, uploader, uploader_url, thumbnail):
+    def add(self, url: str, title: str, uploader: str, uploader_url: str, thumbnail: str) -> None:
         if self.session.query(History).filter_by(url=url).one_or_none() == None:
             self.session.add(History(url=url, title=title, uploader=uploader, uploader_url=uploader_url, thumbnail=thumbnail))
             self.session.commit()
             self.populate()
 
     @Slot(str)
-    def remove(self, url):
+    def remove(self, url: str) -> None:
         item = self.session.query(History).filter_by(url=url).one()
         self.session.delete(item) # NOTE: Delete from database
         self.session.commit()
@@ -54,11 +60,7 @@ class HistoryModel(QAbstractItemModel):
 
         self.sizeChanged.emit(self.rowCount())
 
-    @Property(int, notify=sizeChanged)
-    def size(self):
-        return len(self.items)
-
-    def populate(self):
+    def populate(self) -> None:
         self.beginResetModel()
 
         self.items = []
@@ -69,10 +71,10 @@ class HistoryModel(QAbstractItemModel):
 
         self.sizeChanged.emit(self.rowCount())
 
-    def index(self, row, column, parent):
+    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
         return self.createIndex(row, column, parent)
 
-    def roleNames(self, index=QModelIndex()):
+    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
         return {
             256: b"url",
             257: b"title",
@@ -82,13 +84,13 @@ class HistoryModel(QAbstractItemModel):
             261: b"date"
         }
 
-    def rowCount(self, index=QModelIndex()):
+    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
         return len(self.items)
 
-    def columnCount(self, index=QModelIndex()):
+    def columnCount(self, index: QModelIndex=QModelIndex()) -> int:
         return SupportedSitesModel.LAST_COLUMN
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: int):
         if not index.isValid():
             return
 
@@ -116,9 +118,9 @@ class HistoryModel(QAbstractItemModel):
 class SupportedSitesModel(QAbstractItemModel):
     SUPPORTED_SITES_URL = "https://ytdl-org.github.io/youtube-dl/supportedsites.html"
 
-    COLUMNS = ("name")
-    FIRST_COLUMN = 0
-    LAST_COLUMN = len(COLUMNS)
+    COLUMNS: str = ("name")
+    FIRST_COLUMN: int = 0
+    LAST_COLUMN: int = len(COLUMNS)
 
     sizeChanged = Signal(int)
 
@@ -130,13 +132,13 @@ class SupportedSitesModel(QAbstractItemModel):
         self.collect_sites()
 
     @Property(int, notify=sizeChanged)
-    def size(self):
+    def size(self) -> int:
         return len(self.sites)
 
-    def index(self, row, column, parent):
+    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
         return self.createIndex(row, column, parent)
 
-    def collect_sites(self):
+    def collect_sites(self) -> None:
         try:
             with urllib.request.urlopen(SupportedSitesModel.SUPPORTED_SITES_URL) as response:
                 data = response.read().decode("utf-8")
@@ -152,18 +154,18 @@ class SupportedSitesModel(QAbstractItemModel):
         except urllib.error.URLError as err:
             self.logger.warning(str(err))
 
-    def roleNames(self, index=QModelIndex()):
+    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
         return {
             256: b"name"
         }
 
-    def rowCount(self, index=QModelIndex()):
+    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
         return len(self.sites)
 
-    def columnCount(self, index=QModelIndex()):
+    def columnCount(self, index: QModelIndex=QModelIndex()) -> int:
         return SupportedSitesModel.LAST_COLUMN
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: int):
         if not index.isValid():
             return
 
@@ -185,21 +187,21 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
         self._string = str()
         self._filter_role_names = []
 
-    def classBegin(self):
+    def classBegin(self) -> None:
         pass
 
-    def componentComplete(self):
+    def componentComplete(self) -> None:
         pass
 
-    def get_role(self, role_name):
+    def get_role(self, role_name: str) -> int:
         role_names = self.sourceModel().roleNames()
         for role in self.sourceModel().roleNames():
             if role_names[role] == role_name:
                 return role
 
-        return None
+        return -1
 
-    def filterAcceptsRow(self, source_row, source_parent):
+    def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex=QModelIndex()) -> bool:
         index = self.sourceModel().index(source_row, 0, source_parent)
 
         for role_name in self._filter_role_names:
@@ -208,20 +210,20 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
 
         return False
 
-    def read_filter_role_names(self):
+    def read_filter_role_names(self) -> list:
         return self._filter_role_names
 
-    def set_filter_role_names(self, new_filter_role_names: list):
+    def set_filter_role_names(self, new_filter_role_names: list) -> None:
         if len(new_filter_role_names) == 0:
             return
 
         self._filter_role_names = new_filter_role_names
         self.filterRoleNamesChanged.emit(self._filter_role_names)
 
-    def read_string(self):
+    def read_string(self) -> str:
         return self.string
 
-    def set_string(self, new_string):
+    def set_string(self, new_string: str) -> None:
         if self._string == new_string:
             return
 

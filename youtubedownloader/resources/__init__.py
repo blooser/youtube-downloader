@@ -13,8 +13,8 @@ from ..paths import Paths
 from ..logger import create_logger
 
 class Resources(QObject):
-    CORE_PATH = os.path.dirname(__file__)
-    YD_LOGO = os.path.join(CORE_PATH, "youtube-downloader.svg")
+    CORE_PATH: str = os.path.dirname(__file__)
+    YD_LOGO: str = os.path.join(CORE_PATH, "youtube-downloader.svg")
 
     def __init__(self):
         super(Resources, self).__init__(None)
@@ -26,9 +26,9 @@ class Resources(QObject):
         self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
 
     @Property("QVariantMap", constant=True)
-    def icons(self):
+    def icons(self) -> dict:
         return self.icon_paths
 
     @Property("QUrl", constant=True)
-    def logo(self):
+    def logo(self) -> str:
         return os.path.join(Paths.FILE_PREFIX, Resources.YD_LOGO)

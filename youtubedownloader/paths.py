@@ -11,8 +11,8 @@
 import sys, os, pathlib
 
 class Paths(QObject):
-    FILE_PREFIX = "file://" if sys.platform.startswith("linux") else "file:///"
-    FILE_TYPE = {
+    FILE_PREFIX: str = "file://" if sys.platform.startswith("linux") else "file:///"
+    FILE_TYPE: dict = {
         "video": ["webm", "mp4", "mkv"],
         "audio": ["mp3", "flac", "m4a", "wav"]
     }
@@ -21,7 +21,7 @@ class Paths(QObject):
         super(Paths, self).__init__(None)
 
     @staticmethod
-    def get_file_type(file):
+    def get_file_type(file: str) -> str:
         suffix = pathlib.PurePath(file).suffix.replace(".", "")
 
         if suffix in Paths.FILE_TYPE["video"]:
@@ -33,17 +33,17 @@ class Paths(QObject):
         return ""
 
     @staticmethod
-    def new_extension(file, new_ext):
+    def new_extension(file: str, new_ext: str) -> str:
         new_ext = new_ext.replace(".", "")
         return "{file}.{ext}".format(file=pathlib.PurePath(file).stem,
                                      ext=new_ext)
 
     @staticmethod
-    def file_name(path):
+    def file_name(path) -> str:
         return pathlib.PurePath(path).name
 
     @staticmethod
-    def collect_files(core_path):
+    def collect_files(core_path: str) -> dict:
         files = {}
 
         for _, _, filenames in os.walk(core_path):
@@ -53,20 +53,20 @@ class Paths(QObject):
         return files
 
     @Slot(int, result="QString")
-    def humanSize(self, size):
+    def humanSize(self, size: int) -> str:
         locale = QLocale()
         return locale.formattedDataSize(size)
 
     @Slot(str, result="QString")
-    def cleanPath(self, path):
+    def cleanPath(self, path: str) -> str:
         return QUrl(path).path()
 
     @Slot(str, result="QString")
-    def fileName(self, path):
+    def fileName(self, path: str) -> str:
         return QUrl(path).fileName()
 
     @Slot(str, result="QString")
-    def getFileType(self, format):
+    def getFileType(self, format: str) -> str:
         if format in Paths.FILE_TYPE["video"]:
             return "video"
 
@@ -76,7 +76,7 @@ class Paths(QObject):
         return ""
 
     @Slot(str, result="QString")
-    def getPathType(self, path):
+    def getPathType(self, path: str) -> str:
         if path.startswith("/") or path.startswith("file://"):
             return "file"
 
@@ -86,7 +86,7 @@ class Paths(QObject):
         return ""
 
     @Slot(str, result="QVariantList")
-    def readFile(self, file):
+    def readFile(self, file: str) -> list:
         with open(QUrl(file).path(), "r") as f:
             data = f.readlines()
 
@@ -105,12 +105,12 @@ class FileExpect(QObject):
 
         self.timer.timeout.connect(self.check_file_exists)
 
-    def observe(self, file):
+    def observe(self, file: str) -> None:
         self.file = file
         self.timer.start()
 
     @Slot()
-    def check_file_exists(self):
+    def check_file_exists(self) -> None:
         if os.path.isfile(self.file):
             self.file_exists.emit()
             self.timer.stop()

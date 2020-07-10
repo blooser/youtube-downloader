@@ -10,8 +10,8 @@ import os.path
 import atexit
 
 class Settings(QObject):
-    CONFIG_PATH = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "ydsettings")
-    DB_PATH = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "yddatabase.db")
+    CONFIG_PATH: str = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "ydsettings")
+    DB_PATH: str = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "yddatabase.db")
 
     input_link_changed = Signal(str)
     output_path_changed = Signal(str)
@@ -31,7 +31,7 @@ class Settings(QObject):
 
         atexit.register(self.save)
 
-    def load(self):
+    def load(self) -> None:
         settings = QSettings(self.settings_path)
         settings.beginGroup("Settings")
         self.input_link = settings.value("input_link")
@@ -39,7 +39,7 @@ class Settings(QObject):
         self.file_format = settings.value("file_format")
         settings.endGroup()
 
-    def save(self):
+    def save(self) -> None:
         settings = QSettings(self.settings_path)
         settings.beginGroup("Settings")
         settings.setValue("input_link", self.input_link)
@@ -47,30 +47,30 @@ class Settings(QObject):
         settings.setValue("file_format", self.file_format)
         settings.endGroup()
 
-    def read_input_link(self):
+    def read_input_link(self) -> str:
         return self.input_link
 
-    def set_input_link(self, input_link):
+    def set_input_link(self, input_link: str) -> None:
         if self.input_link == input_link:
             return
 
         self.input_link = input_link
         self.input_link_changed.emit(self.input_link)
 
-    def read_output_path(self):
+    def read_output_path(self) -> str:
         return self.output_path
 
-    def set_output_path(self, output_path):
+    def set_output_path(self, output_path: str) -> None:
         if self.output_path == output_path:
             return
 
         self.output_path = output_path
         self.output_path_changed.emit(self.output_path)
 
-    def read_file_format(self):
+    def read_file_format(self) -> str:
         return self.file_format
 
-    def set_file_format(self, file_format):
+    def set_file_format(self, file_format: str) -> None:
         if self.file_format == file_format:
             return
 

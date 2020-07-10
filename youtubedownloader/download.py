@@ -41,7 +41,7 @@ from .settings import Settings
 from .paths import Paths, FileExpect
 
 
-def human_time(time):
+def human_time(time: str) -> str:
     if not time:
         return "00:00"
 
@@ -51,14 +51,14 @@ def human_time(time):
     return QTime.fromMSecsSinceStartOfDay(time * 1000).toString(format)
 
 
-def human_date(date):
+def human_date(date: str) -> str:
     if not date:
         return ""
 
     return QDate.fromString(date, "yyyyMMdd").toString(Qt.RFC2822Date)
 
 
-def singleVideoIfPlaylist(url):
+def singleVideoIfPlaylist(url: str) -> str:
     index = url.find("&list=")
 
     if index != -1:
@@ -70,7 +70,7 @@ def singleVideoIfPlaylist(url):
 class PreDownloadTask(QThread):
     collected_info = Signal(dict)
 
-    def __init__(self, url):
+    def __init__(self, url: str):
         super(PreDownloadTask, self).__init__(None)
         self.url = url
         self.info = None
@@ -79,7 +79,7 @@ class PreDownloadTask(QThread):
     def __eq__(self, other):
         return self.url == other.url
 
-    def run(self):
+    def run(self) -> None:
         try:
             with youtube_dl.YoutubeDL() as ydl:
                 self.info = ydl.extract_info(self.url, download=False)
@@ -91,7 +91,7 @@ class PreDownloadTask(QThread):
 class PreDownload(QObject):
     updated = Signal(str)
 
-    def __init__(self, url, options):
+    def __init__(self, url: str, options: dict):
         super(PreDownload, self).__init__(None)
 
         self.status = "processing"
@@ -108,21 +108,21 @@ class PreDownload(QObject):
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
 
-    def start(self):
+    def start(self) -> None:
         if self.task.error:
             self.task.error = None
 
         self.task.start()
 
-    def stop(self):
+    def stop(self) -> None:
         if self.task.isRunning():
             self.task.exit()
             self.task.wait() # NOTE: Should not be costly enough
 
-    def destination_file_exists(self):
+    def destination_file_exists(self) -> bool:
         return os.path.isfile(self.destination_file)
 
-    def update(self):
+    def update(self) -> None:
         self.destination_file = os.path.join(self.options.output_path, Paths.new_extension(self.data.title, self.options.file_format))
 
         self.status = "ready" if not self.destination_file_exists() else "exists"
@@ -133,7 +133,7 @@ class PreDownload(QObject):
         self.updated.emit(str(self.id))
 
     @Slot(int)
-    def handle_finished(self):
+    def handle_finished(self) -> None:
         if self.task.info:
             if "is_live" in self.task.info and self.task.info["is_live"]:
                 self.status = "ERROR: Unsupported: livestream"
@@ -150,7 +150,7 @@ class PreDownload(QObject):
             self.updated.emit(str(self.id))
 
     @staticmethod
-    def pack(predownload):
+    def pack(predownload: QObject) -> dict:
         return {
             "url": predownload.url,
             "destination_file": predownload.destination_file,
@@ -160,7 +160,7 @@ class PreDownload(QObject):
         }
 
     @staticmethod
-    def unpack(data):
+    def unpack(data: dict) -> QObject:
         predownload = PreDownload(data["url"], data["options"])
         predownload.destination_file = data["destination_file"]
         predownload.status = data["status"]
@@ -169,17 +169,17 @@ class PreDownload(QObject):
 
 
 class PreDownloadModel(QAbstractListModel):
-    COLUMNS = ("url", "destination_file", "status", "download_data", "options")
-    FIRST_COLUMN = 0
-    LAST_COLUMN = len(COLUMNS)
+    COLUMNS: tuple = ("url", "destination_file", "status", "download_data", "options")
+    FIRST_COLUMN: int = 0
+    LAST_COLUMN: int = len(COLUMNS)
 
     sizeChanged = Signal(int)
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path: str=""):
         super(PreDownloadModel, self).__init__(None)
         self.predownloads = []
 
-        self.config_path = config_path if config_path is not None else Settings.CONFIG_PATH
+        self.config_path = config_path if config_path else Settings.CONFIG_PATH
 
         self.load()
 
@@ -195,7 +195,7 @@ class PreDownloadModel(QAbstractListModel):
     def size(self):
         return len(self.predownloads)
 
-    def save(self):
+    def save(self) -> None:
         settings = QSettings(self.config_path, QSettings.NativeFormat)
 
         settings.beginWriteArray("predownloads")
@@ -204,7 +204,7 @@ class PreDownloadModel(QAbstractListModel):
             settings.setValue("predownload", PreDownload.pack(self.predownloads[i]))
         settings.endArray()
 
-    def load(self):
+    def load(self) -> None:
         settings = QSettings(self.config_path, QSettings.NativeFormat)
 
         size = settings.beginReadArray("predownloads")
@@ -213,10 +213,10 @@ class PreDownloadModel(QAbstractListModel):
             self.add_predownload(PreDownload.unpack(settings.value("predownload")))
         settings.endArray()
 
-    def rowCount(self, index=QModelIndex()):
+    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
         return len(self.predownloads)
 
-    def roleNames(self, index=QModelIndex()):
+    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
         return {
             256: b"url",
             257: b"destination_file",
@@ -225,22 +225,22 @@ class PreDownloadModel(QAbstractListModel):
             260: b"options"
         }
 
-    def index(self, row, column, parent):
+    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
         return self.createIndex(row, column, parent)
 
-    def refresh(self, id):
+    def refresh(self, id: str) -> None:
         id = int(id)
         for row, predownload in enumerate(self.predownloads):
             if predownload.id == id:
                 self.dataChanged.emit(self.index(row, PreDownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, PreDownloadModel.LAST_COLUMN, QModelIndex()))
 
-    def add_predownload(self, predownload):
+    def add_predownload(self, predownload: PreDownload) -> None:
         self.beginInsertRows(QModelIndex(), len(self.predownloads), len(self.predownloads))
         predownload.updated.connect(self.refresh, Qt.QueuedConnection)
         self.predownloads.append(predownload)
         self.endInsertRows()
 
-    def remove(self, status="*"):
+    def remove(self, status: str="*") -> None:
         if status == "*":
             self.beginResetModel()
             self.predownloads.clear()
@@ -255,7 +255,7 @@ class PreDownloadModel(QAbstractListModel):
             self.predownloads = [predownload for predownload in self.predownloads if predownload.status != status]
 
     @Slot(int)
-    def remove_predownload(self, row):
+    def remove_predownload(self, row: int) -> None:
         if row >= len(self.predownloads):
             return
 
@@ -264,12 +264,12 @@ class PreDownloadModel(QAbstractListModel):
         self.predownloads.pop(row)
         self.endRemoveRows()
 
-    def clear(self):
+    def clear(self) -> None:
         self.beginResetModel()
         self.predownloads.clear()
         self.endResetModel()
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: int): # NOTE: Returns QVariant
         if not index.isValid():
             return
 
@@ -292,7 +292,7 @@ class PreDownloadModel(QAbstractListModel):
 
         return None
 
-    def setData(self, index, value, role):
+    def setData(self, index: QModelIndex, value, role: int) -> None: # TODO: What type value is?
         if not index.isValid():
             return False
 
@@ -311,7 +311,7 @@ class PreDownloadModel(QAbstractListModel):
 
 
 class DownloadData(QObject):
-    def __init__(self, data=None):
+    def __init__(self, data: dict={}):
         super(DownloadData, self).__init__(None)
         self._title = str()
         self._uploader = str()
@@ -321,39 +321,39 @@ class DownloadData(QObject):
         self._upload_date = str()
         self._view_count = int()
 
-        if data is not None:
+        if data:
             self.collect(data)
 
     @Property(str, constant=True)
-    def title(self):
+    def title(self) -> str:
         return self._title
 
     @Property(str, constant=True)
-    def uploader(self):
+    def uploader(self) -> str:
         return self._uploader
 
     @Property(str, constant=True)
-    def uploaderUrl(self):
+    def uploaderUrl(self) -> str:
         return self._uploader_url
 
     @Property(str, constant=True)
-    def thumbnail(self):
+    def thumbnail(self) -> str:
         return self._thumbnail
 
     @Property(str, constant=True)
-    def duration(self):
+    def duration(self) -> int:
         return human_time(self._duration)
 
     @Property(str, constant=True)
-    def uploadDate(self):
+    def uploadDate(self) -> str:
         return human_date(self._upload_date)
 
     @Property(int, constant=True)
-    def viewCount(self):
+    def viewCount(self) -> int:
         return self._view_count
 
     @Slot(dict)
-    def collect(self, info):
+    def collect(self, info: dict) -> None:
         self._title = info["title"] if "title" in info else ""
         self._uploader = info["uploader"] if "uploader" in info else ""
         self._uploader_url = info["uploader_url"] if "uploader_url" in info else ""
@@ -363,7 +363,7 @@ class DownloadData(QObject):
         self._view_count = int(info["view_count"]) if "view_count" in info and info["view_count"] != "" else ""
 
     @staticmethod
-    def pack(download_data):
+    def pack(download_data: QObject) -> dict:
         return {
             "title": download_data._title,
             "uploader": download_data._uploader,
@@ -375,7 +375,7 @@ class DownloadData(QObject):
         }
 
     @staticmethod
-    def unpack(data):
+    def unpack(data: dict) -> QObject:
         download_data = DownloadData()
         download_data._title = data["title"]
         download_data._uploader = data["uploader"]
@@ -400,31 +400,31 @@ class DownloadProgress(QObject):
         self.filename = str("Unknown")
 
     @Property(str, notify=changed)
-    def downloadStatus(self):
+    def downloadStatus(self) -> str:
         return self.status
 
     @Property(int, notify=changed)
-    def downloadedBytes(self):
+    def downloadedBytes(self) -> str:
         return self.downloaded_bytes
 
     @Property(int, notify=changed)
-    def totalBytes(self):
+    def totalBytes(self) -> str:
         return self.total_bytes
 
     @Property(str, notify=changed)
-    def estimatedTime(self):
+    def estimatedTime(self) -> str:
         return self.estimated_time
 
     @Property(str, notify=changed)
-    def downloadSpeed(self):
+    def downloadSpeed(self) -> str:
         return self.speed
 
-    def invalide(self):
+    def invalide(self) -> None:
         self.status = "no file"
         self.downloaded_bytes = 0
 
     @Slot(dict)
-    def update(self, data):
+    def update(self, data: dict) -> None:
         if "status" in data:
             self.status = data["status"]
 
@@ -446,7 +446,7 @@ class DownloadProgress(QObject):
         self.changed.emit() # TODO: Maybe separated signal for each property?
 
     @staticmethod
-    def pack(download_progress):
+    def pack(download_progress: QObject) -> dict:
         return {
             "status": download_progress.status,
             "downloaded_bytes": download_progress.downloaded_bytes,
@@ -457,7 +457,7 @@ class DownloadProgress(QObject):
         }
 
     @classmethod
-    def unpack(cls, data):
+    def unpack(cls, data: dict) -> QObject:
         download_progress = cls()
         download_progress.status = data["status"]
         download_progress.downloaded_bytes = data["downloaded_bytes"]
@@ -469,9 +469,9 @@ class DownloadProgress(QObject):
 
 
 class DownloadOptions(QObject):
-    OUTPUT_FILE = os.path.join("{output_path}", "%(title)s.%(ext)s")
+    OUTPUT_FILE: str = os.path.join("{output_path}", "%(title)s.%(ext)s")
 
-    TEMPLATES = {
+    TEMPLATES: dict = {
         "mp4": {
             "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
         },
@@ -530,29 +530,29 @@ class DownloadOptions(QObject):
         return self.file_format == other.file_format and self.output_path == other.output_path
 
     @Property(str, notify=changed)
-    def fileFormat(self):
+    def fileFormat(self) -> str:
         return self.file_format
 
     @Property(str, notify=changed)
-    def outputPath(self):
+    def outputPath(self) -> str:
         return self.output_path
 
-    def calc_post_process_file_size(self, duration):
+    def calc_post_process_file_size(self, duration: int) -> None:
         if self.file_format == "mp3":
             self.post_process_file_size = (((320 * duration)/8) * 1000)
         else:
             self.post_process_file_size = 1 # TODO: Try to calculate other file formats size
 
-    def to_ydl_opts(self):
+    def to_ydl_opts(self) -> dict:
         template = self.ydl_opts
         template.update({"outtmpl": DownloadOptions.OUTPUT_FILE.format(output_path=self.output_path)})
         template.update(DownloadOptions.TEMPLATES[self.file_format])
         return template
 
-    def need_post_process(self):
+    def need_post_process(self) -> bool:
         return self.file_format in ["flac", "mp3", "wav"]
 
-    def update(self, options):
+    def update(self, options: dict) -> None:
         if "file_format" in options:
             self.file_format = options["file_format"]
 
@@ -562,7 +562,7 @@ class DownloadOptions(QObject):
         self.changed.emit()
 
     @staticmethod
-    def pack(download_options):
+    def pack(download_options: QObject) -> dict:
         return {
             "file_format": download_options.file_format,
             "output_path": download_options.output_path,
@@ -570,7 +570,7 @@ class DownloadOptions(QObject):
         }
 
     @staticmethod
-    def unpack(data):
+    def unpack(data: dict) -> QObject:
         download_options = DownloadOptions(data)
         return download_options
 
@@ -601,7 +601,7 @@ class DownloadTask(QThread):
         self.download_post_process.bytes_processed.connect(lambda bytes: self.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
         self.download_post_process.started.connect(lambda: self.progress.emit({"status": "converting to {0}".format(self.options.file_format),
                                                                                          "total_bytes": self.options.post_process_file_size}), Qt.QueuedConnection)
-    def process(self, data):
+    def process(self, data: dict) -> None:
         if self.paused:
             raise ValueError()
 
@@ -615,7 +615,7 @@ class DownloadTask(QThread):
         else:
             self.progress.emit(data)
 
-    def run(self):
+    def run(self) -> None:
         try:
             with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
                 ydl.download([self.url])
@@ -626,7 +626,7 @@ class DownloadTask(QThread):
 class Download(QObject):
     updated = Signal(str)
 
-    def __init__(self, url, options, data):
+    def __init__(self, url: str, options: dict, data: dict):
         super(Download, self).__init__(None)
         self.id = hash(url)
         self.url = url
@@ -645,11 +645,11 @@ class Download(QObject):
     def __eq__(self, other):
         return self.url == other.url and self.options == other.options
 
-    def check_if_redownload_needed(self):
+    def check_if_redownload_needed(self) -> None:
         if not os.path.isfile(self.destination_file) and self.progress.status == "finished":
             self.progress.invalide()
 
-    def start(self):
+    def start(self) -> None:
         if self.running():
             return
 
@@ -659,15 +659,15 @@ class Download(QObject):
         self.update({"status": "queued"})
         self.task.start()
 
-    def pause(self):
+    def pause(self) -> None:
         if self.task.isRunning():
             self.task.paused = True
 
-    def running(self):
+    def running(self) -> bool:
         return self.task.isRunning()
 
     @Slot(int)
-    def handle_finished(self):
+    def handle_finished(self) -> None:
         if self.task.paused:
             self.update({"status": "paused"})
             return
@@ -679,12 +679,12 @@ class Download(QObject):
         self.update({"status": "finished"})
 
     @Slot(str)
-    def update(self, progress):
+    def update(self, progress: dict) -> None:
         self.progress.update(progress)
         self.updated.emit(str(self.id))
 
     @staticmethod
-    def pack(download):
+    def pack(download: QObject) -> dict:
         return {
             "url": download.url,
             "destination_file": download.destination_file,
@@ -694,14 +694,14 @@ class Download(QObject):
         }
 
     @staticmethod
-    def unpack(data):
+    def unpack(data: dict) -> QObject:
         download =  Download(data["url"], data["options"], data["data"])
         download.progress = DownloadProgress.unpack(data["progress"])
         download.check_if_redownload_needed()
         return download
 
     @classmethod
-    def fromPreDownload(cls, predownload):
+    def fromPreDownload(cls: QObject, predownload: QObject) -> QObject:
         return Download(predownload.url, DownloadOptions.pack(predownload.options), DownloadData.pack(predownload.data))
 
 
@@ -717,39 +717,39 @@ class DownloadPostProcess(QObject):
 
         self.logger = create_logger(__name__)
 
-    def track(self, url):
+    def track(self, url: str) -> None:
         track_success = self.file_watcher.addPath(url)
         self.logger.info("Track {file} success={success}".format(file=url, success=track_success))
         self.started.emit()
 
     @Slot(str)
-    def read_bytes(self, path):
+    def read_bytes(self, path: str) -> None:
         bytes = QFileInfo(path).size()
         self.bytes_processed.emit(bytes)
         self.logger.debug("Read {bytes} bytes".format(bytes=bytes))
 
 
 class DownloadModel(QAbstractListModel):
-    COLUMNS = ("url", "destination_file", "download_data", "progress", "options")
-    FIRST_COLUMN = 0
-    LAST_COLUMN = len(COLUMNS)
+    COLUMNS: tuple = ("url", "destination_file", "download_data", "progress", "options")
+    FIRST_COLUMN: int = 0
+    LAST_COLUMN: int = len(COLUMNS)
 
     sizeChanged = Signal(int)
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path: str=""):
         super(DownloadModel, self).__init__(None)
         self.downloads = []
 
-        self.config_path = config_path if config_path is not None else Settings.CONFIG_PATH
+        self.config_path = config_path if config_path else Settings.CONFIG_PATH
 
         self.load()
 
         self.rowsInserted.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
         self.rowsRemoved.connect(lambda: self.sizeChanged.emit(len(self.downloads)))
 
-        atexit.register(self.pauseAndSave)
+        atexit.register(self.pause_and_save)
 
-    def pauseAndSave(self):
+    def pause_and_save(self) -> None:
         running_downloads = [True] * len(self.downloads)
 
         for download in self.downloads:
@@ -765,10 +765,10 @@ class DownloadModel(QAbstractListModel):
         return download in self.downloads
 
     @Property(int, notify=sizeChanged)
-    def size(self):
+    def size(self) -> int:
         return len(self.downloads)
 
-    def save(self):
+    def save(self) -> None:
         settings = QSettings(self.config_path)
 
         settings.beginWriteArray("downloads")
@@ -777,7 +777,7 @@ class DownloadModel(QAbstractListModel):
             settings.setValue("download", Download.pack(self.downloads[i]))
         settings.endArray()
 
-    def load(self):
+    def load(self) -> None:
         settings = QSettings(self.config_path)
 
         size = settings.beginReadArray("downloads")
@@ -786,16 +786,16 @@ class DownloadModel(QAbstractListModel):
             self.add_download(Download.unpack(settings.value("download")))
         settings.endArray()
 
-    def rowCount(self, index=QModelIndex()):
+    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
         return len(self.downloads)
 
-    def headerData(self, col, orientation, role):
+    def headerData(self, col: int, orientation: int, role: int):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return DownloadModel.COLUMNS[col]
 
         return None
 
-    def roleNames(self, index=QModelIndex()):
+    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
         return {
             256: b"url",
             257: b"destination_file",
@@ -804,29 +804,29 @@ class DownloadModel(QAbstractListModel):
             260: b"options"
         }
 
-    def clear(self):
+    def clear(self) -> None:
         self.beginResetModel()
         self.downloads.clear()
         self.endResetModel()
 
-    def index(self, row, column, parent):
-        return self.createIndex(row, column, None)
+    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
+        return self.createIndex(row, column, parent)
 
     @Slot(str) # PySide2's Signal doesn't handle such big number, to avoid overflowing we use string
-    def refresh(self, id):
+    def refresh(self, id: str) -> None:
         id = int(id)
         for row, download in enumerate(self.downloads):
             if download.id == id:
                 self.dataChanged.emit(self.index(row, DownloadModel.FIRST_COLUMN, QModelIndex()), self.index(row, DownloadModel.LAST_COLUMN, QModelIndex()))
 
-    def add_download(self, download):
+    def add_download(self, download: QObject) -> None:
         self.beginInsertRows(QModelIndex(), len(self.downloads), len(self.downloads))
         download.updated.connect(self.refresh, Qt.QueuedConnection)
         self.downloads.append(download)
         self.endInsertRows()
 
     @Slot(int)
-    def remove_download(self, row):
+    def remove_download(self, row: int) -> None:
         if row >= len(self.downloads):
             return
 
@@ -841,14 +841,14 @@ class DownloadModel(QAbstractListModel):
         self.endRemoveRows()
 
     @Slot(int)
-    def redo(self, row):
+    def redo(self, row: int) -> None:
         self.downloads[row].start()
 
     @Slot(int)
-    def pause(self, row):
+    def pause(self, row: int) -> None:
         self.downloads[row].pause()
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: int):
         if not index.isValid():
             return None
 
@@ -875,7 +875,7 @@ class DownloadModel(QAbstractListModel):
 # NOTE: PreDownload and Download have same __eq__ operator, there is no need to initialize Download and PreDownload and all its variables for duplicates checking
 # TODO: Implement find duplicate position logic to notify user where duplicate already is
 class DownloadDuplicateChecker(object):
-    def __init__(self, url, options):
+    def __init__(self, url: str, options: dict):
         self.url = url
         self.options = DownloadOptions(options)
 
@@ -888,21 +888,21 @@ class DownloadManager(QObject):
     preDownloadRequest = Signal(str, arguments=["url"])
     newDownload = Signal("QVariant", arguments=["download"])
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path: str=""):
         super(DownloadManager, self).__init__(None)
         self.predownload_model = PreDownloadModel(config_path)
         self.download_model = DownloadModel(config_path)
         self.logger = create_logger(__name__)
 
     @Slot(str, "QVariantMap")
-    def predownload(self, url, options):
+    def predownload(self, url: str, options: dict) -> None:
         if url:
             predownload = PreDownload(singleVideoIfPlaylist(url), options)
             self.predownload_model.add_predownload(predownload)
             predownload.start()
 
     @Slot()
-    def download(self):
+    def download(self) -> None:
         for predownload in [ready_predownload for ready_predownload in self.predownload_model.predownloads if ready_predownload.status == "ready"]:
             if predownload.status == "ready":
                 download = Download.fromPreDownload(predownload)
@@ -913,11 +913,11 @@ class DownloadManager(QObject):
         self.predownload_model.remove("ready")
 
     @Slot(str, "QVariantMap", result="bool")
-    def exists(self, url, options):
+    def exists(self, url: str, options: dict) -> bool:
         duplicate_checker = DownloadDuplicateChecker(url, options)
         return duplicate_checker in self.predownload_model or duplicate_checker in self.download_model
 
-    def setQMLContext(self, engine):
+    def setQMLContext(self, engine: QQmlApplicationEngine) -> None:
         engine.rootContext().setContextProperty("downloadModel", self.download_model)
         engine.rootContext().setContextProperty("predownloadModel", self.predownload_model)
 
@@ -942,21 +942,21 @@ class FileDownload(QObject):
         self.current_download.readyRead.connect(self.saveFile)
         self.current_download.finished.connect(self.download_finished)
 
-    @Slot()
-    def saveFile(self):
-        self.output.write(self.current_download.readAll())
-
-    @Slot()
-    def download_finished(self):
-        self.output.close()
-
     @Property(str, constant=True)
-    def outputUrl(self):
+    def outputUrl(self) -> str:
         return self.output_url
 
     @Property(QObject, constant=True)
-    def progress(self):
+    def progress(self) -> QObject:
         return self.current_download_progress
+
+    @Slot()
+    def saveFile(self) -> None:
+        self.output.write(self.current_download.readAll())
+
+    @Slot()
+    def download_finished(self) -> None:
+        self.output.close()
 
 
 class FileDownloadProgress(QObject):
@@ -968,19 +968,19 @@ class FileDownloadProgress(QObject):
         self.read_bytes = int()
         self.total_bytes = int()
 
-    @Slot(int, int)
-    def update(self, read_bytes: int, total_bytes: int):
-        self.read_bytes = read_bytes
-        self.total_bytes = total_bytes
-        self.updated.emit()
-
     @Property(int, notify=updated)
-    def readBytes(self):
+    def readBytes(self) -> None:
         return self.read_bytes
 
     @Property(int, notify=updated)
-    def totalBytes(self):
+    def totalBytes(self) -> None:
         return self.total_bytes
+
+    @Slot(int, int)
+    def update(self, read_bytes: int, total_bytes: int) -> None:
+        self.read_bytes = read_bytes
+        self.total_bytes = total_bytes
+        self.updated.emit()
 
 
 class FileDownloader(QObject):
@@ -992,16 +992,16 @@ class FileDownloader(QObject):
         self.manager = QNetworkAccessManager()
         self.current_download = None
 
+    @Property("QVariant", notify=current_download_changed)
+    def currentDownload(self) -> None:
+        return self.current_download
+
     @Slot()
-    def clear(self):
+    def clear(self) -> None:
         self.current_download = None
         self.current_download_changed.emit()
 
     @Slot(str, str)
-    def download(self, url: str, output_url: str):
+    def download(self, url: str, output_url: str) -> None:
         self.current_download = FileDownload(self.manager, url, output_url)
         self.current_download_changed.emit()
-
-    @Property("QVariant", notify=current_download_changed)
-    def currentDownload(self):
-        return self.current_download
