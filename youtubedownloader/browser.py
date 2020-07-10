@@ -42,10 +42,6 @@ class Firefox(QObject):
         except subprocess.CalledProcessError as error:
             self.detected = False
 
-    @Property(str, constant=True)
-    def name(self) -> str:
-        return Firefox.NAME
-
     @Slot(str)
     def get_tabs(self, path: str) -> None:
         tabs = []
@@ -70,6 +66,10 @@ class Firefox(QObject):
                     })
 
         self.tabs_model.set_tabs(tabs)
+
+    @Property(str, constant=True)
+    def name(self) -> str:
+        return Firefox.NAME
 
     @Property(QObject, constant=True)
     def tabs(self) -> WebTabsModel:
