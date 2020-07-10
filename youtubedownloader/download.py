@@ -884,6 +884,7 @@ class DownloadDuplicateChecker(object):
 
 
 class DownloadManager(QObject):
+    # NOTE: These signals are used in QML
     preDownloadRequest = Signal(str, arguments=["url"])
     newDownload = Signal("QVariant", arguments=["download"])
 
@@ -983,7 +984,7 @@ class FileDownloadProgress(QObject):
 
 
 class FileDownloader(QObject):
-    currentDownloadChanged = Signal()
+    current_download_changed = Signal()
 
     def __init__(self):
         super(FileDownloader, self).__init__(None)
@@ -994,13 +995,13 @@ class FileDownloader(QObject):
     @Slot()
     def clear(self):
         self.current_download = None
-        self.currentDownloadChanged.emit()
+        self.current_download_changed.emit()
 
     @Slot(str, str)
     def download(self, url: str, output_url: str):
         self.current_download = FileDownload(self.manager, url, output_url)
-        self.currentDownloadChanged.emit()
+        self.current_download_changed.emit()
 
-    @Property("QVariant", notify=currentDownloadChanged)
+    @Property("QVariant", notify=current_download_changed)
     def currentDownload(self):
         return self.current_download
