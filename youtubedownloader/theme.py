@@ -39,7 +39,8 @@
     "Animation": {
         "hover": 50,
         "quick": 250,
-        "medium": 500
+        "medium": 500,
+        "normal": 1000
     },
 
     "FontSize": {
