@@ -5,6 +5,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from youtubedownloader.models import SupportedSitesModel, StringFilterModel, HistoryModel, WebTabsModel, AllowFilterModel
+from youtubedownloader.browser import BrowserTab
 from youtubedownloader.database import Database
 
 class ModelsTest(unittest.TestCase):
@@ -42,11 +43,11 @@ class ModelsTest(unittest.TestCase):
     def test_webTabsModelSetTabs(self):
         web_tabs_model = WebTabsModel()
         tabs = [
-            {"url": "", "title": "", "allow": True},
-            {"url": "", "title": "", "allow": True},
-            {"url": "", "title": "", "allow": True},
-            {"url": "", "title": "", "allow": True},
-            {"url": "", "title": "", "allow": True},
+            BrowserTab("", ""),
+            BrowserTab("", ""),
+            BrowserTab("", ""),
+            BrowserTab("", ""),
+            BrowserTab("", "")
         ]
             
         web_tabs_model.set_tabs(tabs)
@@ -55,11 +56,11 @@ class ModelsTest(unittest.TestCase):
     def test_allowFilterModelFiltersByallowProperty(self):
         web_tabs_model = WebTabsModel()
         tabs = [
-            {"url": "", "title": "", "allow": True},
-            {"url": "", "title": "", "allow": True},
-            {"url": "", "title": "", "allow": True},
-            {"url": "", "title": "", "allow": False},
-            {"url": "", "title": "", "allow": False},
+            BrowserTab("", ""),
+            BrowserTab("", ""),
+            BrowserTab("", ""),
+            BrowserTab("", "", allow=False),
+            BrowserTab("", "", allow=False)
         ]
             
         web_tabs_model.set_tabs(tabs)
