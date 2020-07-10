@@ -6,7 +6,7 @@ import pickle
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import DownloadData
+from youtubedownloader.download import DownloadData
 
 
 class DownloadTest(unittest.TestCase):

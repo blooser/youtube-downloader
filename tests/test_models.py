@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import SupportedSitesModel, StringFilterModel, HistoryModel
+from youtubedownloader.models import SupportedSitesModel, StringFilterModel, HistoryModel
 from youtubedownloader.database import Database
 
 class ModelsTest(unittest.TestCase):

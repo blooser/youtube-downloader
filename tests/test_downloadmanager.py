@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import DownloadManager, Download, PreDownload
+from youtubedownloader.download import DownloadManager, Download, PreDownload
 
 
 class DownloadManagerTest(unittest.TestCase):

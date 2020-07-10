@@ -4,7 +4,8 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import Paths, DialogManager
+from youtubedownloader.paths import Paths
+from youtubedownloader.dialog_manager import DialogManager
 
 
 class DialogManagerTest(unittest.TestCase):

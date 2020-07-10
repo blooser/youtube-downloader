@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import PreDownload, PreDownloadModel, DownloadOptions
+from youtubedownloader.download import PreDownload, PreDownloadModel, DownloadOptions
 
 
 class PreDownloadModelTest(unittest.TestCase):
@@ -22,20 +22,6 @@ class PreDownloadModelTest(unittest.TestCase):
         if os.path.isfile(self.config_path):
             os.remove(self.config_path)
         
-    def test_preDownloadModelSavesAndLoadData(self):        
-            predownload = PreDownload(self.yt_url, self.options)
-            predownload_model = PreDownloadModel(self.config_path)
-            predownload_model.add_predownload(predownload)
-            self.assertEqual(predownload_model.rowCount(), 1)
-            
-            del predownload_model
-            second_predownload_model = PreDownloadModel(self.config_path)
-            self.assertEqual(second_predownload_model.rowCount(), 1)
-            
-            second_predownload = second_predownload_model.predownloads[0]
-            self.assertEqual(second_predownload.download_options, DownloadOptions(self.options))
-            self.assertEqual(second_predownload.url, self.yt_url)
-            
     def test_preDownloadModelRemovesItemsWithSelectedStatus(self):
         def create_predownload(status):
               predownload = PreDownload(self.yt_url, self.options)

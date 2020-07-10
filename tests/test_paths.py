@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader import Paths
+from youtubedownloader.paths import Paths
 
 class DownloaProgressTest(unittest.TestCase):
         
