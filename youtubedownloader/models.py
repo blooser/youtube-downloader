@@ -172,6 +172,45 @@ class SupportedSitesModel(QAbstractItemModel):
         if role == 256:
             return self.sites[index.row()]
 
+
+class WebTabsModel(QAbstractItemModel):
+    COLUMNS: str = ("url", "title")
+    FIRST_COLUMN: int = 0
+    LAST_COLUMN: int = len(COLUMNS)
+
+    def __init__(self):
+        super(WebTabsModel, self).__init__(None)
+        self.tabs = []
+
+    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
+        return len(self.tabs)
+
+    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
+        return {
+            256: b"url",
+            257: b"title"
+        }
+
+    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
+        return self.createIndex(row, column, parent)
+
+    def data(self, index: QModelIndex, role: int):
+        if not index.isValid():
+            return
+
+        tab = self.tabs[index.row()]
+
+        if role == 256:
+            return tab["url"]
+
+        elif role == 257:
+            return tab["title"]
+
+    def set_tabs(self, new_tabs: list) -> None:
+        self.beginResetModel()
+        self.tabs = new_tabs
+        self.endResetModel()
+
 # NOTE: Proxy
 
 class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):

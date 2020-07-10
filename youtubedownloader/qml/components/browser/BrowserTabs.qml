@@ -21,11 +21,11 @@ ListView {
 
     delegate: BrowserTab {
         Layout.alignment: Qt.AlignLeft
-        tabTitle: modelData.title
-        visible: Regex.isYoutubeLink(modelData.url) && !downloadManager.exists(modelData.url, root.options)
+        tabTitle: title
+        visible: Regex.isYoutubeLink(url) && !downloadManager.exists(url, root.options)
         onClicked: {
-            if (!downloadManager.exists(modelData.url, root.options)) {
-                root.addTab(modelData.url)
+            if (!downloadManager.exists(url, root.options)) {
+                root.addTab(url)
             }
         }
     }
