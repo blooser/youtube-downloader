@@ -143,8 +143,6 @@ class PreDownload(QObject):
                 self.data.collect(self.task.info)
                 self.update()
 
-            return
-
         if self.task.error:
             self.status = self.task.error
             self.updated.emit(str(self.id))
