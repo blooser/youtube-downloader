@@ -1,5 +1,11 @@
-﻿# This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QObject, QFileSystemWatcher, Qt, Signal, Slot, Property
+﻿from PySide2.QtCore import (
+    QObject,
+    QFileSystemWatcher,
+    Qt,
+    Signal,
+    Slot,
+    Property
+)
 
 from .logger import create_logger
 

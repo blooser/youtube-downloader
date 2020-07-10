@@ -1,6 +1,4 @@
-﻿# This Python file uses the following encoding: utf-8
-
-Theme = {
+﻿Theme = {
     "Colors": {
         "base": "#004d99",
         "second": "#0066cc",

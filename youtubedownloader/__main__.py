@@ -1,7 +1,4 @@
-﻿# This Python file uses the following encoding: utf-8
-import sys, os
-
-from PySide2.QtQml import QQmlApplicationEngine, QQmlContext, qmlRegisterType
+﻿from PySide2.QtQml import QQmlApplicationEngine, QQmlContext, qmlRegisterType
 from PySide2.QtQuick import QQuickView
 from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QUrl, QResource
@@ -17,6 +14,8 @@ from .paths import Paths
 from .settings import Settings
 from .database import Database
 from .browser import Browsers
+
+import sys, os
 
 def main():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)

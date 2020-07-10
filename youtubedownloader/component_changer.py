@@ -1,6 +1,18 @@
-# This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QObject, QStateMachine, QState, QFinalState, Signal, Slot, Property
-from PySide2.QtQml import QQmlParserStatus, QQmlComponent, QQmlListReference, ListProperty
+﻿from PySide2.QtCore import (
+    QObject,
+    QStateMachine,
+    QState,
+    QFinalState,
+    Signal,
+    Slot,
+    Property
+ )
+from PySide2.QtQml import (
+    QQmlParserStatus,
+    QQmlComponent,
+    QQmlListReference,
+    ListProperty
+)
 from PySide2 import QtWidgets
 from PySide2 import QtQuick
 

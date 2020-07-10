@@ -1,5 +1,12 @@
-﻿# This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QSortFilterProxyModel, QAbstractItemModel, QModelIndex, Qt, Property, Signal, Slot
+﻿from PySide2.QtCore import (
+    QSortFilterProxyModel,
+    QAbstractItemModel,
+    QModelIndex,
+    Qt,
+    Property,
+    Signal,
+    Slot
+)
 from PySide2.QtQml import QQmlParserStatus
 
 from bs4 import BeautifulSoup

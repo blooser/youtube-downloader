@@ -1,9 +1,33 @@
-﻿# This Python file uses the following encoding: utf-8
-# -*- coding: utf-8 -*-
+﻿from PySide2.QtCore import (
+    QObject,
+    QAbstractListModel,
+    QFileInfo,
+    QFile,
+    QIODevice,
+    QFileSystemWatcher,
+    QModelIndex,
+    QDateTime,
+    QDate,
+    QTime,
+    QThread,
+    QTimer,
+    Qt,
+    QSettings,
+    QStandardPaths,
+    Slot,
+    Signal,
+    Property
 
-from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
-from PySide2.QtCore import QObject, QAbstractListModel, QFileInfo, QFile, QIODevice, QFileSystemWatcher, QModelIndex, QDateTime, QDate, QTime, QThreadPool, QThread, QTimer, Qt, QSettings, QStandardPaths, Slot, Signal, Property
-from PySide2.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
+)
+from PySide2.QtQml import (
+    QQmlApplicationEngine,
+    QQmlContext
+)
+from PySide2.QtNetwork import (
+    QNetworkAccessManager,
+    QNetworkReply,
+    QNetworkRequest
+)
 
 import os.path
 import pathlib

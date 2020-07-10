@@ -1,5 +1,12 @@
-﻿# This Python file uses the following encoding: utf-8
-from PySide2.QtCore import QObject, QTimer, QFileInfo, QLocale, QUrl, Slot, Signal
+﻿from PySide2.QtCore import (
+    QObject,
+    QTimer,
+    QFileInfo,
+    QLocale,
+    QUrl,
+    Slot,
+    Signal
+)
 
 import sys, os, pathlib
 

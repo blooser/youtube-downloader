@@ -1,4 +1,11 @@
-﻿from PySide2.QtCore import QObject, Qt, QStandardPaths, Slot, Signal, Property
+﻿from PySide2.QtCore import (
+    QObject,
+    Qt,
+    QStandardPaths,
+    Slot,
+    Signal,
+    Property
+)
 
 import sys, os, pathlib
 
