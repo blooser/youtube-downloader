@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.14
 
 import Qt.labs.platform 1.1
@@ -39,7 +39,7 @@ Item {
             Layout.alignment: Qt.AlignRight
             text: Settings.outputPath
             onClicked: dialogManager.open_dialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
-                var path = Paths.cleanPath(selectedFolder)
+                let path = Paths.cleanPath(selectedFolder)
                 Settings.outputPath = path
                 options["output_path"] = path
             })
