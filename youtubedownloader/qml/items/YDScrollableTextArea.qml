@@ -12,6 +12,9 @@ YDScrollView {
 
     clip: true
 
+    passiveColor: Theme.Colors.third
+    activeColor: Theme.Colors.highlight
+
     function clear() {
         textArea.clear()
     }

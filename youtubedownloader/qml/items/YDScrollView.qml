@@ -4,15 +4,33 @@ import QtQuick.Controls 2.14
 ScrollView {
     id: root
 
-    ScrollBar.vertical: YDScrollBar {
+    property color passiveColor: Theme.Colors.second
+    property color activeColor: Theme.Colors.third
+
+    YDScrollBar.vertical: YDScrollBar {
         parent: root
 
-        x: root.mirrored ? 0 : root.width - width
+        x: root.mirrored ? Theme.Size.none : root.width - width
         y: root.topPadding
 
         height: root.availableHeight
         active: root.ScrollBar.horizontal.active
 
+        passiveColor: root.passiveColor
+        activeColor: root.activeColor
+    }
+
+    YDScrollBar.horizontal: YDScrollBar {
+        parent: root
+
+        x: root.leftPadding
+        y: root.height - height
+
+        width: root.availableWidth
+        active: root.ScrollBar.vertical.active
+
+        passiveColor: root.passiveColor
+        activeColor: root.activeColor
     }
 
     background: Rectangle {
