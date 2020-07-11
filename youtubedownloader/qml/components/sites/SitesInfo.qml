@@ -6,6 +6,8 @@ import "../../components" as Components
 Item {
     id: root
 
+    property int sitesCount: sites.count
+
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
@@ -25,6 +27,8 @@ Item {
         }
 
         Sites {
+            id: sites
+
             Layout.fillWidth: true
             Layout.fillHeight: true
 
