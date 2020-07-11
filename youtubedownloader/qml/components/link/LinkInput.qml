@@ -52,7 +52,7 @@ Item {
 
             PropertyAnimation {
                 id: changeSingleLineComponentAnimation
-                target: link.background
+                target: link
                 from: 100
                 to: 40
                 property: "implicitHeight"

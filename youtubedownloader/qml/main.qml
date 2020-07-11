@@ -79,7 +79,11 @@ ApplicationWindow {
             Layout.fillWidth: true
 
             options: downloadOptions.options
-            onAddLink: downloadManager.predownload(link, downloadOptions.options)
+            onAddLink: {
+                if (!downloadManager.exists(link, downloadOptions.options)) {
+                    downloadManager.predownload(link, downloadOptions.options)
+                }
+            }
         }
 
         Download.DownloadOptions {
