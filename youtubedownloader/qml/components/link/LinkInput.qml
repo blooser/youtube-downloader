@@ -71,6 +71,8 @@ Item {
 
             focus: true
 
+            onTextChanged: Settings.inputLink = text
+
             Component.onCompleted: {
                 text = Settings.inputLink
                 changeMultiLineComponentAnimation.start()
@@ -115,7 +117,7 @@ Item {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
 
-            enabled: root.singleLine ? (changer.item.acceptableInput && !downloadManager.exists(changer.item.text, options)) : true
+            enabled: root.singleLine ? (changer.item.acceptableInput && !downloadManager.exists(changer.item.text, options)) : changer.item.text
 
             imageSource: Resources.icons.plus
 
