@@ -154,8 +154,8 @@ Item {
             verticalCenter: parent.verticalCenter
         }
 
-        width: 16
-        height: 16
+        width: Theme.Size.iconSmall
+        height: Theme.Size.iconSmall
 
         imageSource: Resources.icons.arrowDown
 
