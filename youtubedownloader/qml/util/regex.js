@@ -11,7 +11,7 @@ function extractUrls(text) {
     var urls = []
 
     for (const line of lines) {
-        if (line && isUrl(line)) {
+        if (isUrl(line)) {
             urls.push(line)
         }
     }
