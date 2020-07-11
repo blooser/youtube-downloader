@@ -32,13 +32,14 @@ Item {
             placeholderText: qsTr("Enter supported link")
             placeholderTextColor: Theme.Colors.placeholder
 
-            onTextEdited: Settings.inputLink = text
-
             validator: RegularExpressionValidator {
                 regularExpression: Regex.URL_REGEX
             }
 
             focus: true
+            rightPadding: Theme.Margins.big * 2 // NOTE: Because of `addButton` position
+
+            onTextEdited: Settings.inputLink = text
 
             Keys.onEnterPressed: addButton.clicked()
             Keys.onReturnPressed: addButton.clicked()
