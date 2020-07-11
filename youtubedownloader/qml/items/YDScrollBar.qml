@@ -9,11 +9,14 @@ ScrollBar {
     active: true
     orientation: Qt.Vertical
 
+    property color passiveColor: Theme.Colors.second
+    property color activeColor: Theme.Colors.third
+
     contentItem: Rectangle {
         implicitWidth: root.orientation === Qt.Vertical ?  6 : 100
         implicitHeight: root.orientation === Qt.Vertical ? 100 : 6
         radius: (width/2)
-        color: root.pressed ? Theme.Colors.third: Theme.Colors.second
+        color: root.pressed ? activeColor: passiveColor
 
         Behavior on color {
             ColorAnimation { duration: Theme.Animation.quick }

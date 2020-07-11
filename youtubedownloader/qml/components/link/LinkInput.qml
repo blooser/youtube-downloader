@@ -61,28 +61,38 @@ Item {
     Component {
         id: multiLineComponent
 
-        Items.YDTextArea {
-            id: textArea
+        Items.YDScrollView {
+            id: scrollView
 
-            placeholderText: qsTr("Enter supported links")
-            placeholderTextColor: Theme.Colors.placeholder
+            implicitHeight: textArea.background.implicitHeight
 
+            clip: true
             focus: true
 
-            Component.onCompleted: {
-                text = Settings.inputLink
-                changeMultiLineComponentAnimation.start()
-            }
+            Items.YDTextArea {
+                id: textArea
 
-            PropertyAnimation {
-                id: changeMultiLineComponentAnimation
-                target: textArea.background
-                from: 40
-                to: 100
-                property: "implicitHeight"
+                width: scrollView.implicitContentWidth
+
+                placeholderText: qsTr("Enter supported links (click a button on the right to predownload)")
+                placeholderTextColor: Theme.Colors.placeholder
+
+                focus: true
+
+                Component.onCompleted: {
+                    text = Settings.inputLink
+                    changeMultiLineComponentAnimation.start()
+                }
+
+                PropertyAnimation {
+                    id: changeMultiLineComponentAnimation
+                    target: textArea.background
+                    from: 40
+                    to: 100
+                    property: "implicitHeight"
+                }
             }
         }
-
     }
 
     RowLayout {
