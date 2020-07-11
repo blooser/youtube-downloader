@@ -4,6 +4,8 @@ import QtQuick.Controls 2.14
 TextArea {
     id: root
 
+    color: Theme.Colors.text
+
     background: Rectangle {
         implicitWidth: 200
         implicitHeight: 40
