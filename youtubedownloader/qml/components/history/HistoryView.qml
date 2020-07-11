@@ -1,8 +1,7 @@
 ﻿import QtQuick 2.14
 import QtQuick.Layouts 1.14
 
-import "../../items" as Items
-
+import "../../components" as Components
 
 Rectangle {
     id: root
@@ -22,7 +21,7 @@ Rectangle {
 
         spacing: Theme.Margins.small
 
-        Items.YDInput {
+        Components.InputWithRemovableButton {
             id: searchInput
 
             Layout.fillWidth: true

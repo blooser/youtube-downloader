@@ -1,7 +1,7 @@
 ﻿import QtQuick 2.14
 import QtQuick.Layouts 1.14
 
-import "../../items" as Items
+import "../../components" as Components
 
 Item {
     id: root
@@ -15,7 +15,7 @@ Item {
         anchors.fill: parent
         spacing: Theme.Margins.big
 
-        Items.YDInput {
+        Components.InputWithRemovableButton {
             id: siteInput
 
             Layout.fillWidth: true
