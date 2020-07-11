@@ -63,42 +63,25 @@ Item {
     Component {
         id: multiLineComponent
 
-        Items.YDScrollView {
-            id: scrollView
+        Items.YDScrollableTextArea {
+            id: textArea
 
-            property alias text: textArea.text
+            placeholderText: qsTr("Enter supported links (remember to separate the links with new line)")
+            placeholderTextColor: Theme.Colors.placeholder
 
-            implicitHeight: textArea.background.implicitHeight
-
-            clip: true
             focus: true
 
-            function clear() {
-                textArea.clear()
+            Component.onCompleted: {
+                text = Settings.inputLink
+                changeMultiLineComponentAnimation.start()
             }
 
-            Items.YDTextArea {
-                id: textArea
-
-                width: scrollView.implicitContentWidth
-
-                placeholderText: qsTr("Enter supported links (remember to separate the links with new line)")
-                placeholderTextColor: Theme.Colors.placeholder
-
-                focus: true
-
-                Component.onCompleted: {
-                    text = Settings.inputLink
-                    changeMultiLineComponentAnimation.start()
-                }
-
-                PropertyAnimation {
-                    id: changeMultiLineComponentAnimation
-                    target: textArea.background
-                    from: 40
-                    to: 100
-                    property: "implicitHeight"
-                }
+            PropertyAnimation {
+                id: changeMultiLineComponentAnimation
+                target: textArea
+                from: 40
+                to: 100
+                property: "implicitHeight"
             }
         }
     }
