@@ -1,6 +1,5 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Layouts 1.14
-import QtGraphicalEffects 1.14
 
 import "../items" as Items
 
@@ -42,13 +41,6 @@ Item {
             readonly property real startY: y
 
             source: Resources.icons.arrowDown
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: Theme.Colors.third
-                visible: (parent.status === Image.Ready)
-            }
 
             SequentialAnimation on y {
                 loops: Animation.Infinite
