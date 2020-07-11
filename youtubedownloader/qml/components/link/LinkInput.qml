@@ -21,7 +21,12 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    Component.onCompleted: firstInitialization = false
+    Component.onCompleted: {
+        firstInitialization = false
+        singleLine = Settings.singleLine
+    }
+
+    onSingleLineChanged: Settings.singleLine = root.singleLine
 
     Component {
         id: singleLineComponent
@@ -37,7 +42,7 @@ Item {
             }
 
             focus: true
-            rightPadding: Theme.Margins.big * 2 // NOTE: Because of `addButton` position
+            rightPadding: Theme.Margins.big * 2 // NOTE: Because of `changeLineButton` position
 
             onTextEdited: Settings.inputLink = text
 

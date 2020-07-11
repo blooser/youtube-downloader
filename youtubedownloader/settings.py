@@ -16,6 +16,7 @@ class Settings(QObject):
     input_link_changed = Signal(str)
     output_path_changed = Signal(str)
     file_format_changed = Signal(str)
+    single_line_changed = Signal(bool)
 
     def __init__(self, settings_path=None):
         super(Settings, self).__init__(None)
@@ -25,6 +26,7 @@ class Settings(QObject):
         self.input_link = str()
         self.output_path = QStandardPaths.writableLocation(QStandardPaths.DownloadLocation)
         self.file_format = "webm"
+        self.single_line = True
 
         if os.path.isfile(Settings.CONFIG_PATH):
             self.load()
@@ -37,6 +39,7 @@ class Settings(QObject):
         self.input_link = settings.value("input_link")
         self.output_path = settings.value("output_path")
         self.file_format = settings.value("file_format")
+        self.single_line = bool(settings.value("single_line") == "True")
         settings.endGroup()
 
     def save(self) -> None:
@@ -45,6 +48,7 @@ class Settings(QObject):
         settings.setValue("input_link", self.input_link)
         settings.setValue("output_path", self.output_path)
         settings.setValue("file_format", self.file_format)
+        settings.setValue("single_line", "True" if self.single_line else "False") # NOTE: QSettings has a problem with bool values(bool("False") = True)
         settings.endGroup()
 
     def read_input_link(self) -> str:
@@ -77,7 +81,17 @@ class Settings(QObject):
         self.file_format = file_format
         self.file_format_changed.emit(self.file_format)
 
+    def read_single_line(self) -> bool:
+        return self.single_line
+
+    def set_single_line(self, new_single_line: bool) -> None:
+        if self.single_line == new_single_line:
+            return
+
+        self.single_line = new_single_line
+        self.single_line_changed.emit(self.single_line)
 
     inputLink = Property(str, read_input_link, set_input_link, notify=input_link_changed)
     outputPath = Property(str, read_output_path, set_output_path, notify=output_path_changed)
     fileFormat = Property(str, read_file_format, set_file_format, notify=file_format_changed)
+    singleLine = Property(bool, read_single_line, set_single_line, notify=single_line_changed)
