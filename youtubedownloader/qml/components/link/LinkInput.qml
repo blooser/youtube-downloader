@@ -14,14 +14,14 @@ Item {
     property var options
 
     property bool singleLine: true
-    property bool firstInitialization: false // NOTE: To do not run the change animation when program start up
+    property bool firstInitialization: true // NOTE: To do not run the change animation when program start up
 
     signal addLink(string link)
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    Component.onCompleted: firstInitialization = true
+    Component.onCompleted: firstInitialization = false
 
     Component {
         id: singleLineComponent
@@ -45,7 +45,9 @@ Item {
 
             Component.onCompleted: {
                 text = Settings.inputLink
-                if (root.firstInitialization) changeSingleLineComponentAnimation.start()
+                if (!root.firstInitialization) {
+                    changeSingleLineComponentAnimation.start()
+                }
             }
 
             PropertyAnimation {
@@ -64,17 +66,23 @@ Item {
         Items.YDScrollView {
             id: scrollView
 
+            property alias text: textArea.text
+
             implicitHeight: textArea.background.implicitHeight
 
             clip: true
             focus: true
+
+            function clear() {
+                textArea.clear()
+            }
 
             Items.YDTextArea {
                 id: textArea
 
                 width: scrollView.implicitContentWidth
 
-                placeholderText: qsTr("Enter supported links (click a button on the right to predownload)")
+                placeholderText: qsTr("Enter supported links (remember to separate the links with new line)")
                 placeholderTextColor: Theme.Colors.placeholder
 
                 focus: true
@@ -124,7 +132,7 @@ Item {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
 
-            enabled: (link.acceptableInput && !downloadManager.exists(link.text, options))
+            enabled: root.singleLine ? (changer.item.acceptableInput && !downloadManager.exists(changer.item.text, options)) : true
 
             imageSource: Resources.icons.plus
 
@@ -134,8 +142,16 @@ Item {
                     return
                 }
 
-                root.addLink(link.text)
-                link.clear()
+                if (root.singleLine) {
+                    root.addLink(changer.item.text)
+                    changer.item.clear()
+                } else {
+                    for (const url of Regex.extractUrls(changer.item.text)) {
+                        root.addLink(url)
+                    }
+                    changer.item.clear()
+                }
+
                 Settings.inputLink = Theme.String.empty
             }
         }

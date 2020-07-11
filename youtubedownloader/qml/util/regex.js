@@ -6,6 +6,19 @@ function isUrl(url){
     return (matches !== null && matches.length > 0)
 }
 
+function extractUrls(text) {
+    let lines = text.split("\n")
+    var urls = []
+
+    for (const line of lines) {
+        if (line && isUrl(line)) {
+            urls.push(line)
+        }
+    }
+
+    return urls
+}
+
 function isYoutubeLink(url) {
     let urls = url.match(YOUTUBE_LINK_REGEX)
 	
