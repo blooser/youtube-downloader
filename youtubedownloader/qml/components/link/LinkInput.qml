@@ -26,6 +26,7 @@ Item {
             placeholderText: qsTr("Enter supported link")
             placeholderTextColor: Theme.Colors.placeholder
 
+
             onTextEdited: Settings.inputLink = text
 
             validator: RegularExpressionValidator {

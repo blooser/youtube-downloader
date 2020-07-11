@@ -6,6 +6,13 @@ TextField {
 
     color: Theme.Colors.text
 
+    property bool icon: false
+    property url iconSource
+
+    signal iconClicked()
+
+    rightPadding: root.icon ? Theme.Margins.big * 2 : Theme.Margins.tiny
+
     background: Rectangle {
         implicitWidth: 200
         implicitHeight: 40
@@ -19,6 +26,22 @@ TextField {
 
         Behavior on border.color {
             ColorAnimation { duration: Theme.Animation.quick }
+        }
+
+        YDPureImageButton {
+            implicitWidth: 16
+            implicitHeight: 16
+
+            visible: root.icon
+            imageSource: root.iconSource
+
+            anchors {
+                right: parent.right
+                rightMargin: Theme.Margins.small
+                verticalCenter: parent.verticalCenter
+            }
+
+            onClicked: root.iconClicked()
         }
     }
 }
