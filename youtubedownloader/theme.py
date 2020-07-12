@@ -44,6 +44,10 @@
         "normal": 1000
     },
 
+    "Time": {
+        "repeat": 5000
+    },
+
     "FontSize": {
         "groupBoxLabel": 8,
         "micro": 10,

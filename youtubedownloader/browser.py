@@ -96,6 +96,8 @@ class Firefox(QObject):
 # TODO: Add Google Chrome and Opera... not sure it will be possible to do this same like Firefox
 
 class Browsers(QObject):
+    browsers_changed = Signal(list)
+
     def __init__(self):
         super(Browsers, self).__init__(None)
 
@@ -104,6 +106,7 @@ class Browsers(QObject):
 
         self.populate()
 
+    @Slot()
     def populate(self) -> None:
         for browser in [Firefox()]:
             if browser.detected:
@@ -111,8 +114,10 @@ class Browsers(QObject):
 
         if len(self._browsers) == 0:
             self.logger.info("No any browser found")
+        else:
+            self.browsers_changed.emit(self.browsers)
 
-    @Property("QVariantList", constant=True)
+    @Property("QVariantList", notify=browsers_changed)
     def browsers(self) -> list:
         return self._browsers
 

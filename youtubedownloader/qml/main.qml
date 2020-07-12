@@ -70,7 +70,7 @@ ApplicationWindow {
         Browser.Browsers {
             Layout.fillWidth: true
 
-            visible: (WebBrowsers.browsers !== Theme.Capacity.empty)
+            visible: (WebBrowsers.browsers.length !== Theme.Capacity.empty)
             options: downloadOptions.options
             onAddTab: downloadManager.predownload(url, downloadOptions.options)
         }
@@ -163,5 +163,12 @@ ApplicationWindow {
                 foundDialog.destroy()
             }
         }
+    }
+
+    Timer {
+        interval: Theme.Time.repeat
+        running: (WebBrowsers.browsers.length === Theme.Capacity.empty)
+        repeat: true
+        onTriggered: WebBrowsers.populate()
     }
 }
