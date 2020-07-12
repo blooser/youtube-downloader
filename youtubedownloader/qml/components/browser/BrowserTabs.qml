@@ -30,4 +30,12 @@ ListView {
     populate: Transition {
         OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.normal }
     }
+
+    add: Transition {
+        NumberAnimation { property: "y"; from: y - 100; duration: Theme.Animation.quick }
+    }
+
+    remove: Transition {
+        NumberAnimation { property: "y"; to: y + 100; duration: Theme.Animation.quick }
+    }
 }

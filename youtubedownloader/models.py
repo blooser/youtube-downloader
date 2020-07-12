@@ -214,9 +214,19 @@ class WebTabsModel(QAbstractListModel):
             return tab.title
 
     def set_tabs(self, new_tabs: list) -> None:
-        self.beginResetModel()
-        self.tabs = new_tabs
-        self.endResetModel()
+        if (not self.rowCount()):
+            self.beginResetModel()
+            self.tabs = new_tabs
+            self.endResetModel()
+
+        else:
+            self.beginRemoveRows(QModelIndex(), 0, len(self.tabs) - 1)
+            self.tabs.clear()
+            self.endRemoveRows()
+
+            self.beginInsertRows(QModelIndex(), 0, len(new_tabs) - 1)
+            self.tabs = new_tabs
+            self.endInsertRows()
 
 # NOTE: Proxy
 
