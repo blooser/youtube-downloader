@@ -21,7 +21,9 @@ Item {
 
             Layout.alignment: Qt.AlignHCenter
 
-            text: qsTr("Download %1 items").arg(preDownloadItems.itemsReady)
+            icon.source: Resources.icons.download
+
+            text: qsTr("Download")
             enabled: preDownloadItems.itemsReady && !preDownloadItems.itemsProcessing
 
             onClicked: downloadManager.download()
