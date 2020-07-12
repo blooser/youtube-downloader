@@ -36,10 +36,10 @@ class Settings(QObject):
     def load(self) -> None:
         settings = QSettings(self.settings_path)
         settings.beginGroup("Settings")
-        self.input_link = settings.value("input_link")
-        self.output_path = settings.value("output_path")
-        self.file_format = settings.value("file_format")
-        self.single_line = bool(settings.value("single_line") == "True")
+        self.input_link = settings.value("input_link", "")
+        self.output_path = settings.value("output_path", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation))
+        self.file_format = settings.value("file_format", "webm")
+        self.single_line = bool(settings.value("single_line", "True") == "True")
         settings.endGroup()
 
     def save(self) -> None:
