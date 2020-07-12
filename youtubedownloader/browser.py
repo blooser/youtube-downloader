@@ -20,10 +20,9 @@ def is_youtube(url: str) -> re.Match:
 
 
 class BrowserTab(object):
-    def __init__(self, url: str, title: str, allow: bool=True):
+    def __init__(self, url: str, title: str):
         self.url = url
         self.title = title
-        self.allow = allow
 
     def __eq__(self, other):
         return self.url == other.url

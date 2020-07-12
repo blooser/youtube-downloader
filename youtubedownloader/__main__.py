@@ -5,7 +5,7 @@ from PySide2.QtCore import Qt, QUrl, QResource
 from PySide2.QtWidgets import QApplication
 
 from .download import DownloadManager, FileDownloader
-from .models import StringFilterModel, SupportedSitesModel, HistoryModel, AllowFilterModel
+from .models import StringFilterModel, SupportedSitesModel, HistoryModel
 from .component_changer import ComponentChanger, Change
 from .dialog_manager import DialogManager
 from .resources import Resources
@@ -40,7 +40,6 @@ def main():
     qmlRegisterType(Change, "yd.items", 0, 1, "Change")
     qmlRegisterType(ComponentChanger, "yd.items", 0, 1, "ComponentChanger")
     qmlRegisterType(StringFilterModel, "yd.items", 0, 1, "StringFilterModel")
-    qmlRegisterType(AllowFilterModel, "yd.items", 0, 1, "AllowFilterModel")
 
     qml_file = os.path.join(os.path.dirname(__file__), "qml/main.qml")
     engine = QQmlApplicationEngine()

@@ -25,8 +25,6 @@ ListView {
                 root.addTab(url)
             }
         }
-
-        Component.onCompleted: allow = Regex.isYoutubeLink(url)
     }
 
     populate: Transition {

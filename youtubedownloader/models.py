@@ -175,7 +175,7 @@ class SupportedSitesModel(QAbstractItemModel):
 
 
 class WebTabsModel(QAbstractListModel):
-    COLUMNS: str = ("url", "title", "allow")
+    COLUMNS: str = ("url", "title")
     FIRST_COLUMN: int = 0
     LAST_COLUMN: int = len(COLUMNS)
 
@@ -195,8 +195,7 @@ class WebTabsModel(QAbstractListModel):
     def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
         return {
             256: b"url",
-            257: b"title",
-            258: b"allow"
+            257: b"title"
         }
 
     def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
@@ -214,64 +213,12 @@ class WebTabsModel(QAbstractListModel):
         elif role == 257:
             return tab.title
 
-        elif role == 258:
-            return tab.allow
-
-    def setData(self, index: QModelIndex, value, role: int) -> None:
-        if not index.isValid():
-            return False
-
-        row = index.row()
-
-        if role == 258:
-            self.tabs[row].allow = value # NOTE: value is bool
-            self.dataChanged.emit(self.index(row, WebTabsModel.FIRST_COLUMN, QModelIndex()), self.index(row, WebTabsModel.LAST_COLUMN, QModelIndex()))
-            return True
-
-        return False
-
     def set_tabs(self, new_tabs: list) -> None:
         self.beginResetModel()
         self.tabs = new_tabs
         self.endResetModel()
 
 # NOTE: Proxy
-
-class AllowFilterModel(QSortFilterProxyModel, QQmlParserStatus):
-
-    def __init__(self):
-        super(AllowFilterModel, self).__init__(None)
-
-        self.setDynamicSortFilter(True)
-        self.allow_role =  -1
-
-        self.sourceModelChanged.connect(self.get_allow_role)
-
-    def classBegin(self) -> None:
-        pass
-
-    def componentComplete(self) -> None:
-        pass
-
-    @Slot()
-    def get_allow_role(self) -> int:
-        role_names = self.sourceModel().roleNames()
-
-        for key in role_names:
-            if role_names[key] == b"allow":
-                self.allow_role = key
-                return
-
-        self.allow_role = -1
-
-    def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex=QModelIndex()) -> bool:
-        index = self.sourceModel().index(source_row, 0, source_parent)
-
-        if self.allow_role == -1:
-            return False
-
-        return self.sourceModel().data(index, self.allow_role)
-
 
 class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
     stringChanged = Signal(str, arguments=["string"])

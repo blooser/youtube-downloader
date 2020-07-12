@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader.models import SupportedSitesModel, StringFilterModel, HistoryModel, WebTabsModel, AllowFilterModel
+from youtubedownloader.models import SupportedSitesModel, StringFilterModel, HistoryModel, WebTabsModel
 from youtubedownloader.browser import BrowserTab
 from youtubedownloader.database import Database
 
@@ -52,22 +52,6 @@ class ModelsTest(unittest.TestCase):
             
         web_tabs_model.set_tabs(tabs)
         self.assertEqual(web_tabs_model.rowCount(), 5)
-    
-    def test_allowFilterModelFiltersByallowProperty(self):
-        web_tabs_model = WebTabsModel()
-        tabs = [
-            BrowserTab("", ""),
-            BrowserTab("", ""),
-            BrowserTab("", ""),
-            BrowserTab("", "", allow=False),
-            BrowserTab("", "", allow=False)
-        ]
-            
-        web_tabs_model.set_tabs(tabs)
-        allow_filter_model = AllowFilterModel()
-        allow_filter_model.setSourceModel(web_tabs_model)
-        
-        self.assertEqual(allow_filter_model.rowCount(), 3)
 
 if __name__ == "__main__":
     unittest.main()

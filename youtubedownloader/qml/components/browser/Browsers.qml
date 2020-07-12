@@ -2,8 +2,6 @@
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 
-import yd.items 0.1
-
 import "../../items" as Items
 
 Item {
@@ -31,9 +29,7 @@ Item {
                 model: WebBrowsers.browsers
 
                 BrowserTabs {
-                    model: AllowFilterModel {
-                        sourceModel: modelData.tabs
-                    }
+                    model: modelData.tabs
                     options: root.options
                     onAddTab: root.addTab(url)
                 }
