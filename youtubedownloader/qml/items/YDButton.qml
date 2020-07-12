@@ -1,12 +1,15 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Controls 2.14
+
+import "../components" as Components
 
 Button {
     id: root
 
-    contentItem: YDText {
-        text: root.text
+    contentItem: Components.IconText {
         opacity: root.enabled ? Theme.Visible.on : Theme.Visible.disabled
+        iconSource: icon.source
+        text: root.text
     }
 
     background: Rectangle {
