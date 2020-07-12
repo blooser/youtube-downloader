@@ -115,9 +115,8 @@ class PreDownload(QObject):
         self.task.start()
 
     def stop(self) -> None:
-        if self.task.isRunning():
+        while self.task.isRunning(): # NOTE: Collecting data is usually fast, wait until processing and exit
             self.task.exit()
-            self.task.wait() # NOTE: Should not be costly enough
 
     def destination_file_exists(self) -> bool:
         return os.path.isfile(self.destination_file)
