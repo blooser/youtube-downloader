@@ -16,16 +16,16 @@ Item {
         id: mainLayout
 
         anchors.fill: parent
-        spacing: Theme.Margins.tiny
+        spacing: icon.visible ? Theme.Margins.tiny : Theme.Margins.zero
 
         Items.YDImage {
             id: icon
 
             Layout.alignment: Qt.AlignVCenter
-            Layout.preferredWidth: 16
-            Layout.preferredHeight: 16
+            Layout.preferredWidth: Theme.Size.iconSmall
+            Layout.preferredHeight: Theme.Size.iconSmall
 
-            visible: (textItem.text !== Theme.String.empty)
+            visible: (textItem.text !== Theme.String.empty && icon.source.toString() !== "")
         }
 
         Items.YDText {
