@@ -10,7 +10,13 @@
 from .logger import create_logger
 from .models import WebTabsModel
 
-import os, os.path, json, lz4.block, subprocess
+import os, os.path, json, lz4.block, subprocess, re
+
+
+YOUTUBE_PATTERN = re.compile("http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?")
+
+def is_youtube(url: str) -> re.Match:
+    return YOUTUBE_PATTERN.match(url)
 
 
 class BrowserTab(object):
@@ -18,6 +24,9 @@ class BrowserTab(object):
         self.url = url
         self.title = title
         self.allow = allow
+
+    def __eq__(self, other):
+        return self.url == other.url
 
 
 class Firefox(QObject):
@@ -66,12 +75,15 @@ class Firefox(QObject):
         for window in j_data.get("windows"):
             for tab in window.get("tabs"):
                 index = int(tab.get("index")) - 1
-                tabs.append(BrowserTab(
-                        tab.get("entries")[index].get("url"),
-                        tab.get("entries")[index].get("title"))
-                    )
 
-        self.tabs_model.set_tabs(tabs)
+                if (is_youtube(tab.get("entries")[index].get("url"))):
+                    tabs.append(BrowserTab(
+                            tab.get("entries")[index].get("url"),
+                            tab.get("entries")[index].get("title"))
+                        )
+
+        if (self.tabs_model.tabs != tabs):
+            self.tabs_model.set_tabs(tabs)
 
     @Property(str, constant=True)
     def name(self) -> str:
