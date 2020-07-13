@@ -61,8 +61,8 @@ class Firefox(QObject):
     def get_tabs(self, path: str) -> None:
         tabs = []
 
-        while not os.path.isfile(path): # NOTE: It looks like the signal is faster before the file is moved
-            continue
+        if not os.path.isfile(path):
+            return
 
         if not path in (self.tabs_file_watcher.files()):
             self.tabs_file_watcher.addPath(self.tabs_location)
