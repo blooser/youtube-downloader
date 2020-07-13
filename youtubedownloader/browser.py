@@ -64,7 +64,7 @@ class Firefox(QObject):
         if not os.path.isfile(path):
             return
 
-        if not path in (self.tabs_file_watcher.files()):
+        if path not in (self.tabs_file_watcher.files()):
             self.tabs_file_watcher.addPath(self.tabs_location)
 
         with open(self.tabs_location, "rb") as tabs_file:
