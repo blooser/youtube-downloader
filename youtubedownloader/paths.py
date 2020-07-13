@@ -94,7 +94,7 @@ class Paths(QObject):
 
 
 class FileExpect(QObject):
-    file_exists = Signal()
+    file_exists = Signal(str, arguments=["file"])
 
     def __init__(self):
         super(FileExpect, self).__init__(None)
@@ -112,5 +112,5 @@ class FileExpect(QObject):
     @Slot()
     def check_file_exists(self) -> None:
         if os.path.isfile(self.file):
-            self.file_exists.emit()
+            self.file_exists.emit(self.file)
             self.timer.stop()

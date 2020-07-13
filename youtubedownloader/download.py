@@ -593,7 +593,7 @@ class DownloadTask(QThread):
         self.post_process_file = str()
 
         self.post_process_started.connect(lambda: self.file_expect.observe(self.post_process_file))
-        self.file_expect.file_exists.connect(lambda: self.download_post_process.track(self.post_process_file))
+        self.file_expect.file_exists.connect(self.download_post_process.track)
 
         self.download_post_process.bytes_processed.connect(lambda bytes: self.progress.emit({"downloaded_bytes": bytes}), Qt.QueuedConnection)
         self.download_post_process.started.connect(lambda: self.progress.emit({"status": "converting to {0}".format(self.options.file_format),
@@ -714,6 +714,7 @@ class DownloadPostProcess(QObject):
 
         self.logger = create_logger(__name__)
 
+    @Slot(str)
     def track(self, url: str) -> None:
         track_success = self.file_watcher.addPath(url)
         self.logger.info("Track {file} success={success}".format(file=url, success=track_success))
