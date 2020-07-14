@@ -289,7 +289,7 @@ class PreDownloadModel(QAbstractListModel):
 
         return None
 
-    def setData(self, index: QModelIndex, value, role: int) -> None: # TODO: What type value is?
+    def setData(self, index: QModelIndex, value, role: int) -> bool: # TODO: What type value is?
         if not index.isValid():
             return False
 
