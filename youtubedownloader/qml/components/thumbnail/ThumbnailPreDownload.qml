@@ -1,6 +1,7 @@
 ﻿import QtQuick 2.14
 
 import "../../items" as Items
+import '..' as Components
 
 Item {
     id: root
@@ -25,22 +26,13 @@ Item {
             text: Paths.fileName(url)
         }
 
-        Items.YDButton {
+        Components.ButtonWithBottomText {
             text: qsTr("Download")
+            bottomText: root.dimension
 
             onClicked: root.download(fileName.text)
 
             enabled: (fileName.text !== "")
-
-            Items.YDText {
-                anchors {
-                    bottom: parent.bottom
-                    horizontalCenter: parent.horizontalCenter
-                }
-
-                font.pixelSize: Theme.FontSize.groupBoxLabel
-                text: root.dimension
-            }
         }
     }
 }

@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.12
 
 import "../../items" as Items
 import "../dynamic" as Dynamic
+import ".." as Components
 
 Item {
     id: root
@@ -16,7 +17,7 @@ Item {
         anchors.fill: parent
         spacing: Theme.Margins.tiny
 
-        Items.YDButton {
+        Components.ButtonWithBottomText {
             id: downloadButton
 
             Layout.alignment: Qt.AlignHCenter
@@ -24,6 +25,7 @@ Item {
             icon.source: Resources.icons.download
 
             text: qsTr("Download")
+            bottomText: preDownloadItems.itemsReady ? qsTr("%1 item(s)").arg(preDownloadItems.itemsReady) : Theme.String.empty
             enabled: preDownloadItems.itemsReady && !preDownloadItems.itemsProcessing
 
             onClicked: downloadManager.download()
