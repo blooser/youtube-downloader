@@ -1,5 +1,6 @@
 
 
+
 <div align="center">
 	<img src="https://raw.githubusercontent.com/blooser/youtube-downloader/08c713ea717a2a723d06ef4faeb19f9bbdf04784/youtubedownloader/resources/youtube-downloader-with-text.svg" width="350" height="350">
 </div>
@@ -8,26 +9,17 @@ Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_inter
 
 ## Preview
 
-![preview](https://i.imgur.com/d7ZuMct.png)
+![preview](https://imgur.com/DdEzbZX.png)
 
 ## Dependency
 
 This software is based on [PySide2](https://www.qt.io/qt-for-python) and [youtube-dl](https://github.com/ytdl-org/youtube-dl/).
 
-## Features
-
-It allows for customizing your downloads:
-
-- Select where a single download should be stored
-- What kind of file it should be
-- Pause and resume 
-- Download thumbnail
-
 ## Usage
 
 Youtube downloader’s goal is comfort. To add your download you can just paste the link into the input and hit enter or press button but I strongly recommend to drag a youtube video’s thumbnail and drop it into youtube downloader.
 
-![drop](https://thumbs.gfycat.com/BoldSnappyEarthworm-size_restricted.gif)
+![drop](https://thumbs.gfycat.com/ImpracticalImmenseGnat-size_restricted.gif)
 
 ## Web Browser integration
 
