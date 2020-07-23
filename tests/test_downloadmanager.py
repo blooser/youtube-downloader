@@ -45,3 +45,6 @@ class DownloadManagerTest(unittest.TestCase):
         self.assertTrue(download_manager.exists(self.url, self.options))
         download_manager.download_model.downloads.clear()
         self.assertFalse(download_manager.exists(self.url, self.options))
+
+if __name__ == "__main__":
+    unittest.main()

@@ -25,3 +25,6 @@ class DownloaProgressTest(unittest.TestCase):
         
         remote_path = "https:///server/path/foo"
         self.assertEqual(paths.getPathType(remote_path), "remote")
+
+if __name__ == "__main__":
+    unittest.main()

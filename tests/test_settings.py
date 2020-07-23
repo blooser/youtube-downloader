@@ -29,3 +29,6 @@ class SettingsTest(unittest.TestCase):
         self.assertEqual(settings2.input_link, "link")
         self.assertEqual(settings2.file_format, "mp4")
         self.assertEqual(settings2.output_path, "/foo/bar/path1")
+
+if __name__ == "__main__":
+    unittest.main()

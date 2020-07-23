@@ -55,3 +55,6 @@ class PreDownloadTest(unittest.TestCase):
         self.assertEqual(unpacked.data._uploader, predownload.data._uploader)
         self.assertEqual(unpacked.data._thumbnail, predownload.data._thumbnail)
         self.assertEqual(unpacked.data._duration, predownload.data._duration)
+
+if __name__ == "__main__":
+    unittest.main()

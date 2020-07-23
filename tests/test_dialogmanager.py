@@ -13,11 +13,16 @@ class DialogManagerTest(unittest.TestCase):
     def test_dialogManagerCollectsDialogs(self):
         dialog_manager = DialogManager()
         
-        self.assertEqual(len(dialog_manager.dialogs), 8)
+        self.assertEqual(len(dialog_manager.dialogs), 9)
         
-        expected_dialogs = ["ConfirmDeleteDialog", "SelectDirectoryDialog", "YDDialog", "DropUrlDialog", "ThumbnailDialog", "FileFormatsDialog", "SupportedSitesDialog", "HistoryDialog"]
+        expected_dialogs = ["ConfirmDeleteDialog", "SelectDirectoryDialog", "YDDialog", 
+                            "DropUrlDialog", "ThumbnailDialog", "FileFormatsDialog", 
+                            "SupportedSitesDialog", "HistoryDialog", "ThemeColorsDialog"]
         for key in dialog_manager.dialogs.keys():
             self.assertTrue(key in expected_dialogs)
             
             dialog = dialog_manager.dialogs[key]
             self.assertTrue(dialog.startswith("file:"))
+
+if __name__ == "__main__":
+    unittest.main()
