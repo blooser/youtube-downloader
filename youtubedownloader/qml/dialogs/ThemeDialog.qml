@@ -13,7 +13,7 @@ YDDialog {
 
     anchors.centerIn: undefined
 
-    implicitHeight: 250
+    implicitHeight: 225
 
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     header: null
@@ -25,14 +25,14 @@ YDDialog {
 
     enter: Transition {
         ParallelAnimation {
-            NumberAnimation { property: "y"; from: root.y; to: root.y - 250; duration: Theme.Animation.quick }
+            NumberAnimation { property: "y"; from: root.y; to: root.y - root.implicitHeight; duration: Theme.Animation.quick }
             NumberAnimation { property: "opacity"; from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }
         }
     }
 
     exit: Transition {
         ParallelAnimation {
-            NumberAnimation { property: "y"; from: root.y; to: root.y + 250; duration: Theme.Animation.quick }
+            NumberAnimation { property: "y"; from: root.y; to: root.y + root.implicitHeight; duration: Theme.Animation.quick }
             NumberAnimation { property: "opacity"; from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
         }
     }

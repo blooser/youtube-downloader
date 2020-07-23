@@ -37,14 +37,15 @@ Item {
             anchors.margins: Theme.Margins.tiny
 
             border {
-                color: root.current ? Theme.Colors.second : Theme.Colors.base
+                color: root.current ? Theme.Colors.highlight : Theme.Colors.base
                 width: Theme.Size.border
             }
 
-            Items.YDText {
+            Items.YDImage {
                 anchors.centerIn: rect
-                text: qsTr("Current")
-                font.pixelSize: Theme.FontSize.tiny
+                width: Theme.Size.icon
+                height: Theme.Size.icon
+                source: Resources.icons.check
                 visible: root.current
             }
         }
