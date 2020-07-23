@@ -2,7 +2,7 @@
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.14
 
-import Qt.labs.settings 1.1 as QSettings
+import Qt.labs.settings 1.1
 
 import "items" as Items
 import "components" as Components
@@ -29,9 +29,9 @@ ApplicationWindow {
                                                 "implicitHeight": root.height
                                              }, null)
         onTheme: dialogManager.open_dialog("ThemeDialog", {
-                                               "x": 0,
-                                               "y": root.height,
-                                               "implicitWidth": root.width,
+                                                "x": 0,
+                                                "y": root.height,
+                                                "implicitWidth": root.width,
                                            }, null)
     }
 
@@ -39,7 +39,7 @@ ApplicationWindow {
         color: Theme.Colors.base
     }
 
-    QSettings.Settings {
+    Settings {
         property alias x: root.x
         property alias y: root.y
         property alias width: root.width
@@ -61,14 +61,6 @@ ApplicationWindow {
             if (!downloadManager.exists(url, downloadOptions.options)) {
                 downloadManager.predownload(url, downloadOptions.options)
             }
-        }
-    }
-
-    Connections {
-        target: Theme
-
-        function onColorsChanged(colors) {
-            Settings.themeColor = colors.base
         }
     }
 

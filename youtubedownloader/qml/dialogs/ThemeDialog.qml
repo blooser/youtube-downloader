@@ -36,4 +36,12 @@ YDDialog {
             NumberAnimation { property: "opacity"; from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
         }
     }
+
+    Connections {
+        target: Theme
+
+        function onColorsChanged(colors) {
+            Settings.themeColor = colors.base
+        }
+    }
 }
