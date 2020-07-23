@@ -11,7 +11,7 @@ from PySide2.QtGui import (
 
 
 class Theme(QObject):
-    colorsChanged = Signal(dict)
+    colorsChanged = Signal("QVariantMap", arguments=["colors"])
 
     def __init__(self):
         super(Theme, self).__init__(None)
@@ -91,7 +91,7 @@ class Theme(QObject):
 
         for color_name in colors_name:
             self.properties["Colors"][color_name] = color_helper.name()
-            color_helper = color_helper.lighter(130) # NOTE: 20% lighter
+            color_helper = color_helper.lighter(130) # NOTE: 30% lighter
 
         self.colorsChanged.emit(self.properties["Colors"])
 

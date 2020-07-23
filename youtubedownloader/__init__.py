@@ -39,6 +39,8 @@ def main():
     theme = Theme()
     file_downloader = FileDownloader()
 
+    theme.changeBaseColor(settings.theme_color) # NOTE: Before engine starts
+
     qmlRegisterType(Change, "yd.items", 0, 1, "Change")
     qmlRegisterType(ComponentChanger, "yd.items", 0, 1, "ComponentChanger")
     qmlRegisterType(StringFilterModel, "yd.items", 0, 1, "StringFilterModel")
