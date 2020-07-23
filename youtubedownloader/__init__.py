@@ -36,6 +36,7 @@ def main():
     browsers = Browsers()
     supported_sites_model = SupportedSitesModel()
     history_model = HistoryModel(database.session)
+    theme = Theme()
     file_downloader = FileDownloader()
 
     qmlRegisterType(Change, "yd.items", 0, 1, "Change")
@@ -44,7 +45,7 @@ def main():
 
     qml_file = os.path.join(os.path.dirname(__file__), "qml/main.qml")
     engine = QQmlApplicationEngine()
-    engine.rootContext().setContextProperty("Theme", Theme)
+    engine.rootContext().setContextProperty("Theme", theme)
     engine.rootContext().setContextProperty("Resources", resources)
     engine.rootContext().setContextProperty("Settings", settings)
     engine.rootContext().setContextProperty("downloadManager", download_manager)

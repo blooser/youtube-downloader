@@ -9,6 +9,8 @@ Item {
     property string text
     property color color
 
+    readonly property bool current: (color.toString() === Theme.Colors.base)
+
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
@@ -24,6 +26,8 @@ Item {
         }
 
         Rectangle {
+            id: rect
+
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: 100
             Layout.preferredHeight: 100
@@ -33,10 +37,22 @@ Item {
             anchors.margins: Theme.Margins.tiny
 
             border {
-                color: Theme.Colors.base
+                color: root.current ? Theme.Colors.second : Theme.Colors.base
                 width: Theme.Size.border
             }
+
+            Items.YDText {
+                anchors.centerIn: rect
+                text: qsTr("Current")
+                font.pixelSize: Theme.FontSize.tiny
+                visible: root.current
+            }
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: Theme.changeBaseColor(color)
     }
 }
 

@@ -32,7 +32,7 @@ Rectangle {
         model: ThemeColorModel {}
 
         delegate: ThemeColor {
-            text: themeName
+            text: themeColor
             color: themeColor
         }
 
