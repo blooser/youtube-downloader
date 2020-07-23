@@ -28,6 +28,11 @@ ApplicationWindow {
                                                 "implicitWidth": root.width/2,
                                                 "implicitHeight": root.height
                                              }, null)
+        onTheme: dialogManager.open_dialog("ThemeDialog", {
+                                               "x": 0,
+                                               "y": root.height,
+                                               "implicitWidth": root.width,
+                                           }, null)
     }
 
     background: Rectangle {

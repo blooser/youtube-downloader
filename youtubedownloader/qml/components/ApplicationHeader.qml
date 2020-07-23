@@ -8,6 +8,7 @@ Items.YDToolBar {
 
     signal supportedSites()
     signal history()
+    signal theme()
 
     RowLayout {
         anchors.fill: parent
@@ -26,6 +27,11 @@ Items.YDToolBar {
                 text: qsTr("History")
                 enabled: (historyModel.size !== Theme.Capacity.empty)
                 onClicked: root.history()
+            }
+
+            Items.YDToolButton {
+                text: qsTr("Theme")
+                onClicked: root.theme()
             }
         }
 
