@@ -26,6 +26,9 @@ Rectangle {
         orientation: Qt.Horizontal
         clip: true
 
+        highlightMoveDuration: 2250
+        highlightMoveVelocity: 1500
+
         spacing: Theme.Margins.big
         boundsBehavior: Flickable.StopAtBounds
 
@@ -34,6 +37,12 @@ Rectangle {
         delegate: ThemeColor {
             text: themeColor
             color: themeColor
+
+            onCurrentChanged: {
+                if (current) {
+                    listView.currentIndex = index
+                }
+            }
         }
 
         ScrollBar.horizontal: Items.YDScrollBar {}
