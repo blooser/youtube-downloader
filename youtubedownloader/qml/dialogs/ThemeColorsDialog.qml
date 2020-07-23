@@ -3,13 +3,13 @@ import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.14
 import QtQuick.Window 2.14
 
-import "../components/theme" as ThemeCustomize
+import "../components/themecolors" as ThemeColors
 
 
 YDDialog {
     id: root
 
-    dialog: "ThemeDialog"
+    dialog: "ThemeColorsDialog"
 
     anchors.centerIn: undefined
 
@@ -21,7 +21,7 @@ YDDialog {
     background: null
     standardButtons: Dialog.NoButton
 
-    contentItem: ThemeCustomize.ThemeColors {}
+    contentItem: ThemeColors.ThemeColors {}
 
     enter: Transition {
         ParallelAnimation {

@@ -1,8 +1,6 @@
-﻿import QtQuick 2.0
+﻿import QtQuick 2.14
 
-// NOTE: https://doc.qt.io/qt-5/qml-color.html#svg-color-reference
 ListModel {
-
     ListElement { themeColor: "#004d99"; }
     ListElement { themeColor: "#000099"; }
     ListElement { themeColor: "#262673"; }
