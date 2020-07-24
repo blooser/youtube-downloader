@@ -26,8 +26,8 @@ class Theme(QObject):
                 "placeholder": "#cccccc",
                 "textStyle": "black",
                 "blank": "transparent",
-                "success": "#00b300",
-                "error": "#ff1a1a",
+                "success": "#008000",
+                "error": "#ff0000",
                 "shadowError": "#99ff1a1a",
                 "shadowBlack": "#99000000",
                 "linkReady": "#b3b3ff"
