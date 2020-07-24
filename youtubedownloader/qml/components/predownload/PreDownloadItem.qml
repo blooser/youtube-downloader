@@ -76,7 +76,7 @@ Rectangle {
 
     states: State {
         when: (preDownloadStatus === "exists" || preDownloadStatus.includes("unsupported") || preDownloadStatus.includes("ERROR"))
-        PropertyChanges { target: root; color: Theme.Colors.shadowError }
+        PropertyChanges { target: root; color: Theme.Colors.error }
     }
 
     transitions: Transition {

@@ -1,17 +1,17 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Controls 2.14
 
 ProgressBar {
     id: root
 
-    property alias backgroundColor: backgroundRect.color
+    property bool error: false
 
     background: Rectangle {
         id: backgroundRect
 
         implicitWidth: 200
         implicitHeight: 4
-        color: Theme.Colors.second
+        color: root.error ? Theme.Colors.error : Theme.Colors.second
         radius: Theme.Margins.tiny
     }
 
@@ -24,6 +24,7 @@ ProgressBar {
             height: parent.height
             color: Theme.Colors.success
             radius: Theme.Margins.tiny
+            visible: !root.error
         }
     }
 

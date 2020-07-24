@@ -40,7 +40,7 @@ Items.YDProgressBar {
     states: State {
         when: downloadProgress.downloadStatus.includes("ERROR")
         name: "error"
-        PropertyChanges { target: root; backgroundColor: Theme.Colors.error }
+        PropertyChanges { target: root; error: true }
     }
 
     transitions: [
