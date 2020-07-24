@@ -27,5 +27,4 @@ ListModel {
     ListElement { themeColor: "#3d5c5c" }
     ListElement { themeColor: "#0000b3" }
     ListElement { themeColor: "#007a99" }
-    ListElement { themeColor: "#009999" }
 }
