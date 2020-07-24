@@ -9,7 +9,7 @@ Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_inter
 
 ## Preview
 
-![preview](https://imgur.com/DdEzbZX.png)
+![preview](https://i.imgur.com/Ll4BKMI.png)
 
 ## Dependency
 
@@ -25,9 +25,15 @@ Youtube downloader’s goal is comfort. To add your download you can just paste 
 
 Youtube Downloader is integrated with Firefox, that's mean it will read currently opened tabs with YouTube's links. It provides a feature to quick download currently played videos from YouTube.
 
+## Theme
+
+Theme can be customized.
+
+![theme](https://imgur.com/NUjQVD7.png)
+
 ## Installation
 
-Prepare youtube downloader to work
+Prepare youtube downloader to work.
 
 ### Manual
 
