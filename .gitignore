@@ -224,3 +224,5 @@ pip-selfcheck.json
 
 # Test 
 run.py
+
+*.user*
