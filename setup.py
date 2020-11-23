@@ -34,7 +34,7 @@ setup (
         "console_scripts": ["youtube-downloader = youtubedownloader:main"]
     },
     install_requires = [
-        "PySide2",
+        "PySide2==15.5.0",
         "lz4",
         "sqlalchemy",
         "beautifulsoup4",
