@@ -5,6 +5,8 @@ import Qt.labs.platform 1.1
 
 import "../../items" as Items
 import "../format" as Format
+import "../path" as Path
+import ".." as Components
 
 Item {
     id: root
@@ -33,11 +35,10 @@ Item {
             }
         }
 
-        Items.YDButton {
+        Path.PathButton {
             id: outputPath
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignRight
-            text: Settings.outputPath
+            Layout.alignment: Qt.AlignCenter
             onClicked: dialogManager.open_dialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
                 let path = Paths.cleanPath(selectedFolder)
                 Settings.outputPath = path
