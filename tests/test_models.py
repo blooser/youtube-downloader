@@ -22,7 +22,7 @@ class ModelsTest(unittest.TestCase):
         string_filter_model.setSourceModel(supported_sites_model)
         string_filter_model.set_filter_role_names(["name"])
         string_filter_model.set_string("youtube")
-        self.assertEqual(string_filter_model.rowCount(), 15)
+        self.assertEqual(string_filter_model.rowCount(), 11)
 
 
     def test_historyModelCommunicatesWithDatabase(self):
