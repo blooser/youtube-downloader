@@ -48,7 +48,7 @@ class Firefox(QObject):
         self.file_expect.file_exists.connect(self.get_tabs)
 
     def detect(self) -> None:
-        self.tabs_location = paths.find_file(Firefox.TABS_LOCATION_PATTERN)[0] # NOTE: We expect only one file
+        self.tabs_location = paths.find_file(Firefox.TABS_LOCATION_PATTERN)
 
         if self.tabs_location:
             self.logger.info("Firefox detected={tabs_location}".format(tabs_location=(bool(self.tabs_location != ""))))

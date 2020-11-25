@@ -23,7 +23,7 @@ FILE_TYPE: dict = {
 }
 
 def get_file_type(file: str) -> str:
-    suffix = pathlib.PurePath(file).suffix.replace(".", "")
+    suffix = pathlib.PurePath(file).suffix.replace(".", "") if "." in file else file # The file is already a suffix
 
     for key in FILE_TYPE:
         if suffix in FILE_TYPE[key]:
@@ -32,16 +32,17 @@ def get_file_type(file: str) -> str:
     return ""
 
 def new_extension(file: str, new_ext: str) -> str:
+    file = pathlib.PurePath(file).stem
     new_ext = new_ext.replace(".", "")
-    return "{file}.{ext}".format(file=pathlib.PurePath(file).stem,
-                                 ext=new_ext)
+    return f"{file}.{new_ext}"
 
 def file_name(path) -> str:
     return pathlib.PurePath(path).name
 
 def find_file(path: str) -> str:
     os_path = os.path.expanduser(path)
-    return glob.glob(os_path)
+    expected_file = glob.glob(os_path)
+    return expected_file[0] if expected_file else ""
 
 def collect_files(core_path: str) -> dict:
     files = {}
@@ -74,13 +75,7 @@ class QPaths(QObject):
 
     @Slot(str, result="QString")
     def getFileType(self, format: str) -> str:
-        if format in FILE_TYPE["video"]:
-            return "video"
-
-        elif format in FILE_TYPE["audio"]:
-            return "audio"
-
-        return ""
+        return get_file_type(format)
 
     @Slot(str, result="QString")
     def getPathType(self, path: str) -> str:
