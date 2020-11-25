@@ -6,7 +6,6 @@ import pickle
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from youtubedownloader.paths import Paths
 from youtubedownloader.resources import Resources
 
 
