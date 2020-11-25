@@ -10,6 +10,7 @@
 from .logger import create_logger
 from .paths import FileExpect
 from .models import WebTabsModel
+from .paths import Paths
 
 import os, os.path, json, lz4.block, subprocess, re
 
@@ -31,7 +32,7 @@ class BrowserTab(object):
 
 class Firefox(QObject):
     NAME: str = "Firefox"
-    SESSION_LOCATION_COMMAND: list = ["find ~/.mozilla/firefox*/*.*/sessionstore-backups/recovery.jsonlz4"]
+    TABS_LOCATION_PATTERN: str = "~/.mozilla/firefox*/*.*/sessionstore-backups/recovery.jsonlz4"
     MOZILLA_MAGIC_NUMBER: int = 8 # NOTE: https://gist.github.com/mnordhoff/25e42a0d29e5c12785d0
 
     tabs_changed = Signal()
@@ -48,8 +49,9 @@ class Firefox(QObject):
         self.file_expect.file_exists.connect(self.get_tabs)
 
     def detect(self) -> None:
-        try:
-            self.tabs_location = subprocess.check_output(Firefox.SESSION_LOCATION_COMMAND, shell=True).decode("utf-8").replace("\n", "")
+        self.tabs_location = Paths.find_file(Firefox.TABS_LOCATION_PATTERN)[0] # NOTE: We expect only one file
+
+        if self.tabs_location:
             self.logger.info("Firefox detected={tabs_location}".format(tabs_location=(bool(self.tabs_location != ""))))
 
             self.tabs_file_watcher = QFileSystemWatcher()
@@ -57,8 +59,7 @@ class Firefox(QObject):
             self.tabs_file_watcher.fileChanged.connect(self.get_tabs, Qt.QueuedConnection)
 
             self.detected = True
-
-        except subprocess.CalledProcessError as error:
+        else:
             self.detected = False
 
     @Slot(str)
