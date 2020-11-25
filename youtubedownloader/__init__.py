@@ -10,13 +10,14 @@ from .component_changer import ComponentChanger, Change
 from .dialog_manager import DialogManager
 from .resources import Resources
 from .theme import Theme
-from .paths import Paths
+from .paths import QPaths
 from .settings import Settings
 from .database import Database
 from .browser import Browsers
 from .version import __version__
 
-import sys, os
+import os, sys
+
 
 def main():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -32,7 +33,7 @@ def main():
     settings = Settings()
     dialog_manager = DialogManager()
     resources = Resources()
-    paths = Paths()
+    qpaths = QPaths()
     browsers = Browsers()
     supported_sites_model = SupportedSitesModel()
     history_model = HistoryModel(database.session)
@@ -52,7 +53,7 @@ def main():
     engine.rootContext().setContextProperty("Settings", settings)
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
-    engine.rootContext().setContextProperty("Paths", paths)
+    engine.rootContext().setContextProperty("Paths", qpaths)
     engine.rootContext().setContextProperty("fileDownloader", file_downloader)
     engine.rootContext().setContextProperty("supportedSitesModel", supported_sites_model)
     engine.rootContext().setContextProperty("historyModel", history_model)

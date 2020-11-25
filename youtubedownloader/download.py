@@ -36,9 +36,9 @@ import youtube_dl
 import atexit
 import urllib.request
 
+from . import paths
 from .logger import create_logger
 from .settings import Settings
-from .paths import Paths, FileExpect
 
 
 def human_time(time: str) -> str:
@@ -122,7 +122,7 @@ class PreDownload(QObject):
         return os.path.isfile(self.destination_file)
 
     def update(self) -> None:
-        self.destination_file = os.path.join(self.options.output_path, Paths.new_extension(self.data.title, self.options.file_format))
+        self.destination_file = os.path.join(self.options.output_path, paths.new_extension(self.data.title, self.options.file_format))
 
         self.status = "ready" if not self.destination_file_exists() else "exists"
 
@@ -589,7 +589,7 @@ class DownloadTask(QThread):
 
         self.download_post_process = DownloadPostProcess()
 
-        self.file_expect = FileExpect()
+        self.file_expect = paths.FileExpect()
         self.post_process_file = str()
 
         self.post_process_started.connect(lambda: self.file_expect.observe(self.post_process_file))
@@ -603,10 +603,10 @@ class DownloadTask(QThread):
             raise ValueError()
 
         if data["status"] == "downloading":
-            data.update({"status": "downloading {what}".format(what=Paths.get_file_type(data["filename"]))})
+            data.update({"status": "downloading {what}".format(what=paths.get_file_type(data["filename"]))})
 
         if self.options.need_post_process() and data["status"] == "finished":
-            self.post_process_file = os.path.join(self.options.output_path, Paths.new_extension(data["filename"], self.options.file_format))
+            self.post_process_file = os.path.join(self.options.output_path, paths.new_extension(data["filename"], self.options.file_format))
             self.post_process_started.emit() # NOTE: Because we can't start timers from another thread
 
         else:
@@ -633,7 +633,7 @@ class Download(QObject):
         self.progress = DownloadProgress()
         self.task = DownloadTask(self.url, self.options)
 
-        self.destination_file = os.path.join(self.options.output_path, Paths.new_extension(self.data.title, self.options.file_format))
+        self.destination_file = os.path.join(self.options.output_path, paths.new_extension(self.data.title, self.options.file_format))
 
         self.task.progress.connect(self.update, Qt.QueuedConnection)
         self.task.finished.connect(self.handle_finished)

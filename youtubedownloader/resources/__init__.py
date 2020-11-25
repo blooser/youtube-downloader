@@ -9,7 +9,7 @@
 
 import sys, os, pathlib
 
-from ..paths import Paths
+from .. import paths
 from ..logger import create_logger
 
 class Resources(QObject):
@@ -22,7 +22,7 @@ class Resources(QObject):
         self.logger = create_logger(__name__)
         self.logger.info("YD Logo loaded {status}".format(status=os.path.exists(Resources.YD_LOGO)))
 
-        self.icon_paths = Paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
+        self.icon_paths = paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
         self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
 
     @Property("QVariantMap", constant=True)
@@ -31,4 +31,4 @@ class Resources(QObject):
 
     @Property("QUrl", constant=True)
     def logo(self) -> str:
-        return os.path.join(Paths.FILE_PREFIX, Resources.YD_LOGO)
+        return os.path.join(paths.FILE_PREFIX, Resources.YD_LOGO)

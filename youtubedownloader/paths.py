@@ -10,52 +10,54 @@
 
 import sys, os, pathlib, os.path, glob
 
-class Paths(QObject):
-    FILE_PREFIX: str = "file://" if sys.platform.startswith("linux") else "file:///"
-    FILE_TYPE: dict = {
-        "video": ["webm", "mp4", "mkv"],
-        "audio": ["mp3", "flac", "m4a", "wav"]
-    }
+OS_FILE_PREFIX: dict = {
+    "linux": "file://",
+    "win32": "file:///"
+}
 
+FILE_PREFIX: str = OS_FILE_PREFIX[sys.platform]
+
+FILE_TYPE: dict = {
+    "video": ["webm", "mp4", "mkv"],
+    "audio": ["mp3", "flac", "m4a", "wav"]
+}
+
+def get_file_type(file: str) -> str:
+    suffix = pathlib.PurePath(file).suffix.replace(".", "")
+
+    for key in FILE_TYPE:
+        if suffix in FILE_TYPE[key]:
+            return key
+
+    return ""
+
+def new_extension(file: str, new_ext: str) -> str:
+    new_ext = new_ext.replace(".", "")
+    return "{file}.{ext}".format(file=pathlib.PurePath(file).stem,
+                                 ext=new_ext)
+
+def file_name(path) -> str:
+    return pathlib.PurePath(path).name
+
+def find_file(path: str) -> str:
+    os_path = os.path.expanduser(path)
+    return glob.glob(os_path)
+
+def collect_files(core_path: str) -> dict:
+    files = {}
+
+    for _, _, filenames in os.walk(core_path):
+        for filename in filenames:
+            files[pathlib.PurePath(filename).stem] = FILE_PREFIX + os.path.join(core_path, filename)
+
+    return files
+
+
+# NOTE: Used in QML
+
+class QPaths(QObject):
     def __init__(self):
-        super(Paths, self).__init__(None)
-
-    @staticmethod
-    def get_file_type(file: str) -> str:
-        suffix = pathlib.PurePath(file).suffix.replace(".", "")
-
-        if suffix in Paths.FILE_TYPE["video"]:
-            return "video"
-
-        elif suffix in Paths.FILE_TYPE["audio"]:
-            return "audio"
-
-        return ""
-
-    @staticmethod
-    def new_extension(file: str, new_ext: str) -> str:
-        new_ext = new_ext.replace(".", "")
-        return "{file}.{ext}".format(file=pathlib.PurePath(file).stem,
-                                     ext=new_ext)
-
-    @staticmethod
-    def file_name(path) -> str:
-        return pathlib.PurePath(path).name
-
-    @staticmethod
-    def find_file(path: str) -> str:
-        os_path = os.path.expanduser(path)
-        return glob.glob(os_path)
-
-    @staticmethod
-    def collect_files(core_path: str) -> dict:
-        files = {}
-
-        for _, _, filenames in os.walk(core_path):
-            for filename in filenames:
-                files[pathlib.PurePath(filename).stem] = Paths.FILE_PREFIX + os.path.join(core_path, filename)
-
-        return files
+        super(QPaths, self).__init__(None)
 
     @Slot(int, result="QString")
     def humanSize(self, size: int) -> str:
@@ -72,10 +74,10 @@ class Paths(QObject):
 
     @Slot(str, result="QString")
     def getFileType(self, format: str) -> str:
-        if format in Paths.FILE_TYPE["video"]:
+        if format in FILE_TYPE["video"]:
             return "video"
 
-        elif format in Paths.FILE_TYPE["audio"]:
+        elif format in FILE_TYPE["audio"]:
             return "audio"
 
         return ""

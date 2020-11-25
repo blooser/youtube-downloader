@@ -8,9 +8,8 @@
 )
 
 from .logger import create_logger
-from .paths import FileExpect
 from .models import WebTabsModel
-from .paths import Paths
+from . import paths
 
 import os, os.path, json, lz4.block, subprocess, re
 
@@ -42,14 +41,14 @@ class Firefox(QObject):
 
         self.logger = create_logger(__name__)
         self.tabs_model = WebTabsModel()
-        self.file_expect = FileExpect()
+        self.file_expect = paths.FileExpect()
 
         self.detect()
 
         self.file_expect.file_exists.connect(self.get_tabs)
 
     def detect(self) -> None:
-        self.tabs_location = Paths.find_file(Firefox.TABS_LOCATION_PATTERN)[0] # NOTE: We expect only one file
+        self.tabs_location = paths.find_file(Firefox.TABS_LOCATION_PATTERN)[0] # NOTE: We expect only one file
 
         if self.tabs_location:
             self.logger.info("Firefox detected={tabs_location}".format(tabs_location=(bool(self.tabs_location != ""))))

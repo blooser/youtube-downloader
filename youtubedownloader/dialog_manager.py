@@ -10,8 +10,9 @@ from PySide2.QtQml import QQmlComponent
 
 import sys, os, pathlib
 
-from .paths import Paths
+from . import paths
 from .logger import create_logger
+
 
 class DialogManager(QObject):
     DIALOG_PATH: str = os.path.join(os.path.dirname(__file__), "qml/dialogs")
@@ -23,7 +24,7 @@ class DialogManager(QObject):
         super(DialogManager, self).__init__(None)
 
         self.logger = create_logger(__name__)
-        self.dialogs = Paths.collect_files(DialogManager.DIALOG_PATH)
+        self.dialogs = paths.collect_files(DialogManager.DIALOG_PATH)
         self.logger.info("Loaded {dialogs} dialogs".format(dialogs=len(self.dialogs)))
 
     @Slot(str, "QVariantMap" ,"QVariant")
