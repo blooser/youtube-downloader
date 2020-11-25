@@ -8,7 +8,7 @@
     Signal
 )
 
-import sys, os, pathlib
+import sys, os, pathlib, os.path, glob
 
 class Paths(QObject):
     FILE_PREFIX: str = "file://" if sys.platform.startswith("linux") else "file:///"
@@ -41,6 +41,11 @@ class Paths(QObject):
     @staticmethod
     def file_name(path) -> str:
         return pathlib.PurePath(path).name
+
+    @staticmethod
+    def find_file(path: str) -> str:
+        os_path = os.path.expanduser(path)
+        return glob.glob(os_path)
 
     @staticmethod
     def collect_files(core_path: str) -> dict:
