@@ -15,6 +15,7 @@ YDDialog {
     dialog: "ThumbnailDialog"
 
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+    background: null
 
     header: null
     footer: null
