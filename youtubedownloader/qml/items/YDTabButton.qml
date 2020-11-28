@@ -1,12 +1,14 @@
 ﻿import QtQuick 2.14
 import QtQuick.Controls 2.14
 
+import "../components" as Components
+
 TabButton {
     id: root
 
-    contentItem: YDText {
+    contentItem: Components.IconText {
         text: root.text
-        font: root.font
+        iconSource: root.icon.source
     }
 
     background: Rectangle {

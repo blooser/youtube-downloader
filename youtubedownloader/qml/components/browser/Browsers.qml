@@ -9,6 +9,11 @@ Item {
 
     property var options
 
+    readonly property var icons: {
+        "Firefox": Resources.icons.firefox
+        // TODO: Add more browsers icons... but after implementing reading tabs
+    }
+
     signal addTab(string url)
 
     implicitWidth: mainLayout.implicitWidth
@@ -44,6 +49,7 @@ Item {
 
                 Items.YDTabButton {
                     text: modelData.name
+                    icon.source: icons[modelData.name]
 
                     Items.YDToolTip {
                         delay: 500
