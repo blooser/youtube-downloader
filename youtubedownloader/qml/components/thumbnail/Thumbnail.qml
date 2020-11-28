@@ -10,21 +10,24 @@ Items.YDImage {
 
     signal close()
 
-    ThumbnailCloseButton {
-        anchors {
-            right: root.right
-            rightMargin: -(width/2)
-            top: root.top
-            topMargin: -(height/2)
-        }
+    fillMode: Image.Stretch
 
-        onClose: root.close()
+    MouseArea {
+        anchors.fill: parent
+        onClicked: root.close()
     }
 
     Component {
         id: preDownload
 
         ThumbnailPreDownload {
+            anchors {
+                bottom: root.bottom
+                bottomMargin: Theme.Margins.tiny
+                horizontalCenter: root.horizontalCenter
+            }
+
+            visible: (root.status === Image.Ready)
             url: root.source
             dimension: "%1 x %2".arg(root.width).arg(root.height)
             onDownload: dialogManager.open_dialog("SelectDirectoryDialog", {}, function (url) {
@@ -37,6 +40,16 @@ Items.YDImage {
         id: download
 
         ThumbnailDownload {
+            anchors {
+                bottom: root.bottom
+                bottomMargin: Theme.Margins.tiny
+                left: root.left
+                leftMargin: Theme.Margins.big
+                right: root.right
+                rightMargin: Theme.Margins.big
+            }
+
+            visible: (root.status === Image.Ready)
             to: fileDownloader.currentDownload.progress.totalBytes
             value: fileDownloader.currentDownload.progress.readBytes
             outputUrl: fileDownloader.currentDownload.outputUrl
