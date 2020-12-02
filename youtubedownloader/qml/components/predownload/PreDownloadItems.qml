@@ -42,6 +42,19 @@ Item {
             }
         }
 
+        Components.TileText {
+            Layout.fillWidth: true
+
+            opacity: preDownloadItems.count
+            text: "To Download"
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.Animation.quick
+                }
+            }
+        }
+
         ListView {
             id: preDownloadItems
 
