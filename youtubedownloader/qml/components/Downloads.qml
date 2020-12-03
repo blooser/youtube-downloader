@@ -23,10 +23,6 @@ Item {
             Layout.preferredHeight: implicitHeight
         }
 
-        Separator {
-            visible: predownloadModel.size && downloadModel.size
-        }
-
         Download.DownloadItems {
             Layout.fillWidth: true
             Layout.fillHeight: true
