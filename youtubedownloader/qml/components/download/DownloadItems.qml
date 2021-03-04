@@ -8,7 +8,7 @@ Item {
     id: root
 
     implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight
+    implicitHeight: mainLayout.implicitHeight + downloadItems.contentHeight
 
     ColumnLayout {
         id: mainLayout

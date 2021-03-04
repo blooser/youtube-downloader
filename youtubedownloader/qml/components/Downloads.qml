@@ -6,11 +6,16 @@ import "predownload" as PreDownload
 import "download" as Download
 import "../items" as Items
 
-Item {
+Flickable {
     id: root
 
-    implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
+    contentHeight: implicitHeight
+
+    clip: true
+    boundsBehavior: Flickable.StopAtBounds
+
+    ScrollBar.vertical: Items.YDScrollBar {}
 
     ColumnLayout {
         id: mainLayout
