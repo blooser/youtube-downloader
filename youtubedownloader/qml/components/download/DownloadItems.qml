@@ -17,12 +17,13 @@ Item {
 
         spacing: Theme.Margins.tiny
 
-        Components.TileText {
+        Components.DownloadsLabel {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter
 
             opacity: downloadItems.count
             text: "Downloaded"
+            counter: downloadItems.count
 
             Behavior on opacity {
                 NumberAnimation {

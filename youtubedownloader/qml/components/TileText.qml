@@ -6,6 +6,10 @@ Rectangle {
     id: root
 
     property alias text: textItem.text
+    property alias font: textItem.font
+    property alias padding: textItem.padding
+    property alias style: textItem.style
+    property alias styleColor: textItem.styleColor
 
     radius: Theme.Margins.tiny
     color: Theme.Colors.third

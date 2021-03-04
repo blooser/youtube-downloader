@@ -17,7 +17,7 @@ Item {
         anchors.fill: parent
         spacing: Theme.Margins.tiny
 
-        Components.ButtonWithBottomText {
+        Items.YDButton {
             id: downloadButton
 
             Layout.alignment: Qt.AlignHCenter
@@ -25,7 +25,6 @@ Item {
             icon.source: Resources.icons.download
 
             text: qsTr("Download")
-            bottomText: preDownloadItems.itemsReady ? qsTr("%1 item(s)").arg(preDownloadItems.itemsReady) : Theme.String.empty
             enabled: preDownloadItems.itemsReady && !preDownloadItems.itemsProcessing
 
             onClicked: downloadManager.download()
@@ -42,11 +41,12 @@ Item {
             }
         }
 
-        Components.TileText {
+        Components.DownloadsLabel {
             Layout.fillWidth: true
 
             opacity: preDownloadItems.count
             text: "To Download"
+            counter: preDownloadItems.count
 
             Behavior on opacity {
                 NumberAnimation {
