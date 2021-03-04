@@ -22,7 +22,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
 
             opacity: downloadItems.count
-            text: "Downloads"
+            text: "Downloaded"
 
             Behavior on opacity {
                 NumberAnimation {
