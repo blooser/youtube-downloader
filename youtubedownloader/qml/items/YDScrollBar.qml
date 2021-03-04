@@ -9,8 +9,8 @@ ScrollBar {
     active: true
     orientation: Qt.Vertical
 
-    property color passiveColor: Theme.Colors.second
-    property color activeColor: Theme.Colors.third
+    property color passiveColor: Theme.Colors.third
+    property color activeColor: Theme.Colors.highlight
 
     contentItem: Rectangle {
         implicitWidth: root.orientation === Qt.Vertical ?  6 : 100
