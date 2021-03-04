@@ -9,6 +9,8 @@ ScrollBar {
     active: true
     orientation: Qt.Vertical
 
+    visible: (size !== 1)
+
     property color passiveColor: Theme.Colors.third
     property color activeColor: Theme.Colors.highlight
 
