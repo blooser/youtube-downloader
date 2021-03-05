@@ -11,6 +11,17 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight + preDownloadItems.contentHeight // TODO: Is there another way?
 
+    state: "hidden"
+    states: State {
+        name: "hidden"
+        when: (preDownloadItems.count === Theme.Size.none)
+        PropertyChanges { target: root; implicitHeight: Theme.Size.none; opacity: Theme.Visible.off; }
+    }
+
+    transitions: Transition {
+        NumberAnimation { properties: "opacity"; duration: Theme.Animation.quick }
+    }
+
     ColumnLayout {
         id: mainLayout
 
@@ -28,24 +39,13 @@ Item {
             enabled: preDownloadItems.itemsReady && !preDownloadItems.itemsProcessing
 
             onClicked: downloadManager.download()
-
-            state: "hidden"
-            states: State {
-                name: "hidden"
-                when: (preDownloadItems.itemsReady === Theme.Size.none)
-                PropertyChanges { target: downloadButton; opacity: Theme.Visible.off }
-            }
-
-            transitions: Transition {
-                NumberAnimation { property: "opacity"; duration: Theme.Animation.quick }
-            }
         }
 
         Components.DownloadsLabel {
             Layout.fillWidth: true
 
             opacity: preDownloadItems.count
-            text: "To Download"
+            text: qsTr("To Download")
             counter: preDownloadItems.count
 
             Behavior on opacity {
@@ -134,6 +134,8 @@ Item {
     }
 
     Behavior on implicitHeight {
-        NumberAnimation { duration: Theme.Animation.quick }
+        NumberAnimation {
+            duration: Theme.Animation.quick
+        }
     }
 }
