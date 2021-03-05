@@ -46,7 +46,7 @@ Item {
 
             opacity: preDownloadItems.count
             text: qsTr("To Download")
-            counter: preDownloadItems.count
+            counter: preDownloadItems.itemsReady
 
             Behavior on opacity {
                 NumberAnimation {
