@@ -9,7 +9,7 @@ Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_inter
 
 ## Preview
 
-![preview](https://i.imgur.com/Ll4BKMI.png)
+![preview](https://i.postimg.cc/c1vn9yZs/yf1.png)
 
 ## Dependency
 
@@ -29,7 +29,7 @@ Youtube Downloader is integrated with Firefox, that's mean it will read currentl
 
 Theme can be customized.
 
-![theme](https://imgur.com/NUjQVD7.png)
+![theme](https://i.postimg.cc/mhxRVF4F/yf2.png)
 
 ## Installation
 
