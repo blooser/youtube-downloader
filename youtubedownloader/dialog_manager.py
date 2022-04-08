@@ -1,4 +1,4 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QObject,
     Qt,
     QStandardPaths,
@@ -6,7 +6,7 @@
     Signal,
     Property
 )
-from PySide2.QtQml import QQmlComponent
+from PySide6.QtQml import QQmlComponent
 
 import sys, os, pathlib
 

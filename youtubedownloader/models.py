@@ -1,4 +1,4 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QSortFilterProxyModel,
     QAbstractItemModel,
     QAbstractListModel,
@@ -8,7 +8,7 @@
     Signal,
     Slot
 )
-from PySide2.QtQml import QQmlParserStatus
+from PySide6.QtQml import QQmlParserStatus
 
 from bs4 import BeautifulSoup
 

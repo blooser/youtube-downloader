@@ -1,20 +1,17 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QObject,
-    QStateMachine,
-    QState,
-    QFinalState,
     Signal,
     Slot,
     Property
  )
-from PySide2.QtQml import (
+from PySide6.QtQml import (
     QQmlParserStatus,
     QQmlComponent,
     QQmlListReference,
     ListProperty
 )
-from PySide2 import QtWidgets
-from PySide2 import QtQuick
+from PySide6 import QtWidgets
+from PySide6 import QtQuick
 
 
 class Change(QObject):

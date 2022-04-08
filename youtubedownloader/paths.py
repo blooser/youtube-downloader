@@ -1,4 +1,4 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QObject,
     QTimer,
     QFileInfo,
@@ -89,7 +89,7 @@ class QPaths(QObject):
 
     @Slot(str, result="QVariantList")
     def readFile(self, file: str) -> list:
-        with open(QUrl(file).path(), "r") as f:
+        with open(QUrl(file).path(), "r", encoding='utf-8') as f:
             data = f.readlines()
 
         return data

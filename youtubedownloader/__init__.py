@@ -1,8 +1,8 @@
-﻿from PySide2.QtQml import QQmlApplicationEngine, QQmlContext, qmlRegisterType
-from PySide2.QtQuick import QQuickView
-from PySide2.QtGui import QIcon
-from PySide2.QtCore import Qt, QUrl, QResource
-from PySide2.QtWidgets import QApplication
+﻿from PySide6.QtQml import QQmlApplicationEngine, QQmlContext, qmlRegisterType
+from PySide6.QtQuick import QQuickView
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QUrl, QResource
+from PySide6.QtWidgets import QApplication
 
 from .download import DownloadManager, FileDownloader
 from .models import StringFilterModel, SupportedSitesModel, HistoryModel

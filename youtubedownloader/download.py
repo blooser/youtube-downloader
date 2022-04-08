@@ -1,4 +1,4 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QObject,
     QAbstractListModel,
     QFileInfo,
@@ -19,11 +19,11 @@
     Property
 
 )
-from PySide2.QtQml import (
+from PySide6.QtQml import (
     QQmlApplicationEngine,
     QQmlContext
 )
-from PySide2.QtNetwork import (
+from PySide6.QtNetwork import (
     QNetworkAccessManager,
     QNetworkReply,
     QNetworkRequest
@@ -321,31 +321,31 @@ class DownloadData(QObject):
         if data:
             self.collect(data)
 
-    @Property(str, constant=True)
+    @Property(str)
     def title(self) -> str:
         return self._title
 
-    @Property(str, constant=True)
+    @Property(str)
     def uploader(self) -> str:
         return self._uploader
 
-    @Property(str, constant=True)
+    @Property(str)
     def uploaderUrl(self) -> str:
         return self._uploader_url
 
-    @Property(str, constant=True)
+    @Property(str)
     def thumbnail(self) -> str:
         return self._thumbnail
 
-    @Property(str, constant=True)
+    @Property(str)
     def duration(self) -> int:
         return human_time(self._duration)
 
-    @Property(str, constant=True)
+    @Property(str)
     def uploadDate(self) -> str:
         return human_date(self._upload_date)
 
-    @Property(int, constant=True)
+    @Property(int)
     def viewCount(self) -> int:
         return self._view_count
 
@@ -940,11 +940,11 @@ class FileDownload(QObject):
         self.current_download.readyRead.connect(self.saveFile)
         self.current_download.finished.connect(self.download_finished)
 
-    @Property(str, constant=True)
+    @Property(str)
     def outputUrl(self) -> str:
         return self.output_url
 
-    @Property(QObject, constant=True)
+    @Property(QObject)
     def progress(self) -> QObject:
         return self.current_download_progress
 

@@ -1,11 +1,11 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QObject,
     Property,
     Signal,
     Slot
 )
 
-from PySide2.QtGui import (
+from PySide6.QtGui import (
     QColor
 )
 
@@ -98,34 +98,34 @@ class Theme(QObject):
     def Colors(self) -> dict:
         return self.properties["Colors"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def Margins(self) -> dict:
         return self.properties["Margins"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def Visible(self) -> dict:
         return self.properties["Visible"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def Size(self) -> dict:
         return self.properties["Size"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def Animation(self) -> dict:
         return self.properties["Animation"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def Time(self) -> dict:
         return self.properties["Time"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def FontSize(self) -> dict:
         return self.properties["FontSize"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def String(self) -> dict:
         return self.properties["String"]
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def Capacity(self) -> dict:
         return self.properties["Capacity"]

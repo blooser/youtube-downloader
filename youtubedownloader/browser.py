@@ -1,4 +1,4 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QObject,
     QFileSystemWatcher,
     Qt,
@@ -89,11 +89,11 @@ class Firefox(QObject):
         if (self.tabs_model.tabs != tabs):
             self.tabs_model.set_tabs(tabs)
 
-    @Property(str, constant=True)
+    @Property(str)
     def name(self) -> str:
         return Firefox.NAME
 
-    @Property(QObject, constant=True)
+    @Property(QObject)
     def tabs(self) -> WebTabsModel:
         return self.tabs_model
 

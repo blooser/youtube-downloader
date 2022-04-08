@@ -1,4 +1,4 @@
-﻿from PySide2.QtCore import (
+﻿from PySide6.QtCore import (
     QObject,
     Qt,
     QStandardPaths,
@@ -25,10 +25,10 @@ class Resources(QObject):
         self.icon_paths = paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
         self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
 
-    @Property("QVariantMap", constant=True)
+    @Property("QVariantMap")
     def icons(self) -> dict:
         return self.icon_paths
 
-    @Property("QUrl", constant=True)
+    @Property("QUrl")
     def logo(self) -> str:
         return os.path.join(paths.FILE_PREFIX, Resources.YD_LOGO)
