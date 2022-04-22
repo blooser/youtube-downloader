@@ -25,10 +25,10 @@ class Resources(QObject):
         self.icon_paths = paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
         self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def icons(self) -> dict:
         return self.icon_paths
 
-    @Property("QUrl")
+    @Property("QUrl", constant=True)
     def logo(self) -> str:
         return os.path.join(paths.FILE_PREFIX, Resources.YD_LOGO)

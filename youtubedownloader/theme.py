@@ -98,34 +98,34 @@ class Theme(QObject):
     def Colors(self) -> dict:
         return self.properties["Colors"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def Margins(self) -> dict:
         return self.properties["Margins"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def Visible(self) -> dict:
         return self.properties["Visible"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def Size(self) -> dict:
         return self.properties["Size"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def Animation(self) -> dict:
         return self.properties["Animation"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def Time(self) -> dict:
         return self.properties["Time"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def FontSize(self) -> dict:
         return self.properties["FontSize"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def String(self) -> dict:
         return self.properties["String"]
 
-    @Property("QVariantMap")
+    @Property("QVariantMap", constant=True)
     def Capacity(self) -> dict:
         return self.properties["Capacity"]
