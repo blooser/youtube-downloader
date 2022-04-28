@@ -18,13 +18,47 @@ from youtubedownloader.models import (
 
 
 class TestPending:
-    def test_data_populates_dict_var(self):
-        data = Data(url="test", value=25, key=100, test=None)
+    @pytest.mark.parametrize(
+        "test_data", [
+            {
+                "url": "test",
+                "title": "nice",
+                "categories": "multiple",
+                "duration": 2500
+            }
+        ]
+    )
+    def test_data_populates_dict_var(self, test_data):
+        data = Data(**test_data)
 
-        assert data.url == "test"
-        assert data.value == 25
-        assert data.key == 100
-        assert data.test == None
+        assert data.url == test_data["url"]
+        assert data.title == test_data["title"]
+        assert data.categories == test_data["categories"]
+        assert data.duration == test_data["duration"]
+
+    @pytest.mark.parametrize(
+        "test_data", [
+            dict(first = {
+                    "id": 1,
+                    "url": "test",
+                    "title": "nice",
+                    "categories": "multiple",
+                    "duration": 2500
+                },
+                second = {
+                    "id": 2,
+                    "url": "lol",
+                    "title": "never",
+                    "categories": "dunno",
+                    "duration": 5500
+                }
+            )       
+        ]
+    )
+    def test_data_eq_operator_works_correctly(self, test_data):
+        assert test_data["first"] == test_data["first"]
+        assert test_data["first"] != test_data["second"]
+
 
     def test_pending_collects_data(self):
         pending = Pending("https://www.youtube.com/watch?v=2OEL4P1Rz04")
