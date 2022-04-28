@@ -153,7 +153,8 @@ class Transaction(QObject):
         self.task = task
         self.model = model
 
-        self.task.resultReady.connect(self.insertTaskResult)
+        # NOTE: `DirectConnection` beacuse of multithreaded
+        self.task.resultReady.connect(self.insertTaskResult, Qt.DirectConnection)
 
     @Slot(QObject)
     def insertTaskResult(self, task_result):

@@ -74,8 +74,6 @@ class PendingModel(DataModel):
 
 
 
-
-
 class HistoryModel(QAbstractItemModel):
     COLUMNS: tuple = ("url", "title", "uploader", "thumbnail", "date")
     FIRST_COLUMN: int = 0
