@@ -68,7 +68,7 @@ Item {
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             spacing: Theme.Margins.tiny
-            model: predownloadModel
+            model: pendingManager.model
 
             delegate: PreDownloadItem {
                 width: preDownloadItems.width

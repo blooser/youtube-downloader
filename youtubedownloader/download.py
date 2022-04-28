@@ -66,7 +66,7 @@ class Data():
         for name in kwargs:
             self.__dict__[name] = kwargs[name]
 
-        logger.info(f"Data populated, number of variables: {len(self.__dict__)}")
+        logger.info(f"Data populated, number of items: {len(self.__dict__)}")
 
     def keys(self):
         return self.KEYS
@@ -167,7 +167,7 @@ class Transaction(QObject):
             return
 
         value = task_result.value
-        self.item.update(dict(value))
+        self.item.update(dict(data=value, status="ready"))
 
     def start(self):
         self.model.insert(self.item)
@@ -182,22 +182,102 @@ class PendingManager(QObject):
     def __init__(self):
         super().__init__(None)
 
-        self.model = PendingModel()
+        self.pending_model = PendingModel()
         self.transactions = []
 
     @Slot(str)
     def insert(self, url):
         task = Pending(url)
 
-        transaction = Transaction(task, self.model)
+        transaction = Transaction(task, self.pending_model)
         transaction.start()
 
         self.transactions.append(transaction)
 
+    @Property(QObject, constant=True)
+    def model(self):
+        return self.pending_model
 
 
 
+class Options(QObject):
+    def __init__(self, output="", format="mp4"):
+        super().__init__(None)
+
+        self.format = Format.fromstr(format)
+        self.output = output
+
+    def to_opts(self):
+        return dict(output_path = f"{self.output}/%(title)s.%(ext)s", **self.format.to_opts())
+
+class Format:
+    name = None
+    format = None
+    postprocessors = None
+
+    def to_opts(self):
+        return {
+            "format": self.format,
+            "postprocessors": self.postprocessors
+        }
 
 
+    @staticmethod
+    def fromstr(name):
+        return {
+            "mp4":  MP4,
+            "webm": WEBM,
+            "mkv":  MKV,
+            "m4a":  M4A,
+            "flac": FLAC,
+            "mp3":  MP3,
+            "wav":  WAV,
+        }[name]()
 
 
+class MP4(Format):
+    name = "mp4",
+    format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
+
+
+class WEBM(Format):
+    name = "webm",
+    format = "bestvideo[ext=webm]+bestaudio[ext=webm]/webm"
+
+
+class MKV(Format):
+    name = "webm",
+    format = "bestvideo[ext=webm]+bestaudio[ext=m4a]/mkv"
+
+
+class M4A(Format):
+    name = "m4a"
+    format = "bestaudio[ext=m4a]/m4a"
+
+
+class FLAC(Format):
+    name = "flac"
+    format = "bestaudio/best"
+    postprocessors = [{
+        "key": 'FFmpegExtractAudio',
+        "preferredcodec": 'flac',
+     }]
+
+
+class MP3(Format):
+    name = "mp3"
+    format = "bestaudio/best"
+    postprocessors = [{
+        "key": 'FFmpegExtractAudio',
+        "preferredcodec": 'mp3',
+        "preferredquality": "320",
+     }]
+
+
+class WAV(Format):
+    name = "wav"
+    format = "bestaudio/best"
+    postprocessors = [{
+        "key": 'FFmpegExtractAudio',
+        "preferredcodec": 'wav',
+    }]

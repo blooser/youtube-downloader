@@ -46,7 +46,7 @@ BusyIndicator {
                     implicitHeight: 10
 
                     radius: 5
-                    color: Theme.Colors.third
+                    color: Theme.Colors.highlight
 
                     transform: [
                         Translate {

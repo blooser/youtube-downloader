@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.14
 
 import "predownload" as PreDownload
+import "pending" as Pending
 import "download" as Download
 import "../items" as Items
 
@@ -23,7 +24,7 @@ Flickable {
         anchors.fill: parent
         spacing: Theme.Margins.tiny
 
-        PreDownload.PreDownloadItems {
+        Pending.PendingList {
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
         }

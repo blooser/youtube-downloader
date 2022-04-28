@@ -33,7 +33,7 @@ logger = create_logger("youtubedownloader.models")
 
 
 class Item(QObject):
-    updated = Signal(str)
+    updated = Signal(uuid.UUID)
 
     def __init__(self, roles, **kwargs):
         super().__init__(None)
@@ -55,12 +55,11 @@ class Item(QObject):
     def __str__(self):
         return f"Item ({self.item_id})"
 
-    @Slot(dict)
     def update(self, data):
         for key in data:
             self.__dict__[key] = data[key]
 
-        logger.info(f"Item ({self.item_id}) updated")
+        logger.info(f"Item ({self.item_id}) updated with {data}")
 
         self.updated.emit(self.item_id)
 
@@ -70,7 +69,7 @@ class DataModel(QAbstractItemModel):
     ROLE_NAMES = {}
 
     def __init__(self):
-        super().__init__()
+        super().__init__(None)
 
         self.data = []
 
@@ -89,6 +88,9 @@ class DataModel(QAbstractItemModel):
     def roleNames(self, index=QModelIndex()):
         return self.ROLE_NAMES
 
+    def flags(self, index):
+        return Qt.ItemIsEnabled | Qt.ItemIsEditable
+
     def insert(self, item):
         item.updated.connect(self.update)
 
@@ -105,20 +107,23 @@ class DataModel(QAbstractItemModel):
         # TODO: Add definition here
         return NotImplemented
 
-    @Slot(str)
+    @Slot(uuid.UUID)
     def update(self, item_id):
         try:
-            index = self.data.index(item_id)
+            row = self.data.index(item_id)
         except ValueError:
+            logger.warning(f"Failed to find Item ({item_id})")
+
             return
 
-        topLeft = QModelIndex(index, 0)
-        bottomRight = QModelIndex(index, self.COLUMNS)
-
-        self.dataChanged.emit(topLeft, bottomRight)
+        self.dataChanged.emit(
+            self.index(row, 0),
+            self.index(row, self.COLUMNS)
+        )
 
 
 class PendingModel(DataModel):
+    COLUMNS = 4
     ROLE_NAMES = {
         256: b"destination",
         257: b"status",
@@ -131,9 +136,13 @@ class PendingModel(DataModel):
 
     def data(self, index, role):
         if not index.isValid():
-            return None
+            return QVariant()
 
-        item = self.data[index.row()]
+        try:
+            item = self.data[index.row()]
+
+        except Exception:
+            return QVariant()
 
         return item[role]
 
