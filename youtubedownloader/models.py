@@ -4,10 +4,16 @@
     QAbstractListModel,
     QModelIndex,
     Qt,
+    QObject,
     Property,
     Signal,
     Slot
 )
+
+from youtubedownloader.logger import (
+    create_logger
+)
+
 from PySide6.QtQml import QQmlParserStatus
 
 from bs4 import BeautifulSoup
@@ -20,6 +26,43 @@ from sqlalchemy.orm.session import Session
 
 import urllib.request
 import urllib.error
+import uuid
+
+
+logger = create_logger("youtubedownloader.models")
+
+
+class Item(QObject):
+    updated = Signal(str)
+
+    def __init__(self, roles, **kwargs):
+        super().__init__(None)
+
+        self.item_id = uuid.uuid4()
+        logger.info(f"New item with id={self.item_id} created")
+
+        self.roles = roles
+
+        for kwarg in kwargs:
+            self.__dict__[kwarg] = kwargs[kwarg]
+
+    def __getitem__(self, role):
+        return self.__getattribute__(self.roles[role].decode())
+
+    def __eq__(self, item_id):
+        return self.item_id == item_id
+
+    def __str__(self):
+        return f"Item ({self.item_id})"
+
+    @Slot(dict)
+    def update(self, data):
+        for key in data:
+            self.__dict__[key] = data[key]
+
+        logger.info(f"Item ({self.item_id}) updated")
+
+        self.updated.emit(self.item_id)
 
 
 class DataModel(QAbstractItemModel):
@@ -47,6 +90,8 @@ class DataModel(QAbstractItemModel):
         return self.ROLE_NAMES
 
     def insert(self, item):
+        item.updated.connect(self.update)
+
         self.beginInsertRows(QModelIndex(), self.size(), self.size())
         self.data.append(item)
         self.endInsertRows()
@@ -60,6 +105,18 @@ class DataModel(QAbstractItemModel):
         # TODO: Add definition here
         return NotImplemented
 
+    @Slot(str)
+    def update(self, item_id):
+        try:
+            index = self.data.index(item_id)
+        except ValueError:
+            return
+
+        topLeft = QModelIndex(index, 0)
+        bottomRight = QModelIndex(index, self.COLUMNS)
+
+        self.dataChanged.emit(topLeft, bottomRight)
+
 
 class PendingModel(DataModel):
     ROLE_NAMES = {
@@ -72,6 +129,22 @@ class PendingModel(DataModel):
     def __init__(self):
         super().__init__()
 
+    def data(self, index, role):
+        if not index.isValid():
+            return None
+
+        item = self.data[index.row()]
+
+        return item[role]
+
+    def item(self):
+        return Item(
+            self.ROLE_NAMES,
+            destination = None,
+            status = "waiting",
+            data = None,
+            options = None
+        )
 
 
 class HistoryModel(QAbstractItemModel):

@@ -2,7 +2,7 @@
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.12
 
-import yd.items 0.1
+import youtubedownloader.component.changer
 
 import "../../items" as Items
 import "../../util/regex.js" as Regex
@@ -28,76 +28,75 @@ Item {
 
     onSingleLineChanged: Settings.singleLine = root.singleLine
 
-    Component {
-        id: singleLineComponent
+    property Component singleLineComponent: Items.YDInput {
+        id: link
 
-        Items.YDInput {
-            id: link
+        placeholderText: qsTr("Enter supported link")
+        placeholderTextColor: Theme.Colors.placeholder
 
-            placeholderText: qsTr("Enter supported link")
-            placeholderTextColor: Theme.Colors.placeholder
+        validator: RegularExpressionValidator {
+            regularExpression: Regex.URL_REGEX
+        }
 
-            validator: RegularExpressionValidator {
-                regularExpression: Regex.URL_REGEX
+        focus: true
+        rightPadding: Theme.Margins.big * 2 // NOTE: Because of `changeLineButton` position
+
+        onTextEdited: Settings.inputLink = text
+
+        Keys.onEnterPressed: addButton.clicked()
+        Keys.onReturnPressed: addButton.clicked()
+
+        Component.onCompleted: {
+            text = Settings.inputLink
+            if (!root.firstInitialization) {
+                changeSingleLineComponentAnimation.start()
             }
+        }
 
-            focus: true
-            rightPadding: Theme.Margins.big * 2 // NOTE: Because of `changeLineButton` position
+        PropertyAnimation {
+            id: changeSingleLineComponentAnimation
+            target: link
+            from: 100
+            to: 40
+            property: "implicitHeight"
+        }
+    }
 
-            onTextEdited: Settings.inputLink = text
+    property Component multiLineComponent: Items.YDScrollableTextArea {
+        id: textArea
 
-            Keys.onEnterPressed: addButton.clicked()
-            Keys.onReturnPressed: addButton.clicked()
+        placeholderText: qsTr("Enter supported links (remember to separate the links with new line)")
+        placeholderTextColor: Theme.Colors.placeholder
 
-            Component.onCompleted: {
-                text = Settings.inputLink
-                if (!root.firstInitialization) {
-                    changeSingleLineComponentAnimation.start()
-                }
-            }
+        focus: true
 
-            PropertyAnimation {
-                id: changeSingleLineComponentAnimation
-                target: link
-                from: 100
-                to: 40
-                property: "implicitHeight"
-            }
+        onTextChanged: Settings.inputLink = text
+
+        Component.onCompleted: {
+            text = Settings.inputLink
+            changeMultiLineComponentAnimation.start()
+        }
+
+        PropertyAnimation {
+            id: changeMultiLineComponentAnimation
+            target: textArea
+            from: 40
+            to: 100
+            property: "implicitHeight"
         }
     }
 
     Component {
-        id: multiLineComponent
-
-        Items.YDScrollableTextArea {
-            id: textArea
-
-            placeholderText: qsTr("Enter supported links (remember to separate the links with new line)")
-            placeholderTextColor: Theme.Colors.placeholder
-
-            focus: true
-
-            onTextChanged: Settings.inputLink = text
-
-            Component.onCompleted: {
-                text = Settings.inputLink
-                changeMultiLineComponentAnimation.start()
-            }
-
-            PropertyAnimation {
-                id: changeMultiLineComponentAnimation
-                target: textArea
-                from: 40
-                to: 100
-                property: "implicitHeight"
-            }
-        }
+        id:test
+        Text {}
     }
 
     RowLayout {
         id: mainLayout
 
         anchors.fill: parent
+
+
 
         Dynamic.Changer {
             id: changer

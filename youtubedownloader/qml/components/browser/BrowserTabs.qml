@@ -20,11 +20,7 @@ ListView {
         Layout.alignment: Qt.AlignLeft
         tabTitle: title
 
-        onClicked: {
-            if (!downloadManager.exists(url, root.options)) {
-                root.addTab(url)
-            }
-        }
+        onClicked: pendingManager.insert(url)
     }
 
     populate: Transition {

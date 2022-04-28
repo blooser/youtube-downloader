@@ -2,7 +2,7 @@ import logging
 
 handler = logging.StreamHandler()
 handler.setFormatter(
-    logging.Formatter("%(name)s - %(levelname)s: %(message)s")
+    logging.Formatter("%(levelname)s %(name)s: %(message)s")
 )
 
 def create_logger(name, level=logging.INFO):

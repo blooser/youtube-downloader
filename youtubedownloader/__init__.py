@@ -4,6 +4,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QUrl, QResource
 from PySide6.QtWidgets import QApplication
 
+from .download import PendingManager
 from .models import StringFilterModel, SupportedSitesModel, HistoryModel
 from .component_changer import ComponentChanger, Change
 from .dialog_manager import DialogManager
@@ -28,7 +29,7 @@ def main():
     app.setWindowIcon(QIcon(Resources.YD_LOGO))
 
     database = Database(Settings.DB_PATH)
-    #download_manager = DownloadManager()
+    pending_manager = PendingManager()
     settings = Settings()
     dialog_manager = DialogManager()
     resources = Resources()
@@ -41,8 +42,6 @@ def main():
 
     theme.changeBaseColor(settings.theme_color) # NOTE: Before engine starts
 
-    qmlRegisterType(Change, "yd.items", 0, 1, "Change")
-    qmlRegisterType(ComponentChanger, "yd.items", 0, 1, "ComponentChanger")
     qmlRegisterType(StringFilterModel, "yd.items", 0, 1, "StringFilterModel")
 
     qml_file = os.path.join(os.path.dirname(__file__), "qml/main.qml")
@@ -50,7 +49,7 @@ def main():
     engine.rootContext().setContextProperty("Theme", theme)
     engine.rootContext().setContextProperty("Resources", resources)
     engine.rootContext().setContextProperty("Settings", settings)
-    #engine.rootContext().setContextProperty("downloadManager", download_manager)
+    engine.rootContext().setContextProperty("pendingManager", pending_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("Paths", qpaths)
     #engine.rootContext().setContextProperty("fileDownloader", file_downloader)

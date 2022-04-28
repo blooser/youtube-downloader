@@ -30,7 +30,8 @@ from PySide6.QtNetwork import (
 )
 
 from youtubedownloader.models import (
-    PendingModel
+    PendingModel,
+    Item
 )
 
 from youtubedownloader.logger import (
@@ -58,7 +59,7 @@ class Data():
         "thumbnail",
         "duration",
         "upload_date",
-        "view_coint",
+        "view_count",
     ]
 
     def __init__(self, **kwargs):
@@ -78,6 +79,9 @@ class Data():
             self.__dict__[name] = other[name]
 
         return self
+
+    def __eq__(self, other):
+        return self.id == other.id
 
     @classmethod
     def frominfo(cls, info):
@@ -153,16 +157,21 @@ class Transaction(QObject):
         self.task = task
         self.model = model
 
+        self.item = self.model.item()
+
         # NOTE: `DirectConnection` beacuse of multithreaded
-        self.task.resultReady.connect(self.insertTaskResult, Qt.DirectConnection)
+        self.task.resultReady.connect(self.taskResultReady, Qt.DirectConnection)
 
-    @Slot(QObject)
-    def insertTaskResult(self, task_result):
-        self.model.insert(task_result.value)
+    def taskResultReady(self, task_result):
+        if task_result.is_error():
+            return
 
-        logger.info(f"Inserted new task result to the model")
+        value = task_result.value
+        self.item.update(dict(value))
 
     def start(self):
+        self.model.insert(self.item)
+
         self.task.start()
 
     def wait(self):
@@ -174,13 +183,16 @@ class PendingManager(QObject):
         super().__init__(None)
 
         self.model = PendingModel()
+        self.transactions = []
 
-    @Property(str)
+    @Slot(str)
     def insert(self, url):
         task = Pending(url)
 
         transaction = Transaction(task, self.model)
         transaction.start()
+
+        self.transactions.append(transaction)
 
 
 

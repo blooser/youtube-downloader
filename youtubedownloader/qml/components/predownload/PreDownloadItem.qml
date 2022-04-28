@@ -1,7 +1,7 @@
 ﻿import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
-import yd.items 0.1
+import youtubedownloader.component.changer
 
 import "../../items" as Items
 import "../link" as Link

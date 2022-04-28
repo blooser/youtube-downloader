@@ -6,6 +6,7 @@
  )
 from PySide6.QtQml import (
     QQmlParserStatus,
+    QmlElement,
     QQmlComponent,
     QQmlListReference,
     ListProperty
@@ -14,63 +15,77 @@ from PySide6 import QtWidgets
 from PySide6 import QtQuick
 
 
+from youtubedownloader.logger import create_logger
+
+logger = create_logger("youtubedownloader.component_changer")
+
+QML_IMPORT_NAME = "youtubedownloader.component.changer"
+QML_IMPORT_MAJOR_VERSION = 1
+
+
+@QmlElement
 class Change(QObject):
-    actived = Signal()
+    activated = Signal(QQmlComponent)
     whenChanged = Signal(bool)
     componentChanged = Signal(QQmlComponent)
 
     def __init__(self):
-        super(Change, self).__init__(None)
+        super().__init__(None)
 
         self._when = False
-        self._component = None
+        self._component = QQmlComponent()
 
-    def readWhen(self) -> bool:
+    @Property("bool", notify = whenChanged)
+    def when(self):
         return self._when
 
-    def setWhen(self, new_when: bool) -> None:
-        self._when = new_when
+    @when.setter
+    def when(self, w):
+        self._when = w
         self.whenChanged.emit(self._when)
 
         if self._when:
-            self.actived.emit()
+            self.activated.emit(self._component)
 
-    def readComponent(self) -> QQmlComponent:
+    @Property("QVariant", notify = componentChanged)
+    def component(self):
         return self._component
 
-    def setComponent(self, new_component: QQmlComponent) -> None:
-        self._component = new_component
+    @component.setter
+    def component(self, c):
+        self._component = c
         self.componentChanged.emit(self._component)
 
-    when = Property("bool", readWhen, setWhen, whenChanged)
-    component = Property(QQmlComponent, readComponent, setComponent, componentChanged)
 
 
-class ComponentChanger(QObject, QQmlParserStatus):
+@QmlElement
+class ComponentChanger(QObject):
     currentComponentChanged = Signal(QQmlComponent)
 
     def __init__(self):
         super(ComponentChanger, self).__init__(None)
 
-        self._current_component = QQmlComponent()
+        self._current_component = None
         self._changes = []
 
-    @Property(QQmlComponent, notify=currentComponentChanged)
-    def currentComponent(self) -> QQmlComponent:
+    @Property(Change, notify=currentComponentChanged)
+    def currentComponent(self):
         return self._current_component
 
-    def setCurrentComponent(self, new_current_component: QQmlComponent) -> None:
-        self._current_component = new_current_component
+    @Slot(QQmlComponent)
+    def setCurrentComponent(self, component):
+        if not component:
+            logger.warning("Component is none!")
+
+            return
+
+        self._current_component = component
         self.currentComponentChanged.emit(self._current_component)
 
-    def appendChange(self, change: Change) -> None:
-        change.actived.connect(lambda: self.setCurrentComponent(change.component))
+        logger.info(f"Current component changed for {self._current_component}")
+
+    def appendChange(self, change):
+        change.activated.connect(self.setCurrentComponent)
         self._changes.append(change)
-
-    def classBegin(self) -> None:
-        pass
-
-    def componentComplete(self) -> None:
-        pass
 
     changes = ListProperty(Change, appendChange)

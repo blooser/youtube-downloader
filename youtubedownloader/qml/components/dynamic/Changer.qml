@@ -1,6 +1,6 @@
 import QtQuick 2.14
 
-import yd.items 0.1
+import youtubedownloader.component.changer
 
 Loader {
     id: root
