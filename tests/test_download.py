@@ -9,11 +9,13 @@ from youtubedownloader.download import (
     PendingManager,
     TaskResult,
     Data,
-    Transaction
+    Transaction,
+    Options
 )
 
 from youtubedownloader.models import (
-    PendingModel
+    PendingModel,
+    Item
 )
 
 
@@ -96,6 +98,33 @@ class TestPending:
 
         assert model.size() == 1
 
-
+        item = model.data[0]
         
+        assert isinstance(item, Item)
+        assert isinstance(item.data, Data)
+        assert item.data.url == "https://www.youtube.com/watch?v=2OEL4P1Rz04"
+        
+
+
+    @pytest.mark.parametrize(
+        "output, format, expected_opts", [
+            ("home", "mp4", {
+                "output_path": "home/%(title)s.%(ext)s",
+                "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
+                "postprocessors": None
+            }),
+            ("documents", "flac", {
+                "output_path": "documents/%(title)s.%(ext)s",
+                "format" : "bestaudio/best",
+                "postprocessors":[{
+                    "key": 'FFmpegExtractAudio',
+                    "preferredcodec": 'flac',
+                 }]
+            })
+        ]
+    )
+    def test_options_are_compatibile_with_yd_opts(self, output, format, expected_opts):
+        options = Options(output, format)
+
+        assert options.to_opts() == expected_opts
 
