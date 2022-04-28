@@ -22,6 +22,60 @@ import urllib.request
 import urllib.error
 
 
+class DataModel(QAbstractItemModel):
+    COLUMNS = 0
+    ROLE_NAMES = {}
+
+    def __init__(self):
+        super().__init__()
+
+        self.data = []
+
+    def size(self):
+        return len(self.data)
+
+    def index(self, row, column, parent=QModelIndex()):
+        return self.createIndex(row, column, parent)
+
+    def rowCount(self, index=QModelIndex()):
+        return self.size()
+
+    def columnCount(self, index=QModelIndex()):
+        return self.COLUMNS
+
+    def roleNames(self, index=QModelIndex()):
+        return self.ROLE_NAMES
+
+    def insert(self, item):
+        self.beginInsertRows(QModelIndex(), self.size(), self.size())
+        self.data.append(item)
+        self.endInsertRows()
+
+    def reset(self):
+        self.beginResetModel()
+        self.data.clear()
+        self.endResetModel()
+
+    def remove(self, data):
+        # TODO: Add definition here
+        return NotImplemented
+
+
+class PendingModel(DataModel):
+    ROLE_NAMES = {
+        256: b"destination",
+        257: b"status",
+        258: b"data",
+        259: b"options"
+    }
+
+    def __init__(self):
+        super().__init__()
+
+
+
+
+
 class HistoryModel(QAbstractItemModel):
     COLUMNS: tuple = ("url", "title", "uploader", "thumbnail", "date")
     FIRST_COLUMN: int = 0
@@ -227,6 +281,11 @@ class WebTabsModel(QAbstractListModel):
             self.beginInsertRows(QModelIndex(), 0, len(new_tabs) - 1)
             self.tabs = new_tabs
             self.endInsertRows()
+
+
+
+
+
 
 # NOTE: Proxy
 
