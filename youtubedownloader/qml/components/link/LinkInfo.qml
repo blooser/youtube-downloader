@@ -50,7 +50,7 @@ Item {
                     id: uploader
 
                     text: info.uploader
-                    link: info.url
+                    link: info.uploader_url
 
                     visible: (text !== Theme.String.empty)
                     horizontalAlignment: Text.AlignLeft

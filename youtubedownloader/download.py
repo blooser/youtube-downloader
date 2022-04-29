@@ -58,10 +58,12 @@ class Data():
         "title",
         "categories",
         "uploader",
+        "uploader_url",
         "thumbnail",
         "duration",
         "upload_date",
         "view_count",
+        "like_count"
     ]
 
     def __init__(self, **kwargs):
