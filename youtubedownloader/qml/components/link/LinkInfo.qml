@@ -20,8 +20,6 @@ Item {
         spacing: Theme.Margins.normal
 
         Items.YDThumbnail {
-            id: thumbnail
-
             source: info.thumbnail
 
             Layout.preferredWidth: 86
@@ -32,8 +30,6 @@ Item {
             spacing: Theme.Margins.tiny
 
             Items.YDLink {
-                id: title
-
                 Layout.fillWidth: true
 
                 link: info.url
@@ -47,8 +43,6 @@ Item {
                 spacing: Theme.Margins.small
 
                 Items.YDLink {
-                    id: uploader
-
                     text: info.uploader
                     link: info.uploader_url
 
@@ -57,26 +51,17 @@ Item {
                 }
 
                 Components.IconText {
-                    id: duration
-
                     text: info.duration
-
                     iconSource: Resources.icons.time
                 }
 
                 Components.IconText {
-                    id: viewCount
-
                     text: info.view_count
-
                     iconSource: Resources.icons.eye
                 }
 
                 Components.IconText {
-                    id: uploadDate
-
                     text: info.upload_date
-
                     iconSource: Resources.icons.calendar
                 }
             }

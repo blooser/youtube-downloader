@@ -60,7 +60,9 @@ ApplicationWindow {
 
             visible: (WebBrowsers.browsers.length !== Theme.Capacity.empty)
             options: downloadOptions.options
-            onAddTab: downloadManager.predownload(url, downloadOptions.options)
+
+            onAddTab: url => { pendingManager.insert(url, downloadOptions.options) }
+
         }
 
         Link.LinkInput {
@@ -70,8 +72,21 @@ ApplicationWindow {
 
         Download.DownloadOptions {
             id: downloadOptions
+
             Layout.fillWidth: true
 
+        }
+
+        Items.YDButton {
+            Layout.alignment: Qt.AlignHCenter
+
+            icon.source: Resources.icons.download
+
+            text: qsTr("Download")
+
+            onClicked: {
+
+            }
         }
 
         Components.Downloads {
@@ -92,6 +107,28 @@ ApplicationWindow {
         }
         onDropped: predownloadDropProcess.addPreDownloads(drop.urls)
     }
+
+    QtObject {
+            id: dialogCreator
+
+            property var dialogStack: []
+
+            function open(url, properties, callback) {
+                var dialog = Object.createComponent(url, root, properties, callback)
+                dialog.open()
+                dialogStack.push(dialog)
+            }
+
+            function close(dialog) {
+                var foundDialog = dialogStack.find(item => item.dialog === dialog)
+
+                if (foundDialog !== undefined) {
+                    dialogStack = dialogStack.filter(item => item.dialog !== foundDialog.dialog)
+                    foundDialog.close()
+                    foundDialog.destroy()
+                }
+            }
+        }
 
     Connections {
         target: dialogManager

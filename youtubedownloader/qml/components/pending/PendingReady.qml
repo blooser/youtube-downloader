@@ -10,6 +10,9 @@ Item {
     id: root
 
     property var pendingInfo
+    property var pendingOptions
+
+    signal formatSelected(string format)
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -31,6 +34,16 @@ Item {
             info: root.pendingInfo
 
             Layout.fillWidth: true
+        }
+
+        Format.FormatSelected {
+            Layout.preferredWidth: Theme.Size.format
+
+            options: root.pendingOptions
+
+            onFormatSelected: format => {
+                root.formatSelected(format)
+            }
         }
 
         Items.YDImageButton {

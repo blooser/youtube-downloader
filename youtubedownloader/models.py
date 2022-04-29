@@ -14,14 +14,12 @@ from youtubedownloader.logger import (
     create_logger
 )
 
+import youtubedownloader.download
+
+
 from PySide6.QtQml import QQmlParserStatus
-
 from bs4 import BeautifulSoup
-
-from .logger import create_logger
-from .settings import Settings
 from .database.models import History
-
 from sqlalchemy.orm.session import Session
 
 import urllib.request
@@ -48,6 +46,9 @@ class Item(QObject):
 
     def __getitem__(self, role):
         return self.__getattribute__(self.roles[role].decode())
+
+    def __setitem__(self, role, value):
+        self.__dict__[self.roles[role].decode()] = value
 
     def __eq__(self, item_id):
         return self.item_id == item_id
@@ -123,6 +124,28 @@ class DataModel(QAbstractItemModel):
 
         return self.dataRules(item[role], role)
 
+    def setDataRules(self, item, value, role):
+        return item
+
+    def setData(self, index, value, role):
+        if not index.isValid():
+            return False
+
+
+        item = self.items[index.row()]
+        item[role] = self.setDataRules(item, value, role)
+
+        topLeft = self.index(index.row(), 0)
+
+        self.dataChanged.emit(
+            topLeft,
+            topLeft
+        )
+
+        logger.info(f"Item at index={index.row()} changed to {item[role]}")
+
+        return True
+
     @Slot(uuid.UUID)
     def update(self, item_id):
         try:
@@ -139,7 +162,7 @@ class DataModel(QAbstractItemModel):
             topLeft
         )
 
-        logger.info(f"Item at {row} row updated")
+        logger.info(f"Item at index={row} row updated")
 
 
 class PendingModel(DataModel):
@@ -158,16 +181,28 @@ class PendingModel(DataModel):
             256: lambda x: x,
             257: lambda x: x,
             258: lambda x: dict(x),
-            259: lambda x: x
+            # TODO: Make it solid! :)
+            259: lambda x: x.to_dict()
         }[role](item)
 
-    def item(self):
+    def setDataRules(self, item, value, role):
+        return {
+            256: lambda x: x,
+            257: lambda x: x,
+            258: lambda x: x,
+            259: lambda x: youtubedownloader.download.Options(**value.toVariant())
+        }[role](item)
+
+    def item(self, destination=None,
+                   status="waiting",
+                   info={},
+                   options={}):
         return Item(
             self.ROLE_NAMES,
-            destination = None,
-            status = "waiting",
-            info = {"title": "Start title"},
-            options = {}
+            destination = destination,
+            status = status,
+            info = info,
+            options = options
         )
 
 

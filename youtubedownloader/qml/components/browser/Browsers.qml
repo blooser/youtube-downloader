@@ -36,7 +36,7 @@ Item {
                 BrowserTabs {
                     model: modelData.tabs
                     options: root.options
-                    onAddTab: root.addTab(url)
+                    onAddTab: url => { root.addTab(url) }
                 }
             }
         }

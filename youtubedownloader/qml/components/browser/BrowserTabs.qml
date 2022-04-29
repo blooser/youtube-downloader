@@ -20,7 +20,7 @@ ListView {
         Layout.alignment: Qt.AlignLeft
         tabTitle: title
 
-        onClicked: pendingManager.insert(url)
+        onClicked: root.addTab(url)
     }
 
     populate: Transition {

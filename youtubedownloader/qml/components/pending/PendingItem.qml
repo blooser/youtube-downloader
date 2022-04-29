@@ -12,10 +12,16 @@ Rectangle {
 
     property string pendingStatus: "waiting"
     property var pendingInfo
+    property var pendingOptions
+
+    signal formatSelected(string format)
 
     property Component waitingComponent: PendingWaiting {}
     property Component readyComponent: PendingReady {
         pendingInfo: root.pendingInfo
+        pendingOptions: root.pendingOptions
+
+        onFormatSelected: format => { root.formatSelected(format) }
     }
 
     implicitWidth: changer.implicitWidth

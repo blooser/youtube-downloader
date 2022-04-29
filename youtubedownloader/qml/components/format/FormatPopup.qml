@@ -6,15 +6,7 @@ import "../../items" as Items
 Items.YDPopup {
     id: root
 
-    property var downloadOptions
-    property string link
-
-    property var optionsWithNewFormat: function (format) {
-        return {
-            "output_path": downloadOptions.outputPath,
-            "file_format": format
-        }
-    }
+    property var options
 
     signal formatSelected(string format)
 
@@ -35,8 +27,11 @@ Items.YDPopup {
 
         delegate: FormatItemDelegate {
             width: formats.width
+
             text: format
-            enabled: !downloadManager.exists(link, optionsWithNewFormat(format))
+
+            //enabled: !downloadManager.exists(link, optionsWithNewFormat(format))
+
             onClicked: {
                 root.formatSelected(format)
                 root.close()

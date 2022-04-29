@@ -26,13 +26,9 @@ Flickable {
 
         Pending.PendingList {
             Layout.fillWidth: true
-           // Layout.preferredHeight: implicitHeight
+            Layout.fillHeight: true
         }
-
-
     }
-
-
 }
 
 

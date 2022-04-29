@@ -51,7 +51,8 @@ class Theme(QObject):
                 "borderBold": 2,
                 "icon": 36,
                 "iconSmall": 16,
-                "none": 0
+                "none": 0,
+                "format": 75
             },
 
             "Animation": {

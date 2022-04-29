@@ -18,16 +18,6 @@ Item {
 
         anchors.fill: parent
 
-        Items.YDButton {
-            Layout.alignment: Qt.AlignHCenter
-
-            icon.source: Resources.icons.download
-
-            text: qsTr("Download")
-
-            onClicked: console.log("Downloading!")
-        }
-
         Components.DownloadsLabel {
             Layout.fillWidth: true
 
@@ -61,6 +51,14 @@ Item {
 
                 pendingStatus: status
                 pendingInfo: info
+                pendingOptions: options
+
+                onFormatSelected: format => {
+                    options = {
+                        "format": format,
+                        "output": options.output,
+                    }
+                }
             }
         }
     }

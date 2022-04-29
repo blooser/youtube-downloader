@@ -7,19 +7,20 @@ import ".." as Components
 Components.TileText {
     id: root
 
-    text: downloadOptions.fileFormat
+    property var options: formatPopup.downloadOptions
 
-    property var downloadOptions: formatPopup.downloadOptions
-    property var link: formatPopup.link
+    signal formatSelected(string format)
 
-    signal changeFormat(string format)
+    text: options.format
 
     FormatPopup {
         id: formatPopup
+
         anchors.centerIn: parent
-        downloadOptions: root.downloadOptions
-        link: root.link
-        onFormatSelected: root.changeFormat(format)
+
+        options: root.options
+
+        onFormatSelected: format => { root.formatSelected(format) }
     }
 
     MouseArea {

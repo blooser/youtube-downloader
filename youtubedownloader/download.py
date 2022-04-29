@@ -70,7 +70,7 @@ class Data():
         for name in kwargs:
             self.__dict__[name] = kwargs[name]
 
-        logger.info(f"Data populated, number of items: {len(self.__dict__)}")
+        logger.info(f"Data populated, number of attributes: {len(self.__dict__)}")
 
     def keys(self):
         return self.KEYS
@@ -155,13 +155,13 @@ class Pending(Task):
 
 
 class Transaction(QObject):
-    def __init__(self, task, model):
+    def __init__(self, task, model, options):
         super().__init__(None)
 
         self.task = task
         self.model = model
 
-        self.item = self.model.item()
+        self.item = self.model.item(options=Options(**options))
 
         # NOTE: DirectConnection needed because of QThread has its own event loop
         self.task.resultReady.connect(self.taskResultReady, Qt.DirectConnection)
@@ -192,11 +192,11 @@ class PendingManager(QObject):
         self.pending_model = PendingModel()
         self.transactions = []
 
-    @Slot(str)
-    def insert(self, url):
+    @Slot(str, "QVariantMap")
+    def insert(self, url, options):
         task = Pending(url)
 
-        transaction = Transaction(task, self.pending_model)
+        transaction = Transaction(task, self.pending_model, options)
         transaction.start()
 
         self.transactions.append(transaction)
@@ -216,6 +216,16 @@ class Options(QObject):
 
     def to_opts(self):
         return dict(output_path = f"{self.output}/%(title)s.%(ext)s", **self.format.to_opts())
+
+    def to_dict(self):
+        return {
+            "output": self.output,
+            "format": self.format.name
+        }
+
+    def __repr__(self):
+        return f"<Options format={self.format} output={self.output}>"
+
 
 class Format:
     name = None
@@ -243,17 +253,17 @@ class Format:
 
 
 class MP4(Format):
-    name = "mp4",
+    name = "mp4"
     format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
 
 
 class WEBM(Format):
-    name = "webm",
+    name = "webm"
     format = "bestvideo[ext=webm]+bestaudio[ext=webm]/webm"
 
 
 class MKV(Format):
-    name = "webm",
+    name = "webm"
     format = "bestvideo[ext=webm]+bestaudio[ext=m4a]/mkv"
 
 
