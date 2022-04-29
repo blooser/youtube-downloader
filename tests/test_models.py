@@ -77,3 +77,15 @@ class TestItem:
         assert item != bad_id
 
 
+    def test_item_assigment_operator_works_correctly(self):
+        roles = {
+            256: b"title"
+        }
+
+        item = Item(roles, title="title")
+
+        assert item[256] == "title"
+
+        item[256] = "another title"
+
+        assert item[256] == "another title"

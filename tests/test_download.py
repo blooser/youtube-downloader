@@ -10,7 +10,10 @@ from youtubedownloader.download import (
     TaskResult,
     Data,
     Transaction,
-    Options
+    Options,
+    
+    FLAC,
+    MP3
 )
 
 from youtubedownloader.models import (
@@ -88,10 +91,11 @@ class TestPending:
     def test_transaction_interacts_with_model(self):
         model = PendingModel()
         pending = Pending("https://www.youtube.com/watch?v=OaXaGfNYEUk")
+        options = dict(output="home", format="mp3")
 
         assert model.size() == 0
 
-        transaction = Transaction(pending, model)
+        transaction = Transaction(pending, model, options)
 
         transaction.start()
         transaction.wait()
@@ -102,10 +106,11 @@ class TestPending:
         
         assert isinstance(item, Item)
         assert item.status == "ready"
-        assert isinstance(item.data, Data)
-        assert item.data.url == "https://www.youtube.com/watch?v=OaXaGfNYEUk"
-        assert item.data.title == "Deficio - Egyptica"
-        
+        assert isinstance(item.info, Data)
+        assert item.info.url == "https://www.youtube.com/watch?v=OaXaGfNYEUk"
+        assert item.info.title == "Deficio - Egyptica"
+        assert item.options.output == "home"
+        assert isinstance(item.options.format, MP3)
 
 
     @pytest.mark.parametrize(
@@ -129,4 +134,29 @@ class TestPending:
         options = Options(output, format)
 
         assert options.to_opts() == expected_opts
+
+    
+    def test_options_can_be_created_from_dict_kwargs(self):
+        d = {
+            "output": "home",
+            "format": "flac"
+        }
+
+        options = Options(**d)
+
+        assert options.output == "home"
+        assert isinstance(options.format, FLAC)
+
+    def test_options_creates_valid_dict_format(self):
+        d = {
+            "output": "home",
+            "format": "mp3"
+        }
+
+        options = Options(**d)
+
+        options_d = options.to_dict()
+        assert options_d["output"] == "home"
+        assert options_d["format"] == "mp3"
+
 
