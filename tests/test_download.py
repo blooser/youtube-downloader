@@ -87,7 +87,7 @@ class TestPending:
     
     def test_transaction_interacts_with_model(self):
         model = PendingModel()
-        pending = Pending("https://www.youtube.com/watch?v=2OEL4P1Rz04")
+        pending = Pending("https://www.youtube.com/watch?v=OaXaGfNYEUk")
 
         assert model.size() == 0
 
@@ -98,11 +98,13 @@ class TestPending:
 
         assert model.size() == 1
 
-        item = model.data[0]
+        item = model.items[0]
         
         assert isinstance(item, Item)
+        assert item.status == "ready"
         assert isinstance(item.data, Data)
-        assert item.data.url == "https://www.youtube.com/watch?v=2OEL4P1Rz04"
+        assert item.data.url == "https://www.youtube.com/watch?v=OaXaGfNYEUk"
+        assert item.data.title == "Deficio - Egyptica"
         
 
 

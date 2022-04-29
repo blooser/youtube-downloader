@@ -9,16 +9,7 @@ import ".." as Components
 Item {
     id: root
 
-    property string url
-    property string destinationFile
-
-    property var downloadData
-    property var downloadOptions
-
-    signal remove()
-
-    signal changeFormat(string format)
-    signal changeOutputPath(string path)
+    property var pendingInfo
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -37,20 +28,9 @@ Item {
         Link.LinkInfo {
             id: link
 
-            link: url
+            info: root.pendingInfo
 
             Layout.fillWidth: true
-        }
-
-        Format.FormatSelected {
-            id: selectedFormat
-
-            Layout.preferredWidth: 65
-
-            link: root.link
-            downloadOptions: root.downloadOptions
-
-            onChangeFormat: root.changeFormat(format)
         }
 
         Items.YDImageButton {

@@ -65,25 +65,27 @@ class Item(QObject):
 
 
 class DataModel(QAbstractItemModel):
-    COLUMNS = 0
     ROLE_NAMES = {}
 
     def __init__(self):
         super().__init__(None)
 
-        self.data = []
+        self.items = []
 
     def size(self):
-        return len(self.data)
+        return len(self.items)
 
     def index(self, row, column, parent=QModelIndex()):
         return self.createIndex(row, column, parent)
+
+    def parent(self, index):
+        return QModelIndex()
 
     def rowCount(self, index=QModelIndex()):
         return self.size()
 
     def columnCount(self, index=QModelIndex()):
-        return self.COLUMNS
+        return len(self.ROLE_NAMES.keys())
 
     def roleNames(self, index=QModelIndex()):
         return self.ROLE_NAMES
@@ -95,64 +97,77 @@ class DataModel(QAbstractItemModel):
         item.updated.connect(self.update)
 
         self.beginInsertRows(QModelIndex(), self.size(), self.size())
-        self.data.append(item)
+        self.items.append(item)
         self.endInsertRows()
 
     def reset(self):
         self.beginResetModel()
-        self.data.clear()
+        self.items.clear()
         self.endResetModel()
 
-    def remove(self, data):
+    def remove(self, item):
         # TODO: Add definition here
         return NotImplemented
 
-    @Slot(uuid.UUID)
-    def update(self, item_id):
-        try:
-            row = self.data.index(item_id)
-        except ValueError:
-            logger.warning(f"Failed to find Item ({item_id})")
-
-            return
-
-        self.dataChanged.emit(
-            self.index(row, 0),
-            self.index(row, self.COLUMNS)
-        )
-
-
-class PendingModel(DataModel):
-    COLUMNS = 4
-    ROLE_NAMES = {
-        256: b"destination",
-        257: b"status",
-        258: b"data",
-        259: b"options"
-    }
-
-    def __init__(self):
-        super().__init__()
+    def dataRules(self, item, role):
+        return item
 
     def data(self, index, role):
         if not index.isValid():
             return QVariant()
 
         try:
-            item = self.data[index.row()]
-
+            item = self.items[index.row()]
         except Exception:
             return QVariant()
 
-        return item[role]
+        return self.dataRules(item[role], role)
+
+    @Slot(uuid.UUID)
+    def update(self, item_id):
+        try:
+            row = self.items.index(item_id)
+        except ValueError:
+            logger.warning(f"Failed to find Item ({item_id})")
+
+            return
+
+        topLeft = self.index(row, 0)
+
+        self.dataChanged.emit(
+            topLeft,
+            topLeft
+        )
+
+        logger.info(f"Item at {row} row updated")
+
+
+class PendingModel(DataModel):
+    ROLE_NAMES = {
+        256: b"destination",
+        257: b"status",
+        258: b"info",
+        259: b"options"
+    }
+
+    def __init__(self):
+        super().__init__()
+
+    def dataRules(self, item, role):
+        return {
+            256: lambda x: x,
+            257: lambda x: x,
+            258: lambda x: dict(x),
+            259: lambda x: x
+        }[role](item)
 
     def item(self):
         return Item(
             self.ROLE_NAMES,
             destination = None,
             status = "waiting",
-            data = None,
-            options = None
+            info = {"title": "Start title"},
+            options = {}
         )
 
 

@@ -10,10 +10,13 @@ import youtubedownloader.component.changer
 Rectangle {
     id: root
 
-    property string status: "waiting"
+    property string pendingStatus: "waiting"
+    property var pendingInfo
 
     property Component waitingComponent: PendingWaiting {}
-    property Component readyComponent: PendingReady {}
+    property Component readyComponent: PendingReady {
+        pendingInfo: root.pendingInfo
+    }
 
     implicitWidth: changer.implicitWidth
     implicitHeight: Math.max(changer.implicitHeight, 86)
@@ -25,8 +28,6 @@ Rectangle {
         color: Theme.Colors.base
     }
 
-    onStatusChanged: console.log("Status changed: ", status)
-
     Dynamic.Changer {
         id: changer
 
@@ -37,12 +38,12 @@ Rectangle {
 
             Change {
                 component: waitingComponent
-                when: root.status == "waiting"
+                when: root.pendingStatus === "waiting"
             },
 
             Change {
                 component: readyComponent
-                when: root.status == "ready"
+                when: root.pendingStatus === "ready"
             }
         ]
     }

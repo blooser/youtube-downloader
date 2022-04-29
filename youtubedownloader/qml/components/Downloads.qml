@@ -26,21 +26,13 @@ Flickable {
 
         Pending.PendingList {
             Layout.fillWidth: true
-            Layout.preferredHeight: implicitHeight
+           // Layout.preferredHeight: implicitHeight
         }
 
-        Download.DownloadItems {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
+
     }
 
-    Items.YDText {
-        anchors.centerIn: parent
-        visible: !predownloadModel.size && !downloadModel.size
-        text: qsTr("You can drag YouTube video's thumbnail and drop into YouTube Downloader")
-        opacity: Theme.Visible.disabled
-    }
+
 }
 
 

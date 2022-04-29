@@ -12,7 +12,6 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight + pending.contentHeight
 
-
     ColumnLayout {
         id: mainLayout
         spacing: Theme.Margins.tiny
@@ -53,18 +52,15 @@ Item {
             spacing: Theme.Margins.tiny
             model: pendingManager.model
 
-            remove: Transition {
-                OpacityAnimator { from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
-            }
-
-            removeDisplaced: Transition {
-                NumberAnimation { property: "y"; duration: Theme.Animation.quick }
+            add: Transition {
+                OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }
             }
 
             delegate: PendingItem {
                 width: pending.width
 
-                status: status
+                pendingStatus: status
+                pendingInfo: info
             }
         }
     }

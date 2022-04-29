@@ -19,10 +19,12 @@
     Property
 
 )
+
 from PySide6.QtQml import (
     QQmlApplicationEngine,
     QQmlContext
 )
+
 from PySide6.QtNetwork import (
     QNetworkAccessManager,
     QNetworkReply,
@@ -159,15 +161,18 @@ class Transaction(QObject):
 
         self.item = self.model.item()
 
-        # NOTE: `DirectConnection` beacuse of multithreaded
+        # NOTE: DirectConnection needed because of QThread has its own event loop
         self.task.resultReady.connect(self.taskResultReady, Qt.DirectConnection)
 
+    @Slot(TaskResult)
     def taskResultReady(self, task_result):
         if task_result.is_error():
+            # TODO: Implement error info logic
+            self.item.update(dict(info={}, status="error"))
             return
 
         value = task_result.value
-        self.item.update(dict(data=value, status="ready"))
+        self.item.update(dict(info=value, status="ready"))
 
     def start(self):
         self.model.insert(self.item)

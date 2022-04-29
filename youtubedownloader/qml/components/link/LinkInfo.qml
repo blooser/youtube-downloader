@@ -7,14 +7,7 @@ import ".." as Components
 Item {
     id: root
 
-    property alias thumbnailSource: thumbnail.source
-    property alias link: title.link
-    property alias titleText: title.text
-    property alias uploaderText: uploader.text
-    property alias uploaderLink: uploader.link
-    property alias durationText: duration.text
-    property alias viewCount: viewCount.text
-    property alias uploadDate: uploadDate.text
+    property var info
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -29,6 +22,8 @@ Item {
         Items.YDThumbnail {
             id: thumbnail
 
+            source: info.thumbnail
+
             Layout.preferredWidth: 86
             Layout.preferredHeight: 86
         }
@@ -40,6 +35,10 @@ Item {
                 id: title
 
                 Layout.fillWidth: true
+
+                link: info.url
+                text: info.title
+
                 font.pixelSize: Theme.FontSize.normal
                 horizontalAlignment: Text.AlignLeft
             }
@@ -50,6 +49,9 @@ Item {
                 Items.YDLink {
                     id: uploader
 
+                    text: info.uploader
+                    link: info.url
+
                     visible: (text !== Theme.String.empty)
                     horizontalAlignment: Text.AlignLeft
                 }
@@ -57,17 +59,23 @@ Item {
                 Components.IconText {
                     id: duration
 
+                    text: info.duration
+
                     iconSource: Resources.icons.time
                 }
 
                 Components.IconText {
                     id: viewCount
 
+                    text: info.view_count
+
                     iconSource: Resources.icons.eye
                 }
 
                 Components.IconText {
                     id: uploadDate
+
+                    text: info.upload_date
 
                     iconSource: Resources.icons.calendar
                 }
