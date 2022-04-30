@@ -140,6 +140,9 @@ class Task(QThread):
 
         self.events = []
 
+    def __eq__(self, other):
+       return self.id() == other.id()
+
     def id(self):
         return QThread.currentThreadId()
 
@@ -154,9 +157,6 @@ class Task(QThread):
 
     def stop(self):
         self.events.append(DownloadingStopEvent())
-
-    def __eq__(self, other):
-       return self.id() == other.id()
 
 
 class Pending(Task):
@@ -175,6 +175,8 @@ class Pending(Task):
 
 
 class Transaction(QObject):
+    finished = Signal(QObject)
+
     def __init__(self, task, model, item):
         super().__init__(None)
 
@@ -185,7 +187,15 @@ class Transaction(QObject):
         # NOTE: DirectConnection needed because of QThread has its own event loop
         self.task.resultReady.connect(self.taskResultReady, Qt.DirectConnection)
         self.task.progress.connect(self.progress, Qt.DirectConnection)
+
+        self.task.finished.connect(self.transactionFinished)
         self.model.itemRemoved.connect(self.stopIfItemRemoved)
+
+    def __eq__(self, other):
+        return self.item == other.item
+
+    def __repr__(self):
+        return f"<Transaction {self.item} {self.model}>"
 
     @Slot(TaskResult)
     def taskResultReady(self, task_result):
@@ -205,6 +215,9 @@ class Transaction(QObject):
     def stopIfItemRemoved(self, item):
         if self.item == item and self.task.isRunning():
             self.stop()
+
+    def transactionFinished(self):
+        self.finished.emit(self)
 
     def start(self):
         self.model.insert(self.item)
@@ -268,19 +281,28 @@ class Downloading(Task):
             self.set_result(err)
 
 
-
-class Transactions:
+class Transactions(QObject):
     def __init__(self):
+        super().__init__(None)
+
         self.transactions = []
 
     def start(self, task, model, item):
         transaction = Transaction(task, model, item)
+        transaction.finished.connect(self.remove)
+
         transaction.start()
 
         self.transactions.append(transaction)
 
-    def remove(self):
-        pass
+    @Slot(QObject)
+    def remove(self, transaction):
+        try:
+            del self.transactions[self.transactions.index(transaction)]
+        except ValueError:
+            return
+
+        logger.info(f"Removed {transaction}")
 
 
 class DownloadManager(QObject):
@@ -290,17 +312,16 @@ class DownloadManager(QObject):
         self.pending_model = PendingModel()
         self.download_model = DownloadModel()
 
-        self.transactions = []
+        self.transactions = Transactions()
 
     @Slot(str, "QVariantMap")
     def insert(self, url, options):
         task = Pending(url)
 
         item = self.pending_model.item(options=Options(**options))
-        transaction = Transaction(task, self.pending_model, item)
-        transaction.start()
 
-        self.transactions.append(transaction)
+        self.transactions.start(task, self.pending_model, item)
+
 
     @Slot()
     def download(self):
@@ -313,10 +334,7 @@ class DownloadManager(QObject):
             task = Downloading(item[self.pending_model.ROLE_NAMES.info].url,
                                item[self.pending_model.ROLE_NAMES.options])
 
-            transaction = Transaction(task, self.download_model, item)
-            transaction.start()
-
-            self.transactions.append(transaction)
+            self.transactions.start(task, self.download_model, item)
 
     @Property(QObject, constant=True)
     def pendingModel(self):

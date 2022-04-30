@@ -53,8 +53,8 @@ class Item(QObject):
     def __eq__(self, item_id):
         return self.item_id == item_id
 
-    def __str__(self):
-        return f"Item ({self.item_id})"
+    def __repr__(self):
+        return f"<Item {self.item_id}>"
 
     def update(self, data):
         for key in data:
@@ -91,6 +91,9 @@ class DataModel(QAbstractItemModel):
         super().__init__(None)
 
         self.items = []
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} items={self.rowCount()}>"
 
     def size(self):
         return len(self.items)
@@ -201,6 +204,7 @@ class PendingModel(DataModel):
 
     def __init__(self):
         super().__init__()
+
 
     def dataRules(self, item, role):
         return {

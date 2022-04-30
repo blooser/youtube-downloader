@@ -10,15 +10,15 @@ ListView {
 
     add: Transition {
         ParallelAnimation {
-            NumberAnimation { property: "opacity"; to: Theme.visible.on; duration: Theme.Animation.quick }
-            NumberAnimation { property: "scale"; to: Theme.visible.on; duration: Theme.Animation.quick }
+            NumberAnimation { property: "opacity"; to: Theme.Visible.on; duration: Theme.Animation.quick }
+            NumberAnimation { property: "scale"; to: Theme.Visible.on; duration: Theme.Animation.quick }
         }
     }
 
     removeDisplaced: Transition {
         ParallelAnimation {
-            NumberAnimation { property: "opacity"; to: Theme.visible.off; duration: Theme.Animation.quick }
-            NumberAnimation { property: "scale"; to: Theme.visible.off; duration: Theme.Animation.quick }
+            NumberAnimation { property: "opacity"; to: Theme.Visible.off; duration: Theme.Animation.quick }
+            NumberAnimation { property: "scale"; to: Theme.Visible.off; duration: Theme.Animation.quick }
         }
     }
 }

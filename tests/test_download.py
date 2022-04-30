@@ -6,6 +6,8 @@ from PySide6.QtTest import (
 
 from youtubedownloader.download import (
     Pending,
+    Downloading,
+    Transaction,
     TaskResult,
     Data,
     ProgressData,
@@ -18,6 +20,7 @@ from youtubedownloader.download import (
 
 from youtubedownloader.models import (
     PendingModel,
+    RoleNames,
     Item
 )
 
@@ -178,4 +181,20 @@ class TestPending:
         assert options_d["output"] == "home"
         assert options_d["format"] == "mp3"
         assert options_d["progress_hooks"] == []
+
+    def test_transaction_eq_operator_works_correctly(self):
+        roles = RoleNames("title")
+
+        pending = Pending("url")
+        model = PendingModel()
+
+        item1 = Item(roles)
+        item2 = Item(roles)
+
+        transaction1 = Transaction(pending, model, item1)
+        transaction2 = Transaction(pending, model, item1)
+        transaction3 = Transaction(pending, model, item2)
+
+        assert transaction1 == transaction2
+        assert transaction1 != transaction3
 
