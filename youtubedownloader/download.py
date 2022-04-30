@@ -52,6 +52,15 @@ import urllib.request
 logger = create_logger("youtubedownloader.download")
 
 
+
+class DownloadingStop(Exception):
+    """The downloading process was stopped"""
+
+class DownloadingStopEvent:
+    def __call__(self):
+        raise DownloadingStop
+
+
 class Data():
     KEYS = [
         "id",
@@ -121,13 +130,15 @@ class TaskResult(QObject):
 
 class Task(QThread):
     resultReady = Signal(QObject)
-    progressUpdated = Signal(Data)
+    progress = Signal(Data)
 
     def __init__(self, url):
         super().__init__(None)
 
         self.url = url
         self.result = None
+
+        self.events = []
 
     def id(self):
         return QThread.currentThreadId()
@@ -140,6 +151,9 @@ class Task(QThread):
 
     def run(self):
         return NotImplemented
+
+    def stop(self):
+        self.events.append(DownloadingStopEvent())
 
     def __eq__(self, other):
        return self.id() == other.id()
@@ -170,7 +184,8 @@ class Transaction(QObject):
 
         # NOTE: DirectConnection needed because of QThread has its own event loop
         self.task.resultReady.connect(self.taskResultReady, Qt.DirectConnection)
-        self.task.progressUpdated.connect(self.progressUpdated, Qt.DirectConnection)
+        self.task.progress.connect(self.progress, Qt.DirectConnection)
+        self.model.itemRemoved.connect(self.stopIfItemRemoved)
 
     @Slot(TaskResult)
     def taskResultReady(self, task_result):
@@ -183,13 +198,25 @@ class Transaction(QObject):
         self.item.update(dict(info=value, status="ready"))
 
     @Slot(Data)
-    def progressUpdated(self, progress):
+    def progress(self, progress):
         self.item.update(dict(progress=progress, status="downloading"))
+
+    @Slot(Item)
+    def stopIfItemRemoved(self, item):
+        if self.item == item and self.task.isRunning():
+            self.stop()
 
     def start(self):
         self.model.insert(self.item)
 
         self.task.start()
+
+        logger.info(f"Transaction for {self.item} started")
+
+    def stop(self):
+        self.task.stop()
+
+        logger.info(f"Transaction for {self.item} stopped")
 
     def wait(self):
         self.task.wait()
@@ -211,28 +238,21 @@ class ProgressData(Data):
     ]
 
 
-class Progress(QObject):
-    updated = Signal(ProgressData)
-
-    def __init__(self):
-        super().__init__(None)
-
-    def __call__(self, data):
-        self.data = ProgressData(**data)
-
-        self.updated.emit(self.data)
-
-
 class Downloading(Task):
     def __init__(self, url, options):
         super().__init__(url)
 
         self.options = options
 
-        self.progress = Progress()
-        self.options.progress_hooks = [self.progress]
+        self.options.progress_hooks = [self.progress_track]
 
-        self.progress.updated.connect(self.progressUpdated)
+    def progress_track(self, data):
+        for event in self.events:
+            event()
+
+        self.data = ProgressData(**data)
+
+        self.progress.emit(self.data)
 
     def run(self):
         logger.info(f"Downloading started for {self.url} with options={self.options}")
@@ -241,8 +261,26 @@ class Downloading(Task):
             with youtube_dl.YoutubeDL(self.options.to_opts()) as ydl:
                 ydl.download([self.url])
 
+        except DownloadingStop as err:
+            logger.info(err)
+
         except youtube_dl.utils.DownloadError as err:
             self.set_result(err)
+
+
+
+class Transactions:
+    def __init__(self):
+        self.transactions = []
+
+    def start(self, task, model, item):
+        transaction = Transaction(task, model, item)
+        transaction.start()
+
+        self.transactions.append(transaction)
+
+    def remove(self):
+        pass
 
 
 class DownloadManager(QObject):
@@ -272,7 +310,8 @@ class DownloadManager(QObject):
 
         for item in items:
             # TODO: Implement special Roles object for that kind of operation :)
-            task = Downloading(item[258].url, item[259])
+            task = Downloading(item[self.pending_model.ROLE_NAMES.info].url,
+                               item[self.pending_model.ROLE_NAMES.options])
 
             transaction = Transaction(task, self.download_model, item)
             transaction.start()

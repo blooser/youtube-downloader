@@ -85,6 +85,8 @@ class RoleNames(list):
 class DataModel(QAbstractItemModel):
     ROLE_NAMES = RoleNames()
 
+    itemRemoved = Signal(Item)
+
     def __init__(self):
         super().__init__(None)
 
@@ -139,6 +141,8 @@ class DataModel(QAbstractItemModel):
         self.beginRemoveRows(QModelIndex(), index, index)
         del self.items[index]
         self.endRemoveRows()
+
+        self.itemRemoved.emit(item)
 
     def dataRules(self, item, role):
         return item

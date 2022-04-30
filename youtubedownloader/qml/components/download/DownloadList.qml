@@ -48,6 +48,12 @@ Item {
                 downloadInfo: info
                 downloadOptions: options
                 downloadProgress: progress
+
+                onRemove: {
+                    dialogManager.openDialog("ConfirmDeleteDialog", { "info": info }, () => {
+                        downloadManager.downloadModel.remove(index)
+                    })
+                }
             }
         }
     }
