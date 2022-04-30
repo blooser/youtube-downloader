@@ -270,13 +270,7 @@ class DownloadManager(QObject):
         items = self.pending_model.items
         self.pending_model.reset()
 
-        # NOTE: Put items to the download model
-        self.download_model.insertMultiple(items)
-
         for item in items:
-            # TODO: Let model deal with itself
-            item.roles = self.download_model.ROLE_NAMES
-
             # TODO: Implement special Roles object for that kind of operation :)
             task = Downloading(item[258].url, item[259])
 

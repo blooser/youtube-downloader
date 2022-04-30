@@ -14,17 +14,14 @@ from youtubedownloader.download import (
 from youtubedownloader.models import (
     PendingModel,
     DownloadModel,
-    Item
+    Item,
+    RoleNames
 )
 
 
 class TestItem:
     def test_item_populates_with_all_variables(self):
-        roles = {
-            256: b"url",
-            257: b"title",
-            258: b"status"
-        }
+        roles = RoleNames("url", "title", "status")
 
         item = Item(roles, url="test", title="nice", status="ready")
 
@@ -38,12 +35,8 @@ class TestItem:
 
 
     def test_item_updates_itself(self):
-        roles = {
-            256: b"url",
-            257: b"title",
-            258: b"status"
-        }
-
+        roles = RoleNames("url", "title", "status") 
+        
         item = Item(roles, url="test", title="nice", status="ready")
 
         assert item.url == "test"
@@ -62,11 +55,7 @@ class TestItem:
 
 
     def test_item_compares_with_id(self):
-        roles = {
-            256: b"url",
-            257: b"title",
-            258: b"status"
-        }
+        roles = RoleNames("url", "title", "status")        
 
         item = Item(roles, url="test", title="nice", status="ready")
 
@@ -78,9 +67,7 @@ class TestItem:
 
 
     def test_item_assigment_operator_works_correctly(self):
-        roles = {
-            256: b"title"
-        }
+        roles = RoleNames("title")
 
         item = Item(roles, title="title")
 
@@ -99,8 +86,60 @@ class TestItem:
         tmp_d = dict(destination=None, status=None, info=None, options=None, progress=None)
         items = [Item(download_model.ROLE_NAMES) for _ in range(5)]
 
-        download_model.insertMultiple(items)
+        download_model.insert(*items)
 
         assert download_model.rowCount() == len(items)
         assert download_model.items == items
 
+    @pytest.mark.parametrize(
+        "roles, numbers", [
+            (
+                ["destination", "status", "info", "options"],
+                [256, 257, 258, 259]
+            ),
+            (
+                ["destination", "status", "info", "options", "progress"],
+                [256, 257, 258, 259, 260]    
+            )
+        ]
+    )
+    def test_rolenames_can_uses_getattr_operator(self, roles, numbers):
+        role_names = RoleNames(*roles)
+
+        for role, number in zip(roles, numbers):
+            assert role_names.__getattr__(role) == number
+
+
+    @pytest.mark.parametrize(
+        "roles, expected_dict", [
+            (
+                ["destination", "status", "info", "options"],
+                {
+                    256: b"destination",
+                    257: b"status",
+                    258: b"info",
+                    259: b"options"
+                }
+            ),
+            (
+                ["destination", "status", "info", "options", "progress"],
+                {
+                    256: b"destination",
+                    257: b"status",
+                    258: b"info",
+                    259: b"options",
+                    260: b"progress"
+                }
+            ),
+        ]
+    )
+    def test_rolenames_can_be_casted_to_dict(self, roles, expected_dict):
+        role_names = RoleNames(*roles) 
+
+        assert role_names.to_dict() == expected_dict
+
+    def test_rolenames_returns_value_with_get_method(self):
+        role_names = RoleNames("destination", "title")
+
+        assert role_names.get(256) == "destination"
+        assert role_names.get(257) == "title"

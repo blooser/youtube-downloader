@@ -15,6 +15,7 @@ Rectangle {
     property var pendingOptions
 
     signal formatSelected(string format)
+    signal remove()
 
     property Component waitingComponent: PendingWaiting {}
     property Component readyComponent: PendingReady {
@@ -22,6 +23,7 @@ Rectangle {
         pendingOptions: root.pendingOptions
 
         onFormatSelected: format => { root.formatSelected(format) }
+        onRemove: root.remove()
     }
 
     implicitWidth: changer.implicitWidth

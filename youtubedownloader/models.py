@@ -45,10 +45,10 @@ class Item(QObject):
             self.__dict__[kwarg] = kwargs[kwarg]
 
     def __getitem__(self, role):
-        return self.__getattribute__(self.roles[role].decode())
+        return self.__getattribute__(self.roles.get(role))
 
     def __setitem__(self, role, value):
-        self.__dict__[self.roles[role].decode()] = value
+        self.__dict__[self.roles.get(role)] = value
 
     def __eq__(self, item_id):
         return self.item_id == item_id
@@ -60,13 +60,30 @@ class Item(QObject):
         for key in data:
             self.__dict__[key] = data[key]
 
-        logger.info(f"Item ({self.item_id}) updated with {data}")
+        logger.info(f"{self} updated with {data}")
 
         self.updated.emit(self.item_id)
 
 
+class RoleNames(list):
+    USER_ROLE = 256
+
+    def __init__(self, *args):
+        super().__init__(list(args))
+
+    def __getattr__(self, value):
+        return self.USER_ROLE + self.index(value)
+
+    def to_dict(self):
+        return { self.USER_ROLE + i: self[i].encode() for i in range(len(self)) }
+
+    def get(self, role):
+        return self[role - self.USER_ROLE]
+
+
+
 class DataModel(QAbstractItemModel):
-    ROLE_NAMES = {}
+    ROLE_NAMES = RoleNames()
 
     def __init__(self):
         super().__init__(None)
@@ -86,23 +103,17 @@ class DataModel(QAbstractItemModel):
         return self.size()
 
     def columnCount(self, index=QModelIndex()):
-        return len(self.ROLE_NAMES.keys())
+        return len(self.ROLE_NAMES)
 
     def roleNames(self, index=QModelIndex()):
-        return self.ROLE_NAMES
+        return self.ROLE_NAMES.to_dict()
 
     def flags(self, index):
         return Qt.ItemIsEnabled | Qt.ItemIsEditable
 
-    def insert(self, item):
-        item.updated.connect(self.update)
-
-        self.beginInsertRows(QModelIndex(), self.size(), self.size())
-        self.items.append(item)
-        self.endInsertRows()
-
-    def insertMultiple(self, items):
+    def insert(self, *items):
         for item in items:
+            item.roles = self.ROLE_NAMES
             item.updated.connect(self.update)
 
         self.beginInsertRows(QModelIndex(), self.size(), self.size() + len(items) - 1)
@@ -116,13 +127,15 @@ class DataModel(QAbstractItemModel):
             item.updated.disconnect(self.update)
 
         self.beginResetModel()
-        # NOTE: Don't clear() because another model will take this items
+        # NOTE: Don't clear() because another model will take these items
         self.items = []
         self.endResetModel()
 
-    def remove(self, item):
-        # TODO: Add definition here
-        return NotImplemented
+    @Slot("QVariant")
+    def remove(self, index):
+        self.beginRemoveRows(QModelIndex(), index, index)
+        del self.items[index]
+        self.endRemoveRows()
 
     def dataRules(self, item, role):
         return item
@@ -133,7 +146,7 @@ class DataModel(QAbstractItemModel):
 
         try:
             return self.dataRules(self.items[index.row()][role], role)
-        except Exception:
+        except Exception as err:
             return None
 
     def setDataRules(self, item, value, role):
@@ -159,12 +172,11 @@ class DataModel(QAbstractItemModel):
         return True
 
     @Slot(uuid.UUID)
-    def update(self, item_id):
+    def update(self, item_uuid):
         try:
-            row = self.items.index(item_id)
+            row = self.items.index(item_uuid)
         except ValueError:
             logger.warning(f"Failed to find Item ({item_id})")
-
             return
 
         topLeft = self.index(row, 0)
@@ -178,12 +190,7 @@ class DataModel(QAbstractItemModel):
 
 
 class PendingModel(DataModel):
-    ROLE_NAMES = {
-        256: b"destination",
-        257: b"status",
-        258: b"info",
-        259: b"options"
-    }
+    ROLE_NAMES = RoleNames("destination", "status", "info", "options")
 
     def __init__(self):
         super().__init__()
@@ -222,14 +229,7 @@ class PendingModel(DataModel):
 
 
 class DownloadModel(DataModel):
-    ROLE_NAMES = {
-        256: b"destination",
-        257: b"status",
-        258: b"info",
-        259: b"options",
-        260: b"progress"
-    }
-
+    ROLE_NAMES = RoleNames("destination", "status", "info", "options", "progress")
 
     def __init__(self):
         super().__init__()

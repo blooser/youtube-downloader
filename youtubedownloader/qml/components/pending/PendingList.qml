@@ -60,6 +60,12 @@ Item {
                         "output": options.output,
                     }
                 }
+
+                onRemove: {
+                    dialogManager.openDialog("ConfirmDeleteDialog", { "info": info }, () => {
+                        downloadManager.pendingModel.remove(index)
+                    })
+                }
             }
         }
     }

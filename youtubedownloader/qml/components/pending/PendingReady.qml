@@ -13,6 +13,7 @@ Item {
     property var pendingOptions
 
     signal formatSelected(string format)
+    signal remove()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight

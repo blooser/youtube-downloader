@@ -22,6 +22,10 @@ Items.YDProgressBar {
     implicitWidth: downloadItemInfo.implicitWidth
     implicitHeight: downloadItemInfo.implicitHeight
 
+    from: 0
+    value: downloadProgress.downloaded_bytes
+    to: downloadProgress.total_bytes
+
     DownloadItemInfo {
         id: downloadItemInfo
 
@@ -47,8 +51,4 @@ Items.YDProgressBar {
             ColorAnimation { duration: Theme.Animation.quick }
         }
     ]
-
-    from: 0
-    value: downloadProgress.downloaded_bytes
-    to: downloadProgress.total_bytes
 }

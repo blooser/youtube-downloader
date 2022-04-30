@@ -9,7 +9,7 @@ import "../components" as Components
 YDDialog {
     id: root
 
-    property var downloadData
+    property var info
 
     implicitHeight: 220
 
@@ -25,12 +25,7 @@ YDDialog {
             Layout.fillWidth: true
             Layout.maximumWidth: 750
 
-            thumbnailSource: downloadData.thumbnail
-            titleText: downloadData.title
-            uploaderText: downloadData.uploader
-            durationText: downloadData.duration
-            viewCount: downloadData.viewCount.toLocaleString(Qt.locale(), "f", 0)
-            uploadDate: downloadData.uploadDate
+            info: root.info
         }
     }
 
