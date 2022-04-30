@@ -6,7 +6,6 @@ from PySide6.QtTest import (
 
 from youtubedownloader.download import (
     Pending,
-    PendingManager,
     TaskResult,
     Data,
     Transaction
@@ -14,6 +13,7 @@ from youtubedownloader.download import (
 
 from youtubedownloader.models import (
     PendingModel,
+    DownloadModel,
     Item
 )
 
@@ -89,3 +89,18 @@ class TestItem:
         item[256] = "another title"
 
         assert item[256] == "another title"
+        
+    def test_download_model_puts_multiple_items(self):
+        download_model = DownloadModel()
+
+        assert download_model.rowCount() == 0
+
+        # NOTE: Be careful here because of dataRules()...
+        tmp_d = dict(destination=None, status=None, info=None, options=None, progress=None)
+        items = [Item(download_model.ROLE_NAMES) for _ in range(5)]
+
+        download_model.insertMultiple(items)
+
+        assert download_model.rowCount() == len(items)
+        assert download_model.items == items
+

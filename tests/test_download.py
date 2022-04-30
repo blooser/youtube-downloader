@@ -6,7 +6,6 @@ from PySide6.QtTest import (
 
 from youtubedownloader.download import (
     Pending,
-    PendingManager,
     TaskResult,
     Data,
     Transaction,
@@ -158,5 +157,5 @@ class TestPending:
         options_d = options.to_dict()
         assert options_d["output"] == "home"
         assert options_d["format"] == "mp3"
-
+        assert options_d["progress_hooks"] == []
 
