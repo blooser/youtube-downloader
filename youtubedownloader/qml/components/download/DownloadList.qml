@@ -53,6 +53,7 @@ Item {
                 downloadStatus: status
                 downloadInfo: info
                 downloadOptions: options
+                downloadProgress: progress
             }
         }
     }

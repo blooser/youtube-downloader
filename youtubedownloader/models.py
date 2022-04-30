@@ -129,14 +129,12 @@ class DataModel(QAbstractItemModel):
 
     def data(self, index, role):
         if not index.isValid():
-            return QVariant()
+            return None
 
         try:
-            item = self.items[index.row()]
+            return self.dataRules(self.items[index.row()][role], role)
         except Exception:
-            return QVariant()
-
-        return self.dataRules(item[role], role)
+            return None
 
     def setDataRules(self, item, value, role):
         return item
@@ -211,13 +209,15 @@ class PendingModel(DataModel):
     def item(self, destination=None,
                    status="waiting",
                    info={},
-                   options={}):
+                   options={},
+                   progress = {}):
         return Item(
             self.ROLE_NAMES,
             destination = destination,
             status = status,
             info = info,
-            options = options
+            options = options,
+            progress = progress
         )
 
 
@@ -230,6 +230,7 @@ class DownloadModel(DataModel):
         260: b"progress"
     }
 
+
     def __init__(self):
         super().__init__()
 
@@ -240,7 +241,7 @@ class DownloadModel(DataModel):
             258: lambda x: dict(x),
             # TODO: Make it solid! :)
             259: lambda x: x.to_dict(),
-            260: lambda x: x.to_dict()
+            260: lambda x: dict(x)
         }[role](item)
 
 

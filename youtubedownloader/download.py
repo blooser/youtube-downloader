@@ -71,10 +71,11 @@ class Data():
         for name in kwargs:
             self.__dict__[name] = kwargs[name]
 
-        logger.info(f"Data populated, number of attributes: {len(self.__dict__)}")
-
     def keys(self):
         return self.KEYS
+
+    def __len__(self):
+        return len(self.__dict__.keys())
 
     def __getitem__(self, item):
         return self.__dict__[item]
@@ -87,6 +88,9 @@ class Data():
 
     def __eq__(self, other):
         return self.id == other.id
+
+    def __repr__(self):
+        return f"<Data {len(self)} attributes>"
 
     @classmethod
     def frominfo(cls, info):
@@ -117,6 +121,7 @@ class TaskResult(QObject):
 
 class Task(QThread):
     resultReady = Signal(QObject)
+    progressUpdated = Signal(Data)
 
     def __init__(self, url):
         super().__init__(None)
@@ -156,16 +161,16 @@ class Pending(Task):
 
 
 class Transaction(QObject):
-    def __init__(self, task, model, options):
+    def __init__(self, task, model, item):
         super().__init__(None)
 
         self.task = task
         self.model = model
-
-        self.item = self.model.item(options=Options(**options))
+        self.item = item
 
         # NOTE: DirectConnection needed because of QThread has its own event loop
         self.task.resultReady.connect(self.taskResultReady, Qt.DirectConnection)
+        self.task.progressUpdated.connect(self.progressUpdated, Qt.DirectConnection)
 
     @Slot(TaskResult)
     def taskResultReady(self, task_result):
@@ -177,6 +182,10 @@ class Transaction(QObject):
         value = task_result.value
         self.item.update(dict(info=value, status="ready"))
 
+    @Slot(Data)
+    def progressUpdated(self, progress):
+        self.item.update(dict(progress=progress, status="downloading"))
+
     def start(self):
         self.model.insert(self.item)
 
@@ -184,6 +193,56 @@ class Transaction(QObject):
 
     def wait(self):
         self.task.wait()
+
+
+class ProgressData(Data):
+    KEYS = [
+        "downloaded_bytes",
+        "total_bytes",
+        "filename",
+        "speed",
+        "eta",
+        "elapsed",
+
+        "_eta_str",
+        "_percent_str",
+        "_speed_str",
+        "_total_bytes_str"
+    ]
+
+
+class Progress(QObject):
+    updated = Signal(ProgressData)
+
+    def __init__(self):
+        super().__init__(None)
+
+    def __call__(self, data):
+        self.data = ProgressData(**data)
+
+        self.updated.emit(self.data)
+
+
+class Downloading(Task):
+    def __init__(self, url, options):
+        super().__init__(url)
+
+        self.options = options
+
+        self.progress = Progress()
+        self.options.progress_hooks = [self.progress]
+
+        self.progress.updated.connect(self.progressUpdated)
+
+    def run(self):
+        logger.info(f"Downloading started for {self.url} with options={self.options}")
+
+        try:
+            with youtube_dl.YoutubeDL(self.options.to_opts()) as ydl:
+                ydl.download([self.url])
+
+        except youtube_dl.utils.DownloadError as err:
+            self.set_result(err)
 
 
 class DownloadManager(QObject):
@@ -199,7 +258,8 @@ class DownloadManager(QObject):
     def insert(self, url, options):
         task = Pending(url)
 
-        transaction = Transaction(task, self.pending_model, options)
+        item = self.pending_model.item(options=Options(**options))
+        transaction = Transaction(task, self.pending_model, item)
         transaction.start()
 
         self.transactions.append(transaction)
@@ -207,8 +267,23 @@ class DownloadManager(QObject):
     @Slot()
     def download(self):
         # NOTE: Steal pending's items
-        self.download_model.insertMultiple(self.pending_model.items)
+        items = self.pending_model.items
         self.pending_model.reset()
+
+        # NOTE: Put items to the download model
+        self.download_model.insertMultiple(items)
+
+        for item in items:
+            # TODO: Let model deal with itself
+            item.roles = self.download_model.ROLE_NAMES
+
+            # TODO: Implement special Roles object for that kind of operation :)
+            task = Downloading(item[258].url, item[259])
+
+            transaction = Transaction(task, self.download_model, item)
+            transaction.start()
+
+            self.transactions.append(transaction)
 
     @Property(QObject, constant=True)
     def pendingModel(self):
@@ -225,10 +300,14 @@ class Options(QObject):
 
         self.format = Format.fromstr(format)
         self.output = output
-        self.progress_hooks = []
+        self.progress_hooks = progress_hooks
 
     def to_opts(self):
-        return dict(output_path = f"{self.output}/%(title)s.%(ext)s", **self.format.to_opts())
+        return {
+            "output_path": f"{self.output}/%(title)s.%(ext)s",
+            "progress_hooks": self.progress_hooks,
+            **self.format.to_opts()
+        }
 
     def to_dict(self):
         return {
@@ -244,7 +323,7 @@ class Options(QObject):
 class Format:
     name = None
     format = None
-    postprocessors = None
+    postprocessors = []
 
     def to_opts(self):
         return {
@@ -315,23 +394,3 @@ class WAV(Format):
         "preferredcodec": 'wav',
     }]
 
-
-class Downloading(Task):
-    def __init__(self, url, options):
-        super().__init__(url)
-
-        self.options = options
-        self.options.progress_hooks = [self.progress]
-
-    def progress(self, data):
-        pass
-
-    def run(self):
-        logger.info(f"Downloading started for {self.url}")
-
-        try:
-            with youtube_dl.YoutubeDL(self.options.to_opts()) as ydl:
-                ydl.download([self.url])
-
-        except youtube_dl.utils.DownloadError as err:
-            self.set_result(err)

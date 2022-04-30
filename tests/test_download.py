@@ -8,6 +8,7 @@ from youtubedownloader.download import (
     Pending,
     TaskResult,
     Data,
+    ProgressData,
     Transaction,
     Options,
     
@@ -63,6 +64,23 @@ class TestPending:
         assert test_data["first"] == test_data["first"]
         assert test_data["first"] != test_data["second"]
 
+    @pytest.mark.parametrize(
+        "test_data", [
+            {
+                "downloaded_bytes": 1000,
+                "total_bytes": 5000,
+                "speed": 250,
+                "elapsed": 909090
+            }
+        ]
+    ) 
+    def test_progressdata_populates_dict_var(self, test_data):
+        progress_data = ProgressData(**test_data)
+
+        assert progress_data.downloaded_bytes == test_data["downloaded_bytes"]
+        assert progress_data.total_bytes == test_data["total_bytes"]
+        assert progress_data.speed == test_data["speed"]
+        assert progress_data.elapsed == test_data["elapsed"]
 
     def test_pending_collects_data(self):
         pending = Pending("https://www.youtube.com/watch?v=2OEL4P1Rz04")
@@ -90,11 +108,11 @@ class TestPending:
     def test_transaction_interacts_with_model(self):
         model = PendingModel()
         pending = Pending("https://www.youtube.com/watch?v=OaXaGfNYEUk")
-        options = dict(output="home", format="mp3")
+        item = Item(model.ROLE_NAMES, options=Options(output="home", format="mp3"))
 
         assert model.size() == 0
 
-        transaction = Transaction(pending, model, options)
+        transaction = Transaction(pending, model, item)
 
         transaction.start()
         transaction.wait()
@@ -117,7 +135,8 @@ class TestPending:
             ("home", "mp4", {
                 "output_path": "home/%(title)s.%(ext)s",
                 "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
-                "postprocessors": None
+                "postprocessors": [],
+                "progress_hooks": []
             }),
             ("documents", "flac", {
                 "output_path": "documents/%(title)s.%(ext)s",
@@ -125,7 +144,8 @@ class TestPending:
                 "postprocessors":[{
                     "key": 'FFmpegExtractAudio',
                     "preferredcodec": 'flac',
-                 }]
+                 }],
+                "progress_hooks": []
             })
         ]
     )

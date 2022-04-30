@@ -12,6 +12,8 @@ Items.YDProgressBar {
     property alias downloadInfo: downloadItemInfo.downloadInfo
     property alias downloadOptions: downloadItemInfo.downloadOptions
 
+    property var downloadProgress
+
     signal remove()
     signal open()
     signal redo()
@@ -45,4 +47,8 @@ Items.YDProgressBar {
             ColorAnimation { duration: Theme.Animation.quick }
         }
     ]
+
+    from: 0
+    value: downloadProgress.downloaded_bytes
+    to: downloadProgress.total_bytes
 }
