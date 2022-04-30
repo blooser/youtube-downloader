@@ -1,16 +1,18 @@
-import QtQuick 2.14
-import QtQuick.Dialogs 1.3
+import QtQuick 2.15
+import QtQuick.Dialogs
+import Qt.labs.platform
 
-FileDialog {
+FolderDialog {
     id: root
 
     property var callback: null
 
-    selectMultiple: false
-    selectExisting: true
-    selectFolder: true
-
     title: qsTr("Select directory")
 
-    onAccepted: callback(folder)
+    // TODO: Fix that because of no currentFolder property found
+   // currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+
+    onAccepted: () => {
+        callback(root.folder)
+    }
 }

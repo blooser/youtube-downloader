@@ -1,4 +1,4 @@
-﻿from PySide6.QtQml import QQmlApplicationEngine, QQmlContext, qmlRegisterType
+﻿from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PySide6.QtQuick import QQuickView
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QUrl, QResource

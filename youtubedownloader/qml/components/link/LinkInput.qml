@@ -122,7 +122,7 @@ Item {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
 
-            enabled: root.singleLine ? (changer.item.acceptableInput && !downloadManager.exists(changer.item.text, options)) : changer.item.text
+            // TODO: Add enabled:
 
             imageSource: Resources.icons.plus
 

@@ -7,6 +7,6 @@ YDImage {
     MouseArea {
         anchors.fill: parent
         enabled: (root.status === Image.Ready)
-        onClicked: dialogManager.open_dialog("ThumbnailDialog", {"url": root.source}, null)
+        onClicked: dialogManager.openDialog("ThumbnailDialog", {"url": root.source}, null)
     }
 }

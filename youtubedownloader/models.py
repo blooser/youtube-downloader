@@ -190,6 +190,7 @@ class PendingModel(DataModel):
             256: lambda x: x,
             257: lambda x: x,
             258: lambda x: x,
+            # FIXME: Deal with circular imports here
             259: lambda x: youtubedownloader.download.Options(**value.toVariant())
         }[role](item)
 

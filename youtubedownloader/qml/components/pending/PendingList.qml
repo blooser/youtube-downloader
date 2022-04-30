@@ -53,6 +53,7 @@ Item {
                 pendingInfo: info
                 pendingOptions: options
 
+                // TODO: Move this logic into class or special function
                 onFormatSelected: format => {
                     options = {
                         "format": format,

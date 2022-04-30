@@ -39,7 +39,7 @@ Item {
             id: outputPath
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            onClicked: dialogManager.open_dialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
+            onClicked: dialogManager.openDialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
                 let path = Paths.cleanPath(selectedFolder)
 
                 Settings.outputPath = path

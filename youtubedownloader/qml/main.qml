@@ -22,13 +22,13 @@ ApplicationWindow {
     title: qsTr("Youtube Downloader")
 
     header: Components.ApplicationHeader {
-        onSupportedSites: dialogManager.open_dialog("SupportedSitesDialog", {}, null)
-        onHistory: dialogManager.open_dialog("HistoryDialog", {
+        onSupportedSites: dialogManager.openDialog("SupportedSitesDialog", {}, null)
+        onHistory: dialogManager.openDialog("HistoryDialog", {
                                                 "x": root.width - (root.width/2),
                                                 "implicitWidth": root.width/2,
                                                 "implicitHeight": root.height
                                              }, null)
-        onTheme: dialogManager.open_dialog("ThemeColorsDialog", {
+        onTheme: dialogManager.openDialog("ThemeColorsDialog", {
                                                 "x": 0,
                                                 "y": root.height,
                                                 "implicitWidth": root.width,
@@ -68,6 +68,8 @@ ApplicationWindow {
         Link.LinkInput {
             Layout.fillWidth: true
 
+            onAddLink: link => { pendingManager.insert(link, downloadOptions.options) }
+
         }
 
         Download.DownloadOptions {
@@ -85,7 +87,7 @@ ApplicationWindow {
             text: qsTr("Download")
 
             onClicked: {
-
+                console.log("Download!")
             }
         }
 
@@ -100,11 +102,12 @@ ApplicationWindow {
         anchors.fill: parent
         onContainsDragChanged: {
             if (containsDrag) {
-                dialogManager.open_dialog("DropUrlDialog", {}, null)
+                dialogManager.openDialog("DropUrlDialog", {}, null)
             } else {
-                dialogManager.close_dialog("DropUrlDialog")
+                dialogManager.closeDialog("DropUrlDialog")
             }
         }
+
         onDropped: predownloadDropProcess.addPreDownloads(drop.urls)
     }
 
@@ -114,16 +117,19 @@ ApplicationWindow {
             property var dialogStack: []
 
             function open(url, properties, callback) {
-                var dialog = Object.createComponent(url, root, properties, callback)
+                let dialog = Object.createComponent(url, root, properties, callback)
+
                 dialog.open()
+
                 dialogStack.push(dialog)
             }
 
             function close(dialog) {
-                var foundDialog = dialogStack.find(item => item.dialog === dialog)
+                let foundDialog = dialogStack.find(item => item.dialog === dialog)
 
                 if (foundDialog !== undefined) {
                     dialogStack = dialogStack.filter(item => item.dialog !== foundDialog.dialog)
+
                     foundDialog.close()
                     foundDialog.destroy()
                 }
