@@ -133,6 +133,9 @@ class DataModel(QAbstractItemModel):
 
     @Slot("QVariant")
     def remove(self, index):
+        item = self.items[index]
+        item.updated.disconnect(self.update)
+
         self.beginRemoveRows(QModelIndex(), index, index)
         del self.items[index]
         self.endRemoveRows()

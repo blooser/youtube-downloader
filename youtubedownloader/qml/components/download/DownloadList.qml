@@ -3,6 +3,7 @@
 import QtQuick.Layouts 1.14
 
 import ".." as Components
+import "../../items" as Items
 
 Item {
     id: root
@@ -32,20 +33,13 @@ Item {
             }
         }
 
-        ListView {
+        Items.YDList {
             id: downloadItems
 
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            boundsBehavior: Flickable.StopAtBounds
-            clip: true
-            spacing: Theme.Margins.tiny
             model: downloadManager.downloadModel
-
-            add: Transition {
-                OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }
-            }
 
             delegate: DownloadItem {
                 width: downloadItems.width

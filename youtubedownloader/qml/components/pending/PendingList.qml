@@ -31,7 +31,7 @@ Item {
             }
         }
 
-        ListView {
+        Items.YDList {
             id: pending
 
             Layout.fillWidth: true
@@ -41,10 +41,6 @@ Item {
             clip: true
             spacing: Theme.Margins.tiny
             model: downloadManager.pendingModel
-
-            add: Transition {
-                OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }
-            }
 
             delegate: PendingItem {
                 width: pending.width
