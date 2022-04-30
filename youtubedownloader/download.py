@@ -33,6 +33,7 @@ from PySide6.QtNetwork import (
 
 from youtubedownloader.models import (
     PendingModel,
+    DownloadModel,
     Item
 )
 
@@ -185,11 +186,13 @@ class Transaction(QObject):
         self.task.wait()
 
 
-class PendingManager(QObject):
+class DownloadManager(QObject):
     def __init__(self):
         super().__init__(None)
 
         self.pending_model = PendingModel()
+        self.download_model = DownloadModel()
+
         self.transactions = []
 
     @Slot(str, "QVariantMap")
@@ -201,18 +204,28 @@ class PendingManager(QObject):
 
         self.transactions.append(transaction)
 
+    @Slot()
+    def download(self):
+        # NOTE: Steal pending's items
+        self.download_model.insertMultiple(self.pending_model.items)
+        self.pending_model.reset()
+
     @Property(QObject, constant=True)
-    def model(self):
+    def pendingModel(self):
         return self.pending_model
 
+    @Property(QObject, constant=True)
+    def downloadModel(self):
+        return self.download_model
 
 
 class Options(QObject):
-    def __init__(self, output="", format="mp4"):
+    def __init__(self, output = "", format = "mp4", progress_hooks = []):
         super().__init__(None)
 
         self.format = Format.fromstr(format)
         self.output = output
+        self.progress_hooks = []
 
     def to_opts(self):
         return dict(output_path = f"{self.output}/%(title)s.%(ext)s", **self.format.to_opts())
@@ -220,7 +233,8 @@ class Options(QObject):
     def to_dict(self):
         return {
             "output": self.output,
-            "format": self.format.name
+            "format": self.format.name,
+            "progress_hooks": self.progress_hooks
         }
 
     def __repr__(self):
@@ -237,7 +251,6 @@ class Format:
             "format": self.format,
             "postprocessors": self.postprocessors
         }
-
 
     @staticmethod
     def fromstr(name):
@@ -301,3 +314,24 @@ class WAV(Format):
         "key": 'FFmpegExtractAudio',
         "preferredcodec": 'wav',
     }]
+
+
+class Downloading(Task):
+    def __init__(self, url, options):
+        super().__init__(url)
+
+        self.options = options
+        self.options.progress_hooks = [self.progress]
+
+    def progress(self, data):
+        pass
+
+    def run(self):
+        logger.info(f"Downloading started for {self.url}")
+
+        try:
+            with youtube_dl.YoutubeDL(self.options.to_opts()) as ydl:
+                ydl.download([self.url])
+
+        except youtube_dl.utils.DownloadError as err:
+            self.set_result(err)

@@ -61,14 +61,14 @@ ApplicationWindow {
             visible: (WebBrowsers.browsers.length !== Theme.Capacity.empty)
             options: downloadOptions.options
 
-            onAddTab: url => { pendingManager.insert(url, downloadOptions.options) }
+            onAddTab: url => { downloadManager.insert(url, downloadOptions.options) }
 
         }
 
         Link.LinkInput {
             Layout.fillWidth: true
 
-            onAddLink: link => { pendingManager.insert(link, downloadOptions.options) }
+            onAddLink: link => { downloadManager.insert(link, downloadOptions.options) }
 
         }
 
@@ -86,9 +86,7 @@ ApplicationWindow {
 
             text: qsTr("Download")
 
-            onClicked: {
-                console.log("Download!")
-            }
+            onClicked: downloadManager.download() // NOTE: Let's go!
         }
 
         Components.Downloads {

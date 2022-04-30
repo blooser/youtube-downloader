@@ -40,7 +40,7 @@ Item {
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             spacing: Theme.Margins.tiny
-            model: pendingManager.model
+            model: downloadManager.pendingModel
 
             add: Transition {
                 OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }

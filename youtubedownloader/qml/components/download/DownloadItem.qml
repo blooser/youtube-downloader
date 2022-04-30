@@ -8,11 +8,8 @@ import ".." as Components
 Items.YDProgressBar {
     id: root
 
-    property alias link: downloadItemInfo.link
-    property alias destinationFile: downloadItemInfo.destinationFile
-
-    property alias downloadProgress: downloadItemInfo.downloadProgress
-    property alias downloadData: downloadItemInfo.downloadData
+    property alias downloadStatus: downloadItemInfo.downloadStatus
+    property alias downloadInfo: downloadItemInfo.downloadInfo
     property alias downloadOptions: downloadItemInfo.downloadOptions
 
     signal remove()
@@ -38,7 +35,7 @@ Items.YDProgressBar {
 
     state: "*"
     states: State {
-        when: downloadProgress.downloadStatus.includes("ERROR")
+        //when: downloadProgress.downloadStatus.includes("ERROR")
         name: "error"
         PropertyChanges { target: root; error: true }
     }

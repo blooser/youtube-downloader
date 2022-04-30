@@ -41,42 +41,19 @@ Item {
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             spacing: Theme.Margins.tiny
-            model: downloadModel
+            model: downloadManager.downloadModel
+
+            add: Transition {
+                OpacityAnimator { from: Theme.Visible.off; to: Theme.Visible.on; duration: Theme.Animation.quick }
+            }
 
             delegate: DownloadItem {
                 width: downloadItems.width
 
-                from: Theme.Size.none
-                value: downloadProgress.downloadedBytes
-                to: downloadProgress.totalBytes
-
-                link: url
-                destinationFile: destination_file
-
-                downloadProgress: progress
-                downloadData: download_data
+                downloadStatus: status
+                downloadInfo: info
                 downloadOptions: options
-
-                onPause: downloadModel.pause(index)
-                onRedo: downloadModel.redo(index)
-                onOpen: Qt.openUrlExternally(destination_file)
-                onRemove: dialogManager.open_dialog("ConfirmDeleteDialog", {"downloadData": downloadData }, function() {
-                    downloadModel.remove_download(index)
-                })
-            }
-
-            remove: Transition {
-                OpacityAnimator { from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
-            }
-
-            removeDisplaced: Transition {
-                NumberAnimation { property: "y"; duration: Theme.Animation.quick }
             }
         }
-
-        Behavior on implicitHeight {
-            NumberAnimation { duration: Theme.Animation.quick }
-        }
-
     }
 }

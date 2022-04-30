@@ -4,7 +4,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QUrl, QResource
 from PySide6.QtWidgets import QApplication
 
-from .download import PendingManager
+from .download import DownloadManager
 from .models import StringFilterModel, SupportedSitesModel, HistoryModel
 from .component_changer import ComponentChanger, Change
 from .dialog_manager import DialogManager
@@ -29,7 +29,7 @@ def main():
     app.setWindowIcon(QIcon(Resources.YD_LOGO))
 
     database = Database(Settings.DB_PATH)
-    pending_manager = PendingManager()
+    download_manager = DownloadManager()
     settings = Settings()
     dialog_manager = DialogManager()
     resources = Resources()
@@ -49,7 +49,7 @@ def main():
     engine.rootContext().setContextProperty("Theme", theme)
     engine.rootContext().setContextProperty("Resources", resources)
     engine.rootContext().setContextProperty("Settings", settings)
-    engine.rootContext().setContextProperty("pendingManager", pending_manager)
+    engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("Paths", qpaths)
     #engine.rootContext().setContextProperty("fileDownloader", file_downloader)

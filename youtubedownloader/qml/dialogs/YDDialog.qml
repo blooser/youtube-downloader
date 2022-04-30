@@ -50,5 +50,5 @@ Dialog {
         NumberAnimation { property: "opacity"; to: 0; duration: 250 }
     }
 
-    onClosed: dialogManager.close_dialog(dialog)
+    onClosed: dialogManager.closeDialog(dialog)
 }

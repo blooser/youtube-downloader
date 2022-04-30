@@ -101,9 +101,23 @@ class DataModel(QAbstractItemModel):
         self.items.append(item)
         self.endInsertRows()
 
+    def insertMultiple(self, items):
+        for item in items:
+            item.updated.connect(self.update)
+
+        self.beginInsertRows(QModelIndex(), self.size(), self.size() + len(items) - 1)
+        self.items.extend(items)
+        self.endInsertRows()
+
+        logger.info(f"Inserted {len(items)} items")
+
     def reset(self):
+        for item in self.items:
+            item.updated.disconnect(self.update)
+
         self.beginResetModel()
-        self.items.clear()
+        # NOTE: Don't clear() because another model will take this items
+        self.items = []
         self.endResetModel()
 
     def remove(self, item):
@@ -205,6 +219,30 @@ class PendingModel(DataModel):
             info = info,
             options = options
         )
+
+
+class DownloadModel(DataModel):
+    ROLE_NAMES = {
+        256: b"destination",
+        257: b"status",
+        258: b"info",
+        259: b"options",
+        260: b"progress"
+    }
+
+    def __init__(self):
+        super().__init__()
+
+    def dataRules(self, item, role):
+        return {
+            256: lambda x: x,
+            257: lambda x: x,
+            258: lambda x: dict(x),
+            # TODO: Make it solid! :)
+            259: lambda x: x.to_dict(),
+            260: lambda x: x.to_dict()
+        }[role](item)
+
 
 
 class HistoryModel(QAbstractItemModel):

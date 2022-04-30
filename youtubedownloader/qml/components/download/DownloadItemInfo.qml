@@ -8,11 +8,8 @@ import ".." as Components
 Item {
     id: root
 
-    property string link
-    property string destinationFile
-
-    property var downloadProgress
-    property var downloadData
+    property var downloadStatus
+    property var downloadInfo
     property var downloadOptions
 
     signal remove()
@@ -39,19 +36,12 @@ Item {
 
             Layout.fillWidth: true
 
-            thumbnailSource: downloadData.thumbnail
-            link: root.link
-            titleText: downloadData.title
-            uploaderText: downloadData.uploader
-            uploaderLink: downloadData.uploaderUrl
-            durationText: downloadData.duration
-            viewCount: downloadData.viewCount.toLocaleString(Qt.locale(), "f", 0)
-            uploadDate: downloadData.uploadDate
+            info: downloadInfo
         }
 
         DownloadStatus {
             id: downloadStatus
-            downloadProgress: root.downloadProgress
+            //downloadProgress: root.downloadProgress
         }
 
         Components.TileText {
@@ -59,27 +49,16 @@ Item {
 
             Layout.preferredWidth: 65
 
-            text: downloadOptions.fileFormat
+            text: downloadOptions.format
         }
 
         DownloadButtons {
-            status: root.downloadProgress.downloadStatus
+           // status: root.downloadProgress.downloadStatus
 
             onOpen: root.open()
             onRedo: root.redo()
             onRemove: root.remove()
             onPause: root.pause()
-        }
-    }
-
-    Items.YDText {
-        text: destinationFile
-
-        font.pixelSize: Theme.FontSize.micro
-        anchors {
-            bottom: root.bottom
-            bottomMargin: Theme.Size.borderBold
-            horizontalCenter: root.horizontalCenter
         }
     }
 }

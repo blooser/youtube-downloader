@@ -28,6 +28,11 @@ Flickable {
             Layout.fillWidth: true
             Layout.fillHeight: true
         }
+
+        Download.DownloadList {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
 }
 
