@@ -53,6 +53,11 @@ logger = create_logger("youtubedownloader.download")
 
 
 
+class EmptyFunction:
+    def __call__(self):
+        pass
+
+
 class DownloadingStop(Exception):
     """The downloading process was stopped"""
 
@@ -99,7 +104,7 @@ class Data():
         return self.id == other.id
 
     def __repr__(self):
-        return f"<Data {len(self)} attributes>"
+        return f"<Data attributes={len(self)}>"
 
     @classmethod
     def frominfo(cls, info):
@@ -143,6 +148,16 @@ class Task(QThread):
     def __eq__(self, other):
        return self.id() == other.id()
 
+    def runningOnly(f):
+        def runningOnlyWrapper(self, *args, **kwargs):
+            if not self.isRunning():
+                return EmptyFunction()
+
+            return f(self, *args, **kwargs)
+
+        return runningOnlyWrapper
+
+
     def id(self):
         return QThread.currentThreadId()
 
@@ -155,6 +170,7 @@ class Task(QThread):
     def run(self):
         return NotImplemented
 
+    @runningOnly
     def stop(self):
         self.events.append(DownloadingStopEvent())
 
@@ -287,6 +303,8 @@ class Transactions(QObject):
 
         self.transactions = []
 
+        atexit.register(self.clear)
+
     def start(self, task, model, item):
         transaction = Transaction(task, model, item)
         transaction.finished.connect(self.remove)
@@ -300,9 +318,20 @@ class Transactions(QObject):
         try:
             del self.transactions[self.transactions.index(transaction)]
         except ValueError:
+            logger.warning(f"Failed to find {transaction}")
+
             return
 
         logger.info(f"Removed {transaction}")
+
+    def clear(self):
+        logger.info(f"Clearing {len(self.transactions)} transactions")
+
+        for transaction in self.transactions:
+            transaction.stop()
+
+        for transaction in self.transactions:
+            transaction.wait()
 
 
 class DownloadManager(QObject):
