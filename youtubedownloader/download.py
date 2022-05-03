@@ -57,7 +57,6 @@ class EmptyFunction:
     def __call__(self):
         pass
 
-
 class DownloadingStop(Exception):
     """The downloading process was stopped"""
 

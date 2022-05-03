@@ -11,7 +11,7 @@ from .dialog_manager import DialogManager
 from .resources import Resources
 from .theme import Theme
 from .paths import QPaths
-from .settings import Settings
+from .settings import Settings, Paths
 from .database import Database
 from .browser import Browsers
 from .version import __version__
@@ -28,7 +28,7 @@ def main():
     app.setOrganizationName("blooser")
     app.setWindowIcon(QIcon(Resources.YD_LOGO))
 
-    database = Database(Settings.DB_PATH)
+    database = Database(Paths.database)
     download_manager = DownloadManager()
     settings = Settings()
     dialog_manager = DialogManager()
@@ -40,7 +40,7 @@ def main():
     theme = Theme()
     #file_downloader = FileDownloader()
 
-    theme.changeBaseColor(settings.theme_color) # NOTE: Before engine starts
+    theme.changeBaseColor(settings._themeColor) # NOTE: Before engine starts
 
     qmlRegisterType(StringFilterModel, "yd.items", 0, 1, "StringFilterModel")
 

@@ -16,7 +16,6 @@ from youtubedownloader.logger import (
 
 import youtubedownloader.download
 
-
 from PySide6.QtQml import QQmlParserStatus
 from bs4 import BeautifulSoup
 from .database.models import History

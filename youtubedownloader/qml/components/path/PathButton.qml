@@ -9,7 +9,7 @@ Items.YDButton {
 
     contentItem: Item {
         Items.YDText {
-            text: Settings.outputPath
+            text: Settings.output
             anchors.centerIn: parent
 
             PathBaner {

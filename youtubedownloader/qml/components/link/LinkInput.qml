@@ -41,13 +41,13 @@ Item {
         focus: true
         rightPadding: Theme.Margins.big * 2 // NOTE: Because of `changeLineButton` position
 
-        onTextEdited: Settings.inputLink = text
+        onTextEdited: Settings.input = text
 
         Keys.onEnterPressed: addButton.clicked()
         Keys.onReturnPressed: addButton.clicked()
 
         Component.onCompleted: {
-            text = Settings.inputLink
+            text = Settings.input
             if (!root.firstInitialization) {
                 changeSingleLineComponentAnimation.start()
             }
@@ -70,10 +70,10 @@ Item {
 
         focus: true
 
-        onTextChanged: Settings.inputLink = text
+        onTextChanged: Settings.input = text
 
         Component.onCompleted: {
-            text = Settings.inputLink
+            text = Settings.input
             changeMultiLineComponentAnimation.start()
         }
 
@@ -95,8 +95,6 @@ Item {
         id: mainLayout
 
         anchors.fill: parent
-
-
 
         Dynamic.Changer {
             id: changer
@@ -142,7 +140,7 @@ Item {
                     changer.item.clear()
                 }
 
-                Settings.inputLink = Theme.String.empty
+                Settings.input = Theme.String.empty
             }
         }
     }

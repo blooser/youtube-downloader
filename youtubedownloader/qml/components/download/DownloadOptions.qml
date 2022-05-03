@@ -12,8 +12,8 @@ Item {
     id: root
 
     property var options: {
-        "format": Settings.fileFormat,
-        "output": Settings.outputPath
+        "format": Settings.format,
+        "output": Settings.output
     }
 
     implicitWidth: mainLayout.implicitWidth
@@ -29,8 +29,8 @@ Item {
 
             Layout.alignment: Qt.AlignHCenter
 
-            onFileFormatChanged: {
-                Settings.fileFormat = fileFormat
+            onFileFormatChanged: (fileFormat) => {
+                Settings.format = fileFormat
                 options["format"] = fileFormat
             }
         }
@@ -39,10 +39,10 @@ Item {
             id: outputPath
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            onClicked: dialogManager.openDialog("SelectDirectoryDialog", { "folder": Settings.outputPath }, function(selectedFolder){
+            onClicked: dialogManager.openDialog("SelectDirectoryDialog", { "folder": Settings.output }, function(selectedFolder){
                 let path = Paths.cleanPath(selectedFolder)
 
-                Settings.outputPath = path
+                Settings.output = path
                 options["output"] = path
             })
         }

@@ -9,105 +9,135 @@
 import os.path
 import atexit
 
+
+from youtubedownloader.logger import create_logger
+
+logger = create_logger("youtubedownloader.settings")
+
+
+class Paths:
+   settings = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "ydsettings")
+   database = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "yddatabase.db")
+
+
+class Attribute:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def attach(self, cls):
+        setattr(cls, self.name, self.value)
+
+
+def attachattributes(*attributes):
+    def attachattributeswrapper(cls):
+        for attribute in attributes:
+            attribute.attach(cls)
+
+        return cls
+
+    return attachattributeswrapper
+
+
+@attachattributes(
+    Attribute("_input", ""),
+    Attribute("_output", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation)),
+    Attribute("_format", "webm"),
+    Attribute("_singleLine", True),
+    Attribute("_themeColor", "#004d99"),
+
+)
 class Settings(QObject):
-    CONFIG_PATH: str = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "ydsettings")
-    DB_PATH: str = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "yddatabase.db")
+    inputChanged = Signal(str)
+    outputChanged = Signal(str)
+    formatChanged = Signal(str)
+    singleLineChanged = Signal(bool)
+    themeColorChanged = Signal(str)
 
-    input_link_changed = Signal(str)
-    output_path_changed = Signal(str)
-    file_format_changed = Signal(str)
-    single_line_changed = Signal(bool)
-    theme_color_changed = Signal(str)
+    def __init__(self, path=Paths.settings):
+        super().__init__()
 
-    def __init__(self, settings_path=None):
-        super(Settings, self).__init__(None)
+        self.path = path
 
-        self.settings_path = Settings.CONFIG_PATH if settings_path == None else settings_path
-
-        self.input_link = str()
-        self.output_path = QStandardPaths.writableLocation(QStandardPaths.DownloadLocation)
-        self.file_format = "webm"
-        self.single_line = True
-        self.theme_color = "#004d99"
-
-        if os.path.isfile(Settings.CONFIG_PATH):
+        if os.path.isfile(self.path):
             self.load()
 
         atexit.register(self.save)
 
+
     def load(self) -> None:
-        settings = QSettings(self.settings_path)
+        settings = QSettings(self.path)
         settings.beginGroup("Settings")
-        self.input_link = settings.value("input_link", "")
-        self.output_path = settings.value("output_path", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation))
-        self.file_format = settings.value("file_format", "webm")
-        self.single_line = bool(settings.value("single_line", "True") == "True")
-        self.theme_color = settings.value("theme_color", "#004d99")
+
+        self._input = settings.value("input", "")
+        self._output = settings.value("output", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation))
+        self._format = settings.value("format", "webm")
+        self._singleLine = bool(settings.value("singleLine", "True"))
+        self._themeColor = settings.value("themeColor", "#004d99")
+
         settings.endGroup()
+
+        logger.info(f"Settings loaded {settings.value('singleLine', 'True')}")
 
     def save(self) -> None:
-        settings = QSettings(self.settings_path)
+        settings = QSettings(self.path)
+
         settings.beginGroup("Settings")
-        settings.setValue("input_link", self.input_link)
-        settings.setValue("output_path", self.output_path)
-        settings.setValue("file_format", self.file_format)
-        settings.setValue("single_line", "True" if self.single_line else "False") # NOTE: QSettings has a problem with bool values(bool("False") = True)
-        settings.setValue("theme_color", self.theme_color)
+        settings.setValue("input", self._input)
+        settings.setValue("output", self._output)
+        settings.setValue("format", self._format)
+        settings.setValue("singleLine", "True" if self._singleLine else "False") # NOTE: QSettings has a problem with bool values(bool("False") = True)
+        settings.setValue("themeColor", self._themeColor)
+
         settings.endGroup()
 
-    def read_input_link(self) -> str:
-        return self.input_link
 
-    def set_input_link(self, input_link: str) -> None:
-        if self.input_link == input_link:
-            return
+    @Property(str, notify = inputChanged)
+    def input(self):
+        return self._input
 
-        self.input_link = input_link
-        self.input_link_changed.emit(self.input_link)
+    @input.setter
+    def input(self, value):
+        self._input = value
 
-    def read_output_path(self) -> str:
-        return self.output_path
+        self.inputChanged.emit(self._input)
 
-    def set_output_path(self, output_path: str) -> None:
-        if self.output_path == output_path:
-            return
+    @Property(str, notify = outputChanged)
+    def output(self):
+        return self._output
 
-        self.output_path = output_path
-        self.output_path_changed.emit(self.output_path)
+    @output.setter
+    def output(self, value):
+        self._output = value
 
-    def read_file_format(self) -> str:
-        return self.file_format
+        self.outputChanged.emit(self._output)
 
-    def set_file_format(self, file_format: str) -> None:
-        if self.file_format == file_format:
-            return
+    @Property(str, notify = formatChanged)
+    def format(self):
+        return self._format
 
-        self.file_format = file_format
-        self.file_format_changed.emit(self.file_format)
+    @format.setter
+    def format(self, value):
+        self._format = value
 
-    def read_single_line(self) -> bool:
-        return self.single_line
+        self.formatChanged.emit(self._format)
 
-    def set_single_line(self, new_single_line: bool) -> None:
-        if self.single_line == new_single_line:
-            return
+    @Property(bool, notify = singleLineChanged)
+    def singleLine(self):
+        return self._singleLine
 
-        self.single_line = new_single_line
-        self.single_line_changed.emit(self.single_line)
+    @singleLine.setter
+    def singleLine(self, value):
+        self._singleLine = value
 
-    def read_theme_color(self) -> str:
-        return self.theme_color
+        self.singleLineChanged.emit(self._singleLine)
 
-    def set_theme_color(self, new_theme_color: str) -> None:
-        if self.theme_color == new_theme_color:
-            return
+    @Property(str, notify = themeColorChanged)
+    def themeColor(self):
+        return self._themeColor
 
-        self.theme_color = new_theme_color
-        self.theme_color_changed.emit(self.theme_color)
+    @themeColor.setter
+    def themeColor(self, value):
+        self._themeColor = value
 
-
-    inputLink = Property(str, read_input_link, set_input_link, notify=input_link_changed)
-    outputPath = Property(str, read_output_path, set_output_path, notify=output_path_changed)
-    fileFormat = Property(str, read_file_format, set_file_format, notify=file_format_changed)
-    singleLine = Property(bool, read_single_line, set_single_line, notify=single_line_changed)
-    themeColor = Property(str, read_theme_color, set_theme_color, notify=theme_color_changed)
+        self.themeColorChanged.emit(self._themeColor)
