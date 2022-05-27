@@ -10,11 +10,17 @@
     Slot
 )
 
+import youtubedownloader
+
 from youtubedownloader.logger import (
     create_logger
 )
 
-import youtubedownloader.download
+from youtubedownloader.settings import Paths
+
+from youtubedownloader.serializer import (
+    Serializer
+)
 
 from PySide6.QtQml import QQmlParserStatus
 from bs4 import BeautifulSoup
@@ -24,6 +30,9 @@ from sqlalchemy.orm.session import Session
 import urllib.request
 import urllib.error
 import uuid
+import os
+import pickle
+import atexit
 
 
 logger = create_logger("youtubedownloader.models")
@@ -63,6 +72,20 @@ class Item(QObject):
 
         self.updated.emit(self.item_id)
 
+    def json(self):
+        return {
+            "roles": self.roles,
+            "destination": self.destination,
+            "status": self.status,
+            "info": dict(self.info),
+            "options": self.options.to_dict(),
+        }
+
+
+
+class RoleNotFoundError(Exception):
+    """Role was not found"""
+
 
 class RoleNames(list):
     USER_ROLE = 256
@@ -77,8 +100,10 @@ class RoleNames(list):
         return { self.USER_ROLE + i: self[i].encode() for i in range(len(self)) }
 
     def get(self, role):
-        return self[role - self.USER_ROLE]
-
+        try:
+            return self[role - self.USER_ROLE]
+        except IndexError:
+            raise RoleNotFoundError()
 
 
 class DataModel(QAbstractItemModel):
@@ -165,7 +190,6 @@ class DataModel(QAbstractItemModel):
         if not index.isValid():
             return False
 
-
         item = self.items[index.row()]
         item[role] = self.setDataRules(item, value, role)
 
@@ -198,12 +222,31 @@ class DataModel(QAbstractItemModel):
         logger.info(f"Item at index={row} row updated")
 
 
-class PendingModel(DataModel):
-    ROLE_NAMES = RoleNames("destination", "status", "info", "options")
+class FreezeDataModel(DataModel):
+    DATA_PATH = os.path.join(Paths.models, "models.json")
 
     def __init__(self):
         super().__init__()
 
+        atexit.register(self.save)
+
+        if os.path.isfile(self.DATA_PATH):
+            self.load()
+
+    def save(self):
+        Serializer(Item).to_json(self.items, self.DATA_PATH)
+
+    def load(self):
+        items = Serializer(Item).from_json(self.DATA_PATH)
+        self.insert(*items)
+
+
+class PendingModel(FreezeDataModel):
+    ROLE_NAMES = RoleNames("destination", "status", "info", "options")
+    DATA_PATH = os.path.join(Paths.models, "pendingmodel.json")
+
+    def __init__(self):
+        super().__init__()
 
     def dataRules(self, item, role):
         return {
@@ -238,8 +281,9 @@ class PendingModel(DataModel):
         )
 
 
-class DownloadModel(DataModel):
+class DownloadModel(FreezeDataModel):
     ROLE_NAMES = RoleNames("destination", "status", "info", "options", "progress")
+    DATA_PATH = os.path.join(Paths.models, "downloadmodel.json")
 
     def __init__(self):
         super().__init__()
@@ -253,7 +297,6 @@ class DownloadModel(DataModel):
             259: lambda x: x.to_dict(),
             260: lambda x: dict(x)
         }[role](item)
-
 
 
 class HistoryModel(QAbstractItemModel):

@@ -1,4 +1,7 @@
 import pytest
+import os
+import os.path
+import atexit
 
 from PySide6.QtTest import (
     QSignalSpy
@@ -8,15 +11,60 @@ from youtubedownloader.download import (
     Pending,
     TaskResult,
     Data,
-    Transaction
+    Transaction,
+    Options
 )
 
 from youtubedownloader.models import (
+    FreezeDataModel,
     PendingModel,
     DownloadModel,
     Item,
-    RoleNames
+    RoleNames,
+    
+    RoleNotFoundError,
 )
+
+from youtubedownloader.settings import (
+    Paths
+)
+
+
+class FreezeDataModelFixture(FreezeDataModel):
+    DATA_PATH = os.path.join(Paths.models, "testmodel.json")
+
+    def __init__(self):
+        super().__init__()
+
+    def clean(self):
+        atexit.unregister(self.save)
+
+        if os.path.isfile(self.DATA_PATH):
+            os.remove(self.DATA_PATH)
+
+class PendingModelFixture(PendingModel):
+    def __init__(self):
+        super().__init__()
+
+    def load(self):
+        ...
+
+    def save(self):
+        ...
+
+
+class DownloadModelFixture(DownloadModel):
+    def __init__(self):
+        super().__init__()
+
+    def load(self):
+        ...
+
+    def save(self):
+        ...
+
+
+
 
 
 class TestItem:
@@ -78,7 +126,7 @@ class TestItem:
         assert item[256] == "another title"
         
     def test_download_model_puts_multiple_items(self):
-        download_model = DownloadModel()
+        download_model = DownloadModelFixture()
 
         assert download_model.rowCount() == 0
 
@@ -143,3 +191,46 @@ class TestItem:
 
         assert role_names.get(256) == "destination"
         assert role_names.get(257) == "title"
+
+    def test_rolenames_raises_role_not_found_exception(self):
+        role_names = RoleNames("destination", "title")
+
+        with pytest.raises(RoleNotFoundError):
+            role_names.get(258)
+
+
+def test_freeze_model_serialize_data():
+    pending = Pending("https://www.youtube.com/watch?v=tLsJQ5srVQA")
+    pending.start()
+    pending.wait()
+
+    item = Item (
+        roles = RoleNames("title", "url"),
+        destination = "home",
+        status = "finished",
+        info = pending.result.value,
+        options = Options(output="documents", format="mp3"),
+        progress = {}
+    )
+
+    model = FreezeDataModelFixture()
+    model.items = [item]
+
+    model.save()
+    assert os.path.isfile(model.DATA_PATH)
+    
+    model2 = FreezeDataModelFixture() # NOTE: This invokes load() when creating instance 
+    assert len(model2.items) > 0
+
+    item2 = model2.items[0]
+
+    assert item.roles == item2.roles
+    assert item.destination == item2.destination
+    assert item.status == item2.status
+    assert item.info == item2.info
+    assert item.options == item2.options
+
+    model.clean()
+    model2.clean()
+
+    assert not os.path.isfile(model.DATA_PATH)

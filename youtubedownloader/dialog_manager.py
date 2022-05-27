@@ -12,20 +12,19 @@ import sys, os, pathlib
 
 from . import paths
 from .logger import create_logger
+from youtubedownloader.settings import Paths
 
 logger = create_logger(__name__)
 
 
 class DialogManager(QObject):
-    DIALOG_PATH: str = os.path.join(os.path.dirname(__file__), "qml/dialogs")
-
     open = Signal(str, "QVariantMap", "QVariant", arguments=["dialog", "properties", "callback"])
     close = Signal(str, arguments=["dialog"])
 
     def __init__(self):
         super(DialogManager, self).__init__(None)
 
-        self.dialogs = paths.collect_files(DialogManager.DIALOG_PATH)
+        self.dialogs = paths.collect_files(Paths.dialogs)
 
         logger.info("Loaded {dialogs} dialogs".format(dialogs=len(self.dialogs)))
 

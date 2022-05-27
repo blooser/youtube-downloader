@@ -16,8 +16,10 @@ logger = create_logger("youtubedownloader.settings")
 
 
 class Paths:
-   settings = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "ydsettings")
-   database = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "yddatabase.db")
+    settings = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "ydsettings")
+    database = os.path.join(QStandardPaths.writableLocation(QStandardPaths.ConfigLocation), "yddatabase.db")
+    dialogs = os.path.join(os.path.dirname(__file__), "qml/dialogs")
+    models = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation)
 
 
 class Attribute:

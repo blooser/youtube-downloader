@@ -62,7 +62,7 @@ class DownloadingStop(Exception):
 
 class DownloadingStopEvent:
     def __call__(self):
-        raise DownloadingStop
+        raise DownloadingStop()
 
 
 class Data():
@@ -392,11 +392,13 @@ class Options(QObject):
         return {
             "output": self.output,
             "format": self.format.name,
-            "progress_hooks": self.progress_hooks
         }
 
     def __repr__(self):
         return f"<Options format={self.format} output={self.output}>"
+
+    def __eq__(self, other):
+        return self.format == other.format and self.output == other.output
 
 
 class Format:
@@ -424,6 +426,9 @@ class Format:
 
     def __repr__(self):
         return f"<{self.name.upper()}>"
+
+    def __eq__(self, other):
+        return self.name == other.name
 
 
 class MP4(Format):

@@ -25,6 +25,17 @@ from youtubedownloader.models import (
 )
 
 
+class PendingModelFixture(PendingModel):
+    def __init__(self):
+        super().__init__()
+
+    def save(self):
+        ...
+
+    def load(self):
+        ...
+
+
 class TestPending:
     @pytest.mark.parametrize(
         "test_data", [
@@ -109,7 +120,7 @@ class TestPending:
         assert isinstance(result.value, Exception)
     
     def test_transaction_interacts_with_model(self):
-        model = PendingModel()
+        model = PendingModelFixture()
         pending = Pending("https://www.youtube.com/watch?v=OaXaGfNYEUk")
         item = Item(model.ROLE_NAMES, options=Options(output="home", format="mp3"))
 
@@ -169,6 +180,15 @@ class TestPending:
         assert options.output == "home"
         assert isinstance(options.format, FLAC)
 
+    def test_options_eq_operator_works(self):
+        options1 = Options(output="home", format="mp3")
+        options2 = Options(output="home", format="mp3")
+        options3 = Options(output="etc", format="mp4")
+
+        assert options1 == options2
+        assert options1 != options3
+        assert options2 != options3
+
     def test_options_creates_valid_dict_format(self):
         d = {
             "output": "home",
@@ -180,13 +200,12 @@ class TestPending:
         options_d = options.to_dict()
         assert options_d["output"] == "home"
         assert options_d["format"] == "mp3"
-        assert options_d["progress_hooks"] == []
 
     def test_transaction_eq_operator_works_correctly(self):
         roles = RoleNames("title")
 
         pending = Pending("url")
-        model = PendingModel()
+        model = PendingModelFixture()
 
         item1 = Item(roles)
         item2 = Item(roles)
