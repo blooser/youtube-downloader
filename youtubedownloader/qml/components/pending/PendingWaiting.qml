@@ -1,29 +1,32 @@
 import QtQuick 2.15
 
 import "../../items" as Items
+import "../buttons" as Buttons
 
-Item {
+Rectangle {
     id: root
 
     signal remove()
+
+    color: Theme.Colors.second
+
+    border {
+        width: Theme.Size.border
+        color: Theme.Colors.base
+    }
 
     Items.YDBusyIndicator {
         anchors.centerIn: parent
         running: true
     }
 
-    Items.YDImageButton {
+    Buttons.DeleteButton {
         anchors {
             right: parent.right
             rightMargin: Theme.Margins.normal
             verticalCenter: parent.verticalCenter
         }
 
-        width: Theme.Size.icon
-        height: Theme.Size.icon
-
-        imageSource: Resources.icons.delete
-
-        onClicked: root.remove()
+        onRemove: root.remove()
     }
 }

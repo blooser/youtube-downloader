@@ -2,14 +2,13 @@
 import QtQuick.Layouts 1.12
 
 import "../../items" as Items
+import "../buttons" as Buttons
 
 Item {
    id: root
 
-   property string status: "queued"
-
    signal open()
-   signal redo()
+   signal resume()
    signal pause()
    signal remove()
 
@@ -22,57 +21,29 @@ Item {
         anchors.fill: parent
         spacing: Theme.Margins.tiny
 
-        Items.YDImageButton {
-            id: downloadButton
-
-            Layout.preferredWidth: Theme.Size.none
-            Layout.preferredHeight: Theme.Size.none
-            Layout.alignment: Qt.AlignRight
-            opacity: Theme.Visible.off
-        }
-
-        Items.YDImageButton {
+        Buttons.OpenButton {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
             Layout.alignment: Qt.AlignRight
 
-            imageSource: Resources.icons.delete
-
-            onClicked: root.remove()
+            onOpen: root.open()
         }
-    }
 
-    state: "repose"
-    states: [
-        State {
-            when: (status.includes("ERROR") || (status === "paused") || (status == "no file"))
-            name: "repose"
-            PropertyChanges { target: downloadButton; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; opacity: Theme.Visible.on; imageSource: Resources.icons.redo; onClicked: root.redo() }
-        },
+        Buttons.PauseResumeButton {
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
+            Layout.alignment: Qt.AlignRight
 
-        State {
-            when: (status === "queued" || status.includes("converting"))
-            name: "occupied"
-            PropertyChanges { target: downloadButton; Layout.preferredWidth: Theme.Size.none; Layout.preferredHeight: Theme.Size.none; opacity: Theme.Visible.off }
-        },
-
-        State {
-            when: (status.includes("downloading"))
-            name: "downloading"
-            PropertyChanges { target: downloadButton; imageSource: Resources.icons.pause; opacity: Theme.Visible.on; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; onClicked: root.pause() }
-        },
-
-        State {
-            when: (status === "finished")
-            name: "finished"
-            PropertyChanges { target: downloadButton; imageSource: Resources.icons.eye; Layout.preferredWidth: Theme.Size.icon; Layout.preferredHeight: Theme.Size.icon; opacity: Theme.Visible.on; onClicked: root.open() }
+            onPause: root.pause()
+            onResume: root.resume()
         }
-    ]
 
-    transitions: Transition {
-        SequentialAnimation {
-            NumberAnimation { properties: "Layout.preferredWidth, Layout.preferredHeight"; duration: Theme.Animation.quick }
-            NumberAnimation { property: "opacity"; duration: Theme.Animation.quick }
+        Buttons.DeleteButton {
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
+            Layout.alignment: Qt.AlignRight
+
+            onRemove: root.remove()
         }
     }
 }

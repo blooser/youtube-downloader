@@ -119,8 +119,25 @@ class TaskResult(QObject):
     def is_valid(self):
         return isinstance(self.value, Data)
 
+    def is_finished_only(self):
+        # TODO: Implement better task result system
+        return isinstance(self.value, bool) and self.value == True
+
     def is_error(self):
         return isinstance(self.value, Exception)
+
+    def to_dict(self):
+        if self.is_error():
+            return {
+                info: str(self.value),
+                status: "error"
+            }
+
+        return {
+            info: self.value,
+            status: "ready"
+        }
+
 
     def __str__(self):
         if self.is_error():
@@ -155,7 +172,6 @@ class Task(QThread):
             return f(self, *args, **kwargs)
 
         return runningOnlyWrapper
-
 
     def id(self):
         return QThread.currentThreadId()
@@ -219,6 +235,10 @@ class Transaction(QObject):
             self.item.update(dict(info={}, status="error"))
             return
 
+        if task_result.is_finished_only():
+            self.item.update(dict(status="ready"))
+            return
+
         value = task_result.value
         self.item.update(dict(info=value, status="ready"))
 
@@ -238,6 +258,8 @@ class Transaction(QObject):
         self.model.insert(self.item)
 
         self.task.start()
+
+        self.item.update(dict(status="waiting"))
 
         logger.info(f"Transaction for {self.item} started")
 
@@ -288,6 +310,8 @@ class Downloading(Task):
         try:
             with youtube_dl.YoutubeDL(self.options.to_opts()) as ydl:
                 ydl.download([self.url])
+
+            self.set_result(True)
 
         except DownloadingStop as err:
             logger.info(err)

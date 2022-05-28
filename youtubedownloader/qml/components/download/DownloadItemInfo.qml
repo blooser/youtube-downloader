@@ -12,11 +12,6 @@ Item {
     property var downloadInfo
     property var downloadOptions
 
-    signal remove()
-    signal open()
-    signal redo()
-    signal pause()
-
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
@@ -50,15 +45,6 @@ Item {
             Layout.preferredWidth: 65
 
             text: downloadOptions.format
-        }
-
-        DownloadButtons {
-           // status: root.downloadProgress.downloadStatus
-
-            onOpen: root.open()
-            onRedo: root.redo()
-            onRemove: root.remove()
-            onPause: root.pause()
         }
     }
 }

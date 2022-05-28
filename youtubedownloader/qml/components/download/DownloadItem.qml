@@ -1,54 +1,92 @@
 ﻿import QtQuick 2.14
 import QtQuick.Layouts 1.12
 
+
+import "../dynamic" as Dynamic
+
+import youtubedownloader.component.changer
+
+
 import "../../items" as Items
 import "../link" as  Link
 import ".." as Components
 
-Items.YDProgressBar {
+Item {
     id: root
 
-    property alias downloadStatus: downloadItemInfo.downloadStatus
-    property alias downloadInfo: downloadItemInfo.downloadInfo
-    property alias downloadOptions: downloadItemInfo.downloadOptions
-
+    property string downloadStatus: "waiting"
+    property var downloadInfo
+    property var downloadOptions
     property var downloadProgress
 
     signal remove()
-    signal open()
-    signal redo()
+    signal resume()
     signal pause()
 
-    implicitWidth: downloadItemInfo.implicitWidth
-    implicitHeight: downloadItemInfo.implicitHeight
+    implicitWidth: changer.implicitWidth
+    implicitHeight: changer.implicitHeight
 
-    from: 0
-    value: downloadProgress.downloaded_bytes
-    to: downloadProgress.total_bytes
-
-    DownloadItemInfo {
-        id: downloadItemInfo
-
-        z: root.z + 1
-
-        anchors.fill: root
+    property Component downloadingComponent: DownloadItemDownloading {
+        downloadStatus: root.downloadStatus
+        downloadInfo: root.downloadInfo
+        downloadOptions: root.downloadOptions
+        downloadProgress: root.downloadProgress
 
         onRemove: root.remove()
-        onOpen: root.open()
-        onRedo: root.redo()
         onPause: root.pause()
+        onResume: root.resume()
     }
 
-    state: "*"
-    states: State {
-        //when: downloadProgress.downloadStatus.includes("ERROR")
-        name: "error"
-        PropertyChanges { target: root; error: true }
+    property Component finishedComponent: DownloadItemFinished {
+        downloadStatus: root.downloadStatus
+        downloadInfo: root.downloadInfo
+        downloadOptions: root.downloadOptions
+
+        onRemove: root.remove()
     }
 
-    transitions: [
-        Transition {
-            ColorAnimation { duration: Theme.Animation.quick }
-        }
-    ]
+    property Component errorComponent: DownloadItemError {
+        downloadStatus: root.downloadStatus
+        downloadInfo: root.downloadInfo
+        downloadOptions: root.downloadOptions
+
+        onRemove: root.remove()
+    }
+
+    property Component waitingComponent: DownloadItemWaiting {
+        downloadStatus: root.downloadStatus
+        downloadInfo: root.downloadInfo
+        downloadOptions: root.downloadOptions
+    }
+
+
+    Dynamic.Changer {
+        id: changer
+
+        anchors.fill: parent
+
+        changes: [
+            // FIXME: When `when` is prev of component is throws none! Do componentReady method definition
+
+            Change {
+                component: downloadingComponent
+                when: root.downloadStatus === "downloading"
+            },
+
+            Change {
+                component: finishedComponent
+                when: root.downloadStatus === "ready"
+            },
+
+            Change {
+                component: errorComponent
+                when: root.downloadStatus === "error"
+            },
+
+            Change {
+                component: waitingComponent
+                when: root.downloadStatus === "waiting"
+            }
+        ]
+    }
 }

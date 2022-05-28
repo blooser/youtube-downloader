@@ -7,7 +7,7 @@ import ".." as Components
 import youtubedownloader.component.changer
 
 
-Rectangle {
+Item {
     id: root
 
     property string pendingStatus: "waiting"
@@ -28,13 +28,6 @@ Rectangle {
 
     implicitWidth: changer.implicitWidth
     implicitHeight: Math.max(changer.implicitHeight, 86)
-
-    color: Theme.Colors.second
-
-    border {
-        width: Theme.Size.border
-        color: Theme.Colors.base
-    }
 
     Dynamic.Changer {
         id: changer

@@ -54,6 +54,9 @@ Item {
                         downloadManager.downloadModel.remove(index)
                     })
                 }
+
+                onResume: console.log("Resume")
+                onPause: console.log("Pause")
             }
         }
     }

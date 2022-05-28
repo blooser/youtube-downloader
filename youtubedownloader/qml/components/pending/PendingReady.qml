@@ -4,9 +4,10 @@ import QtQuick.Layouts 1.12
 import "../../items" as Items
 import "../link" as Link
 import "../format" as Format
+import "../buttons" as Buttons
 import ".." as Components
 
-Item {
+Rectangle {
     id: root
 
     property var pendingInfo
@@ -17,6 +18,13 @@ Item {
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
+
+    color: Theme.Colors.second
+
+    border {
+        width: Theme.Size.border
+        color: Theme.Colors.base
+    }
 
     RowLayout {
         id: mainLayout
@@ -47,13 +55,11 @@ Item {
             }
         }
 
-        Items.YDImageButton {
+        Buttons.DeleteButton {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
 
-            imageSource: Resources.icons.delete
-
-            onClicked: root.remove()
+            onRemove: root.remove()
         }
     }
 }
