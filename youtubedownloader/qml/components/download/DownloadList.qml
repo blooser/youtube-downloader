@@ -55,8 +55,9 @@ Item {
                     })
                 }
 
-                onResume: console.log("Resume")
-                onPause: console.log("Pause")
+                onResume: downloadManager.downloadModel.resume(index)
+                onPause: downloadManager.downloadModel.pause(index)
+                onOpen: Qt.openUrlExternally(options.output)
             }
         }
     }

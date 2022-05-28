@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.15
 
 import "../../items" as Items
 import "../dynamic" as Dynamic
+import "../buttons" as Buttons
 import ".." as Components
 
 import youtubedownloader.component.changer
@@ -16,6 +17,7 @@ Rectangle {
     property alias downloadOptions: downloadItemInfo.downloadOptions
 
     signal remove()
+    signal open()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -43,9 +45,16 @@ Rectangle {
             Layout.fillHeight: true
         }
 
-        DownloadButtons {
-            Layout.preferredWidth: implicitWidth
-           // status: root.downloadProgress.downloadStatus
+        Buttons.OpenButton {
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
+
+            onOpen: root.open()
+        }
+
+        Buttons.DeleteButton {
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
 
             onRemove: root.remove()
         }

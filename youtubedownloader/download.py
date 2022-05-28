@@ -41,6 +41,21 @@ from youtubedownloader.logger import (
     create_logger
 )
 
+from youtubedownloader.task import (
+    Task,
+
+    TaskFinished,
+    TaskError,
+    TaskPause,
+    TaskPaused,
+    TaskStop,
+    TaskStopped
+)
+
+from youtubedownloader.task import (
+    TaskResult
+)
+
 import os.path
 import pathlib
 import pickle
@@ -51,18 +66,6 @@ import urllib.request
 
 logger = create_logger("youtubedownloader.download")
 
-
-
-class EmptyFunction:
-    def __call__(self):
-        pass
-
-class DownloadingStop(Exception):
-    """The downloading process was stopped"""
-
-class DownloadingStopEvent:
-    def __call__(self):
-        raise DownloadingStop()
 
 
 class Data():
@@ -110,87 +113,9 @@ class Data():
         return cls(**info)
 
 
-class TaskResult(QObject):
-    def __init__(self, value):
-        super().__init__(None)
-
-        self.value = value
-
-    def is_valid(self):
-        return isinstance(self.value, Data)
-
-    def is_finished_only(self):
-        # TODO: Implement better task result system
-        return isinstance(self.value, bool) and self.value == True
-
-    def is_error(self):
-        return isinstance(self.value, Exception)
-
-    def to_dict(self):
-        if self.is_error():
-            return {
-                info: str(self.value),
-                status: "error"
-            }
-
-        return {
-            info: self.value,
-            status: "ready"
-        }
-
-
-    def __str__(self):
-        if self.is_error():
-            return "task failed"
-
-        if self.is_valid():
-            return "task successful"
-
-        return "unknown"
-
-
-class Task(QThread):
-    resultReady = Signal(QObject)
+class Pending(Task):
     progress = Signal(Data)
 
-    def __init__(self, url):
-        super().__init__(None)
-
-        self.url = url
-        self.result = None
-
-        self.events = []
-
-    def __eq__(self, other):
-       return self.id() == other.id()
-
-    def runningOnly(f):
-        def runningOnlyWrapper(self, *args, **kwargs):
-            if not self.isRunning():
-                return EmptyFunction()
-
-            return f(self, *args, **kwargs)
-
-        return runningOnlyWrapper
-
-    def id(self):
-        return QThread.currentThreadId()
-
-    def set_result(self, value):
-        self.result = TaskResult(value)
-        self.resultReady.emit(self.result)
-
-        logger.info(f"Result for {self.url} ready: {self.result}")
-
-    def run(self):
-        return NotImplemented
-
-    @runningOnly
-    def stop(self):
-        self.events.append(DownloadingStopEvent())
-
-
-class Pending(Task):
     def __init__(self, url):
         super().__init__(url)
 
@@ -199,10 +124,10 @@ class Pending(Task):
 
         try:
             with youtube_dl.YoutubeDL() as ydl:
-                self.set_result(Data.frominfo(ydl.extract_info(self.url, download=False)) + dict(url=self.url))
+                self.set_result(TaskFinished(Data.frominfo(ydl.extract_info(self.url, download=False)) + dict(url=self.url)))
 
         except Exception as err:
-            self.set_result(err)
+            self.set_result(TaskError(err))
 
 
 class Transaction(QObject):
@@ -216,11 +141,12 @@ class Transaction(QObject):
         self.item = item
 
         # NOTE: DirectConnection needed because of QThread has its own event loop
-        self.task.resultReady.connect(self.taskResultReady, Qt.DirectConnection)
         self.task.progress.connect(self.progress, Qt.DirectConnection)
+        self.task.finished.connect(self.transactionFinished, Qt.DirectConnection)
 
-        self.task.finished.connect(self.transactionFinished)
         self.model.itemRemoved.connect(self.stopIfItemRemoved)
+        self.model.itemPaused.connect(self.pauseIfItem)
+        self.model.itemResumed.connect(self.resumeIfItem)
 
     def __eq__(self, other):
         return self.item == other.item
@@ -230,17 +156,7 @@ class Transaction(QObject):
 
     @Slot(TaskResult)
     def taskResultReady(self, task_result):
-        if task_result.is_error():
-            # TODO: Implement error info logic
-            self.item.update(dict(info={}, status="error"))
-            return
-
-        if task_result.is_finished_only():
-            self.item.update(dict(status="ready"))
-            return
-
-        value = task_result.value
-        self.item.update(dict(info=value, status="ready"))
+        self.item.update(task_result.to_dict())
 
     @Slot(Data)
     def progress(self, progress):
@@ -251,7 +167,20 @@ class Transaction(QObject):
         if self.item == item and self.task.isRunning():
             self.stop()
 
+    @Slot(Item)
+    def pauseIfItem(self, item):
+        if self.item == item and self.task.isRunning():
+            self.pause()
+
+    @Slot(Item)
+    def resumeIfItem(self, item):
+        if self.item == item and not self.task.isRunning():
+            self.resume()
+
+    @Slot()
     def transactionFinished(self):
+        self.item.update(self.task.result.to_dict())
+
         self.finished.emit(self)
 
     def start(self):
@@ -264,9 +193,16 @@ class Transaction(QObject):
         logger.info(f"Transaction for {self.item} started")
 
     def stop(self):
-        self.task.stop()
+        if self.task.isRunning():
+            self.task.stop()
 
-        logger.info(f"Transaction for {self.item} stopped")
+    def pause(self):
+        if self.task.isRunning():
+            self.task.pause()
+
+    def resume(self):
+        if not self.task.isRunning():
+            self.task.start()
 
     def wait(self):
         self.task.wait()
@@ -289,6 +225,8 @@ class ProgressData(Data):
 
 
 class Downloading(Task):
+    progress = Signal(Data)
+
     def __init__(self, url, options):
         super().__init__(url)
 
@@ -311,13 +249,16 @@ class Downloading(Task):
             with youtube_dl.YoutubeDL(self.options.to_opts()) as ydl:
                 ydl.download([self.url])
 
-            self.set_result(True)
+            self.set_result(TaskFinished())
 
-        except DownloadingStop as err:
-            logger.info(err)
+        except TaskStop as err:
+            self.set_result(TaskStopped())
+
+        except TaskPause as err:
+            self.set_result(TaskPaused())
 
         except youtube_dl.utils.DownloadError as err:
-            self.set_result(err)
+            self.set_result(TaskError(err))
 
 
 class Transactions(QObject):
@@ -330,13 +271,18 @@ class Transactions(QObject):
 
     def start(self, task, model, item):
         transaction = Transaction(task, model, item)
-        transaction.finished.connect(self.remove)
+        transaction.finished.connect(self.handleTransactionFinished)
 
         transaction.start()
 
         self.transactions.append(transaction)
 
     @Slot(QObject)
+    def handleTransactionFinished(self, transaction):
+        if transaction.task.result.status == "finished":
+            self.remove(transaction)
+            return
+
     def remove(self, transaction):
         try:
             del self.transactions[self.transactions.index(transaction)]
@@ -373,7 +319,6 @@ class DownloadManager(QObject):
         item = self.pending_model.item(options=Options(**options))
 
         self.transactions.start(task, self.pending_model, item)
-
 
     @Slot()
     def download(self):

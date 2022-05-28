@@ -10,7 +10,12 @@ class ItemSerializer:
         ...
 
     def to_json(self, items, path):
-        items = [item.json() for item in items]
+        try:
+            items = [item.json() for item in items]
+        except Exception as err:
+            items = []
+
+            logger.warning("Failed to convert items to json, clearing...")
 
         with open(path, "w") as f:
             json.dump(items, f)

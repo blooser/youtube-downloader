@@ -24,6 +24,11 @@ from youtubedownloader.models import (
     Item
 )
 
+from youtubedownloader.task import (
+    TaskFinished,
+    TaskError
+)
+
 
 class PendingModelFixture(PendingModel):
     def __init__(self):
@@ -104,8 +109,7 @@ class TestPending:
 
         result = pending.result
 
-        assert result.is_error() == False
-        assert result.is_valid() == True
+        assert isinstance(result, TaskFinished)
         assert isinstance(result.value, Data)
 
     def test_pending_sets_error(self):
@@ -115,8 +119,7 @@ class TestPending:
 
         result = pending.result
 
-        assert result.is_error() == True
-        assert result.is_valid() == False
+        assert isinstance(result, TaskError)
         assert isinstance(result.value, Exception)
     
     def test_transaction_interacts_with_model(self):
@@ -130,7 +133,7 @@ class TestPending:
 
         transaction.start()
         transaction.wait()
-
+         
         assert model.size() == 1
 
         item = model.items[0]

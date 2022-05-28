@@ -22,6 +22,7 @@ Item {
     signal remove()
     signal resume()
     signal pause()
+    signal open()
 
     implicitWidth: changer.implicitWidth
     implicitHeight: changer.implicitHeight
@@ -43,6 +44,7 @@ Item {
         downloadOptions: root.downloadOptions
 
         onRemove: root.remove()
+        onOpen: root.open()
     }
 
     property Component errorComponent: DownloadItemError {

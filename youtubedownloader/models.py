@@ -110,6 +110,8 @@ class DataModel(QAbstractItemModel):
     ROLE_NAMES = RoleNames()
 
     itemRemoved = Signal(Item)
+    itemPaused = Signal(Item)
+    itemResumed = Signal(Item)
 
     def __init__(self):
         super().__init__(None)
@@ -170,6 +172,18 @@ class DataModel(QAbstractItemModel):
         self.endRemoveRows()
 
         self.itemRemoved.emit(item)
+
+    @Slot("QVariant")
+    def pause(self, index):
+        item = self.items[index]
+
+        self.itemPaused.emit(item)
+
+    @Slot("QVariant")
+    def resume(self, index):
+        item = self.items[index]
+
+        self.itemResumed.emit(item)
 
     def dataRules(self, item, role):
         return item

@@ -8,18 +8,15 @@ ListView {
     clip: true
     spacing: Theme.Margins.tiny
 
-    add: Transition {
+    remove: Transition {
         ParallelAnimation {
-            NumberAnimation { property: "opacity"; to: Theme.Visible.on; duration: Theme.Animation.quick }
-            NumberAnimation { property: "scale"; to: Theme.Visible.on; duration: Theme.Animation.quick }
+            NumberAnimation { property: "opacity"; from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
+            NumberAnimation { property: "scale"; from: Theme.Visible.on; to: Theme.Visible.off; duration: Theme.Animation.quick }
         }
     }
 
     removeDisplaced: Transition {
-        ParallelAnimation {
-            NumberAnimation { property: "opacity"; to: Theme.Visible.off; duration: Theme.Animation.quick }
-            NumberAnimation { property: "scale"; to: Theme.Visible.off; duration: Theme.Animation.quick }
-        }
+        PropertyAnimation { property: "y"; duration: Theme.Animation.quick}
     }
 }
 
