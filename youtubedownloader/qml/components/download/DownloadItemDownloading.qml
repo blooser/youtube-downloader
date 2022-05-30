@@ -46,10 +46,9 @@ Items.YDProgressBar {
             info: root.downloadInfo
         }
 
-        DownloadStatusDetails {
-            Layout.preferredWidth: 125
-
+        DownloadStatus {
             downloadProgress: root.downloadProgress
+            downloadStatus: root.downloadStatus
         }
 
         Components.Spacer {

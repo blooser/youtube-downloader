@@ -55,10 +55,17 @@ Rectangle {
 
         DownloadButtons {
             Layout.preferredWidth: implicitWidth
-           // status: root.downloadProgress.downloadStatus
+
+            buttonsPolicy: buttons.DELETE
 
             onRemove: root.remove()
         }
+    }
+
+    Items.YDText {
+        anchors.centerIn: root
+
+        text: info.error
     }
 }
 

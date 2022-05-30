@@ -8,9 +8,10 @@ Rectangle {
     id: root
 
     property var downloadProgress
+    property var downloadStatus
 
-    implicitWidth: mainLayout.implicitWidth + Theme.Margins.small // TODO: Use Pane
-    implicitHeight: mainLayout.implicitHeight + Theme.Margins.small
+    implicitWidth: mainLayout.implicitWidth + Theme.Margins.big // TODO: Use Pane
+    implicitHeight: mainLayout.implicitHeight + Theme.Margins.big
 
     color: Theme.Colors.third
     radius: Theme.Margins.tiny
@@ -52,7 +53,7 @@ Rectangle {
 
             font.pixelSize: Theme.FontSize.micro
 
-            text: qsTr("Downloading %1").arg(Paths.getFileType(downloadProgress.filename))
+            text: qsTr("%1 %2").arg(downloadStatus).arg(Paths.getFileType(downloadProgress.filename))
         }
 
         RowLayout {

@@ -82,6 +82,7 @@ ApplicationWindow {
             Layout.alignment: Qt.AlignHCenter
 
             icon.source: Resources.icons.download
+            visible: downloads.pendingItems
 
             text: qsTr("Download")
 
