@@ -3,15 +3,18 @@ import QtQuick.Layouts 1.15
 
 import "../../items" as Items
 import "../dynamic" as Dynamic
+import "../link" as Link
 import ".." as Components
 
 import youtubedownloader.component.changer
 
 
 Rectangle {
-    property alias downloadStatus: downloadItemInfo.downloadStatus
-    property alias downloadInfo: downloadItemInfo.downloadInfo
-    property alias downloadOptions: downloadItemInfo.downloadOptions
+    id: root
+
+    property var downloadStatus
+    property var downloadInfo
+    property var downloadOptions
 
     signal remove()
 
@@ -35,11 +38,19 @@ Rectangle {
             rightMargin: Theme.Margins.normal
         }
 
-        DownloadItemInfo {
-            id: downloadItemInfo
+        Link.LinkInfo {
+            id: link
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            info: root.downloadInfo
+        }
+
+        Components.TileText {
+            Layout.preferredWidth: 65
+
+            text: root.downloadOptions.format
         }
 
         DownloadButtons {

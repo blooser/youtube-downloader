@@ -9,8 +9,12 @@ import ".." as Components
 Item {
     id: root
 
+    property int items: pending.count
+
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight + pending.contentHeight
+
+    visible: pending.count
 
     ColumnLayout {
         id: mainLayout

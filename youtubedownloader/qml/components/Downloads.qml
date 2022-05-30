@@ -10,6 +10,9 @@ import "../items" as Items
 Flickable {
     id: root
 
+    property int pendingItems: pending.items
+    property int downloadItems: download.items
+
     implicitHeight: mainLayout.implicitHeight
     contentHeight: implicitHeight
 
@@ -25,11 +28,15 @@ Flickable {
         spacing: Theme.Margins.tiny
 
         Pending.PendingList {
+            id: pending
+
             Layout.fillWidth: true
             Layout.fillHeight: true
         }
 
         Download.DownloadList {
+            id: download
+
             Layout.fillWidth: true
             Layout.fillHeight: true
         }

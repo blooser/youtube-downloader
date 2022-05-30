@@ -8,10 +8,9 @@ import ".." as Components
 Items.YDProgressBar {
     id: root
 
-    property alias downloadStatus: downloadItemInfo.downloadStatus
-    property alias downloadInfo: downloadItemInfo.downloadInfo
-    property alias downloadOptions: downloadItemInfo.downloadOptions
-
+    property var downloadStatus
+    property var downloadInfo
+    property var downloadOptions
     property var downloadProgress
 
     signal remove()
@@ -19,8 +18,8 @@ Items.YDProgressBar {
     signal resume()
     signal pause()
 
-    implicitWidth: downloadItemInfo.implicitWidth
-    implicitHeight: downloadItemInfo.implicitHeight
+    implicitWidth: mainLayout.implicitWidth
+    implicitHeight: mainLayout.implicitHeight
 
     from: 0
     value: downloadProgress.downloaded_bytes
@@ -37,11 +36,34 @@ Items.YDProgressBar {
 
         z: root.z + 1
 
-        DownloadItemInfo {
+
+        Link.LinkInfo {
+            id: link
+
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            id: downloadItemInfo
+            info: root.downloadInfo
+        }
+
+        DownloadStatusDetails {
+            Layout.preferredWidth: 125
+
+            downloadProgress: root.downloadProgress
+        }
+
+        Components.Spacer {
+
+        }
+
+        Components.TileText {
+            Layout.preferredWidth: 65
+
+            text: root.downloadOptions.format
+        }
+
+        Components.Spacer {
+
         }
 
         DownloadButtons {

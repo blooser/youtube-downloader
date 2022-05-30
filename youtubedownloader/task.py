@@ -61,6 +61,10 @@ class TaskError(TaskResult):
     def __init__(self, value):
         super().__init__(value, "error")
 
+        self.value = {
+            "error": str(self.value)
+        }
+
     def __str__(self):
         return "Task error"
 

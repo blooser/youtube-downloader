@@ -18,6 +18,11 @@ Item {
     signal remove()
 
     property Component waitingComponent: PendingWaiting {}
+    property Component errorComponent: PendingError {
+        pendingInfo: root.pendingInfo
+
+        onRemove: root.remove()
+    }
     property Component readyComponent: PendingReady {
         pendingInfo: root.pendingInfo
         pendingOptions: root.pendingOptions
@@ -45,6 +50,11 @@ Item {
             Change {
                 component: readyComponent
                 when: root.pendingStatus === "ready"
+            },
+
+            Change {
+                component: errorComponent
+                when: root.pendingStatus === "error"
             }
         ]
     }

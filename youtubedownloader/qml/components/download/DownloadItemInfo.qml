@@ -11,6 +11,7 @@ Item {
     property var downloadStatus
     property var downloadInfo
     property var downloadOptions
+    property var downloadProgress
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -36,7 +37,7 @@ Item {
 
         DownloadStatus {
             id: downloadStatus
-            //downloadProgress: root.downloadProgress
+            downloadProgress: root.downloadProgress
         }
 
         Components.TileText {

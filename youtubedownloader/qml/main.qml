@@ -76,7 +76,6 @@ ApplicationWindow {
             id: downloadOptions
 
             Layout.fillWidth: true
-
         }
 
         Items.YDButton {
@@ -90,9 +89,19 @@ ApplicationWindow {
         }
 
         Components.Downloads {
+            id: downloads
+
             Layout.fillWidth: true
             Layout.fillHeight: true
         }
+    }
+
+    Items.YDText {
+        anchors.centerIn: parent
+
+        opacity: downloads.downloadItems || downloads.pendingItems ? Theme.Visible.off : Theme.Visible.disabled
+
+        text: "Drag youtube's thumbnail and drop in youtube-downloader's area"
     }
 
 
@@ -106,7 +115,11 @@ ApplicationWindow {
             }
         }
 
-        onDropped: predownloadDropProcess.addPreDownloads(drop.urls)
+        onDropped: {
+            drop.urls.forEach((url) => {
+                downloadManager.insert(url, downloadOptions.options)
+            })
+        }
     }
 
     QtObject {

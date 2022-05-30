@@ -8,8 +8,12 @@ import "../../items" as Items
 Item {
     id: root
 
+    property int items: downloadItems.count
+
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight + downloadItems.contentHeight
+
+    visible: downloadItems.count
 
     ColumnLayout {
         id: mainLayout

@@ -7,13 +7,7 @@ import "../../items" as Items
 Rectangle {
     id: root
 
-    property alias status: statusText.text
-    property alias estimatedTime: estimatedTime.text
-    property alias downloadedBytes: downloadedBytes.text
-    property alias totalBytes: totalBytes.text
-    property alias speed: speed.text
-
-    readonly property bool downloading: (status.includes("downloading"))
+    property var downloadProgress
 
     implicitWidth: mainLayout.implicitWidth + Theme.Margins.small // TODO: Use Pane
     implicitHeight: mainLayout.implicitHeight + Theme.Margins.small
@@ -25,35 +19,40 @@ Rectangle {
         id: mainLayout
 
         anchors.fill: parent
-        spacing: Theme.Margins.zero
+
+        spacing: Theme.Margins.tiny
 
         RowLayout {
             spacing: Theme.Margins.zero
 
             Layout.fillWidth: true
 
-            visible: root.downloading
-
             Items.YDText {
-                id: downloadedBytes
                 Layout.fillWidth: true
                 Layout.preferredWidth: Theme.Size.none
+
                 font.pixelSize: Theme.FontSize.micro
+
+                text: downloadProgress._eta_str
             }
 
             Items.YDText {
-                id: totalBytes
                 Layout.fillWidth: true
                 Layout.preferredWidth: Theme.Size.none
+
                 font.pixelSize: Theme.FontSize.micro
+
+                text: downloadProgress._percent_str
             }
         }
 
         Items.YDText {
-            id: statusText
-
             Layout.fillWidth: true
             Layout.maximumWidth: 750
+
+            font.pixelSize: Theme.FontSize.micro
+
+            text: qsTr("Downloading %1").arg(Paths.getFileType(downloadProgress.filename))
         }
 
         RowLayout {
@@ -61,20 +60,22 @@ Rectangle {
 
             Layout.fillWidth: true
 
-            visible: root.downloading
-
             Items.YDText {
-                id: estimatedTime
                 Layout.fillWidth: true
                 Layout.preferredWidth: Theme.Size.none
+
                 font.pixelSize: Theme.FontSize.micro
+
+                text: downloadProgress._speed_str
             }
 
             Items.YDText {
-                id: speed
                 Layout.fillWidth: true
                 Layout.preferredWidth: Theme.Size.none
+
                 font.pixelSize: Theme.FontSize.micro
+
+                text: downloadProgress._total_bytes_str
             }
         }
     }

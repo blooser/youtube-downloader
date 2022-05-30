@@ -3,16 +3,17 @@ import QtQuick.Layouts 1.15
 
 import "../../items" as Items
 import "../dynamic" as Dynamic
+import "../link" as Link
 import ".." as Components
 
 
 Rectangle {
-    property alias downloadStatus: downloadItemInfo.downloadStatus
-    property alias downloadInfo: downloadItemInfo.downloadInfo
-    property alias downloadOptions: downloadItemInfo.downloadOptions
+    property var downloadStatus
+    property var downloadInfo
+    property var downloadOptions
 
-    implicitWidth: downloadItemInfo.implicitWidth
-    implicitHeight: downloadItemInfo.implicitHeight
+    implicitWidth: mainLayout.implicitWidth
+    implicitHeight: mainLayout.implicitHeight
 
     opacity: Theme.Visible.disabled
     color: Theme.Colors.second
@@ -31,11 +32,29 @@ Rectangle {
             rightMargin: Theme.Margins.normal
         }
 
-        DownloadItemInfo {
-            id: downloadItemInfo
+        Link.LinkInfo {
+            id: link
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            info: downloadInfo
+        }
+
+        Components.TileText {
+            Layout.preferredWidth: 65
+
+            text: "Starting"
+        }
+
+        Components.Spacer {
+
+        }
+
+        Components.TileText {
+            Layout.preferredWidth: 65
+
+            text: root.downloadOptions.format
         }
     }
 }
