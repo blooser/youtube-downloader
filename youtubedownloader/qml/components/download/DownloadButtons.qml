@@ -12,6 +12,14 @@ Item {
    signal pause()
    signal remove()
 
+   property int buttonsPolicy: buttons.OPEN | buttons.PAUSE_RESUME | buttons.DELETE
+
+   readonly property var buttons: {
+       "OPEN": 1,
+       "PAUSE_RESUME": 2,
+       "DELETE": 4
+   }
+
    implicitWidth: mainLayout.implicitWidth
    implicitHeight: mainLayout.implicitHeight
 
@@ -26,6 +34,8 @@ Item {
             Layout.preferredHeight: Theme.Size.icon
             Layout.alignment: Qt.AlignRight
 
+            visible: root.buttonsPolicy & buttons.OPEN
+
             onOpen: root.open()
         }
 
@@ -33,6 +43,8 @@ Item {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
             Layout.alignment: Qt.AlignRight
+
+            visible: root.buttonsPolicy & buttons.PAUSE_RESUME
 
             onPause: root.pause()
             onResume: root.resume()
@@ -42,6 +54,8 @@ Item {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
             Layout.alignment: Qt.AlignRight
+
+            visible: root.buttonsPolicy & buttonsbuttons.DELETE
 
             onRemove: root.remove()
         }

@@ -70,6 +70,8 @@ Items.YDProgressBar {
             Layout.preferredWidth: implicitWidth
            // status: root.downloadProgress.downloadStatus
 
+            buttonsPolicy: buttons.PAUSE_RESUME | buttons.DELETE
+
             onOpen: root.open()
             onResume: root.resume()
             onRemove: root.remove()
