@@ -7,8 +7,18 @@ from youtubedownloader.models import (
 
 from youtubedownloader.serializer import (
     Serializer,
-    ItemSerializer
+    ItemSerializer,
+    ItemJson
 )
+
+class ItemGood:
+    def json(self):
+        return {}
+
+class ItemBad:
+    def json(self):
+        raise Exception("Bad item")
+
 
 class TestSerializer:
 
@@ -20,3 +30,9 @@ class TestSerializer:
         assert type(Serializer(str) == None)
         assert type(Serializer(bool) == None)
 
+
+    def test_item_json_filters_items_by_exception(self):
+        items = [ItemGood(), ItemBad(), ItemBad(), ItemGood()]
+        items = list(ItemJson(items))
+
+        assert len(items) == 2

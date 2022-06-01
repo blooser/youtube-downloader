@@ -66,7 +66,8 @@ class Item(QObject):
 
     def update(self, data):
         for key in data:
-            self.__dict__[key] = data[key]
+            if data[key]:
+                self.__dict__[key] = data[key]
 
         logger.info(f"{self} updated with {data}")
 

@@ -68,24 +68,12 @@ logger = create_logger("youtubedownloader.download")
 
 
 
-class Data():
-    KEYS = [
-        "id",
-        "url",
-        "title",
-        "categories",
-        "uploader",
-        "uploader_url",
-        "thumbnail",
-        "duration",
-        "upload_date",
-        "view_count",
-        "like_count"
-    ]
+class Mappable:
+    KEYS = []
 
     def __init__(self, **kwargs):
-        for name in kwargs:
-            self.__dict__[name] = kwargs[name]
+        for kwarg in kwargs:
+            self.__dict__[kwarg] = kwargs[kwarg]
 
     def keys(self):
         return self.KEYS
@@ -102,6 +90,25 @@ class Data():
 
         return self
 
+
+class Data(Mappable):
+    KEYS = [
+        "id",
+        "url",
+        "title",
+        "categories",
+        "uploader",
+        "uploader_url",
+        "thumbnail",
+        "duration",
+        "upload_date",
+        "view_count",
+        "like_count",
+    ]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     def __eq__(self, other):
         return self.id == other.id
 
@@ -111,6 +118,16 @@ class Data():
     @classmethod
     def frominfo(cls, info):
         return cls(**info)
+
+
+class Error(Mappable):
+    KEYS = [
+        "error",
+        "url"
+    ]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 
 class Pending(Task):
@@ -127,7 +144,7 @@ class Pending(Task):
                 self.set_result(TaskFinished(Data.frominfo(ydl.extract_info(self.url, download=False)) + dict(url=self.url)))
 
         except Exception as err:
-            self.set_result(TaskError(err))
+            self.set_result(TaskError(dict(url=self.url, error=str(err))))
 
 
 class Transaction(QObject):
@@ -258,7 +275,7 @@ class Downloading(Task):
             self.set_result(TaskPaused())
 
         except youtube_dl.utils.DownloadError as err:
-            self.set_result(TaskError(err))
+            self.set_result(TaskError(dict(url=self.url, error=str(err))))
 
 
 class Transactions(QObject):

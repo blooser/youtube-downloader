@@ -14,7 +14,7 @@ import ".." as Components
 Item {
     id: root
 
-    property string downloadStatus: "waiting"
+    property string downloadStatus
     property var downloadInfo
     property var downloadOptions
     property var downloadProgress
@@ -72,7 +72,7 @@ Item {
 
             Change {
                 component: downloadingComponent
-                when: root.downloadStatus === "downloading"
+                when: root.downloadStatus === "downloading" || root.downloadStatus === "paused"
             },
 
             Change {

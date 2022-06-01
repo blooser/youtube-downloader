@@ -16,12 +16,15 @@ Item {
 
     signal formatSelected(string format)
     signal remove()
+    signal forceRemove()
 
-    property Component waitingComponent: PendingWaiting {}
+    property Component waitingComponent: PendingWaiting {
+        onRemove: root.forceRemove()
+    }
     property Component errorComponent: PendingError {
         pendingInfo: root.pendingInfo
 
-        onRemove: root.remove()
+        onRemove: root.forceRemove()
     }
     property Component readyComponent: PendingReady {
         pendingInfo: root.pendingInfo

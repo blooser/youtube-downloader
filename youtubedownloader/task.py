@@ -53,6 +53,8 @@ class TaskFinished(TaskResult):
     def __init__(self, value={}):
         super().__init__(value, "ready")
 
+        print(f"VALUE={value}")
+
     def __str__(self):
         return "Task finished"
 
@@ -61,9 +63,9 @@ class TaskError(TaskResult):
     def __init__(self, value):
         super().__init__(value, "error")
 
-        self.value = {
-            "error": str(self.value)
-        }
+        from youtubedownloader.download import Error
+
+        self.value = Error(**value)
 
     def __str__(self):
         return "Task error"
@@ -124,6 +126,7 @@ class Task(QThread):
     @Slot()
     def clear_events(self):
         logger.info("Clearing")
+
         self.events.clear()
 
     @runningOnly

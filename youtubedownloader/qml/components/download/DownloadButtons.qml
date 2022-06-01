@@ -55,7 +55,7 @@ Item {
             Layout.preferredHeight: Theme.Size.icon
             Layout.alignment: Qt.AlignRight
 
-            visible: root.buttonsPolicy & buttonsbuttons.DELETE
+            visible: root.buttonsPolicy & buttons.DELETE
 
             onRemove: root.remove()
         }

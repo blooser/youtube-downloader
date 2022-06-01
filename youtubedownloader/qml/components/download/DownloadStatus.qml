@@ -62,7 +62,6 @@ Flipable {
     transitions: Transition {
         ParallelAnimation {
             NumberAnimation { properties: "angle"; duration: Theme.Animation.quick }
-         //   NumberAnimation { properties: "implicitWidth, implicitHeight"; duration: Theme.Animation.quick }
         }
     }
 }

@@ -10,6 +10,7 @@ from youtubedownloader.download import (
     Transaction,
     TaskResult,
     Data,
+    Error,
     ProgressData,
     Transaction,
     Options,
@@ -120,8 +121,10 @@ class TestPending:
         result = pending.result
 
         assert isinstance(result, TaskError)
-        assert isinstance(result.value, Exception)
-    
+        assert isinstance(result.value, Error)
+        assert isinstance(result.value.error, str)
+        assert result.value.error != ""
+
     def test_transaction_interacts_with_model(self):
         model = PendingModelFixture()
         pending = Pending("https://www.youtube.com/watch?v=OaXaGfNYEUk")

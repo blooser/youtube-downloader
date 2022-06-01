@@ -61,6 +61,7 @@ Item {
                     }
                 }
 
+                onForceRemove: downloadManager.pendingModel.remove(index)
                 onRemove: {
                     dialogManager.openDialog("ConfirmDeleteDialog", { "info": info }, () => {
                         downloadManager.pendingModel.remove(index)

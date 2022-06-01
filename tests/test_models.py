@@ -101,6 +101,24 @@ class TestItem:
 
         assert item.url == "newurl"
 
+    
+    def test_item_deals_with_empty_values(self):
+        roles = RoleNames("url", "title")
+        info = {"title": "test", "number": 25}
+
+        item = Item(roles, url="path", info=info)
+        
+        assert item.url == "path"
+        assert item.info == info
+
+        item.update({
+            "ur": "",
+            "info": {}
+        })
+
+        assert item.url == "path"
+        assert item.info == info
+
 
     def test_item_compares_with_id(self):
         roles = RoleNames("url", "title", "status")        

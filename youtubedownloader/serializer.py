@@ -5,17 +5,36 @@ from youtubedownloader.logger import create_logger
 logger = create_logger(__name__)
 
 
+
+class ItemJson:
+    def __init__(self, items):
+        self.items = items
+
+    def __iter__(self):
+        for item in self.items:
+            try:
+                yield item.json()
+            except Exception as err:
+                logger.warning(f"Failed to convert {item} to json : {err}")
+
+                continue
+
+class ItemInfoPicker:
+    def __new__(cls, content, status):
+        from youtubedownloader.download import Data, Error
+
+        if status == "error":
+            return Error(**content)
+
+        return Data(**content)
+
+
 class ItemSerializer:
     def __init__(self):
         ...
 
     def to_json(self, items, path):
-        try:
-            items = [item.json() for item in items]
-        except Exception as err:
-            items = []
-
-            logger.warning("Failed to convert items to json, clearing...")
+        items = list(ItemJson(items))
 
         with open(path, "w") as f:
             json.dump(items, f)
@@ -27,10 +46,10 @@ class ItemSerializer:
             items = json.load(f)
 
         for item in items:
-            from youtubedownloader.download import Data, Options
+            from youtubedownloader.download import Data, Error, Options
             from youtubedownloader.models import Item
 
-            item["info"] = Data(**item["info"])
+            item["info"] = ItemInfoPicker(item["info"], item["status"])
             item["options"] = Options(**item["options"])
 
         items = list(map(lambda x: Item(**x), items))
