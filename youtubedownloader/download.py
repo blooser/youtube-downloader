@@ -277,6 +277,10 @@ class Downloading(Task):
         except youtube_dl.utils.DownloadError as err:
             self.set_result(TaskError(dict(url=self.url, error=str(err))))
 
+    def stop(self):
+        # TODO: Implement better stop/pause when deleting item from model
+        self.pause()
+
 
 class Transactions(QObject):
     def __init__(self):
