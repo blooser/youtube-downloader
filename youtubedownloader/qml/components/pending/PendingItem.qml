@@ -15,6 +15,7 @@ Item {
     property var pendingOptions
 
     signal formatSelected(string format)
+    signal changeOutput(string path)
     signal remove()
     signal forceRemove()
 
@@ -32,6 +33,7 @@ Item {
 
         onFormatSelected: format => { root.formatSelected(format) }
         onRemove: root.remove()
+        onChangeOutput: path => { root.changeOutput(path) }
     }
 
     implicitWidth: changer.implicitWidth

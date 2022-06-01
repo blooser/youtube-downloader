@@ -118,7 +118,9 @@ ApplicationWindow {
 
         onDropped: {
             for (const droppedUrl of drop.urls) {
-                 downloadManager.insert(droppedUrl, downloadOptions.options)
+
+                    downloadManager.insert(droppedUrl, downloadOptions.options)
+
             }
         }
     }

@@ -61,6 +61,13 @@ Item {
                     }
                 }
 
+                onChangeOutput: path => {
+                    options = {
+                        "format": options.format,
+                        "output": path
+                    }
+                }
+
                 onForceRemove: downloadManager.pendingModel.remove(index)
                 onRemove: {
                     dialogManager.openDialog("ConfirmDeleteDialog", { "info": info }, () => {

@@ -14,6 +14,7 @@ Rectangle {
     property var pendingOptions
 
     signal formatSelected(string format)
+    signal changeOutput(string path)
     signal remove()
 
     implicitWidth: mainLayout.implicitWidth
@@ -61,5 +62,17 @@ Rectangle {
 
             onRemove: root.remove()
         }
+    }
+
+    PendingOutput {
+        anchors {
+            horizontalCenter: root.horizontalCenter
+            bottom: root.bottom
+        }
+
+        pendingOptions: root.pendingOptions
+        pendingInfo: root.pendingInfo
+
+        onChangeOutput: path => { root.changeOutput(path) }
     }
 }
