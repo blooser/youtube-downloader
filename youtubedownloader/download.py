@@ -361,6 +361,11 @@ class DownloadManager(QObject):
         self.pending_model.reset()
 
         for item in items:
+            if item.status == "error":
+                logger.warning(f"Skipping {item} due to error")
+
+                continue
+
             # TODO: Implement special Roles object for that kind of operation :)
             task = Downloading(item[self.pending_model.ROLE_NAMES.info].url,
                                item[self.pending_model.ROLE_NAMES.options])

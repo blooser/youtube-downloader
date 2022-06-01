@@ -53,8 +53,6 @@ class TaskFinished(TaskResult):
     def __init__(self, value={}):
         super().__init__(value, "ready")
 
-        print(f"VALUE={value}")
-
     def __str__(self):
         return "Task finished"
 

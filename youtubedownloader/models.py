@@ -83,6 +83,7 @@ class Item(QObject):
         }
 
 
+
 class RoleNotFoundError(Exception):
     """Role was not found"""
 
