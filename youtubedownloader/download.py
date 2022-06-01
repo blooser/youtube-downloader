@@ -104,6 +104,7 @@ class Data(Mappable):
         "upload_date",
         "view_count",
         "like_count",
+        "is_live"
     ]
 
     def __init__(self, **kwargs):
@@ -130,6 +131,13 @@ class Error(Mappable):
         super().__init__(**kwargs)
 
 
+class DownloadingLivestreamNotSupportedError(Exception):
+    """Downloading a livestream is not supported"""
+
+    def __init__(self):
+        super().__init__(self.__doc__)
+
+
 class Pending(Task):
     progress = Signal(Data)
 
@@ -141,7 +149,12 @@ class Pending(Task):
 
         try:
             with youtube_dl.YoutubeDL() as ydl:
-                self.set_result(TaskFinished(Data.frominfo(ydl.extract_info(self.url, download=False)) + dict(url=self.url)))
+                data = Data.frominfo(ydl.extract_info(self.url, download=False)) + dict(url=self.url)
+
+                if data.is_live:
+                    raise DownloadingLivestreamNotSupportedError
+
+                self.set_result(TaskFinished(data))
 
         except Exception as err:
             self.set_result(TaskError(dict(url=self.url, error=str(err))))

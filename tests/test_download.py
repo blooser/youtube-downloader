@@ -16,7 +16,9 @@ from youtubedownloader.download import (
     Options,
     
     FLAC,
-    MP3
+    MP3,
+
+    DownloadingLivestreamNotSupportedError,
 )
 
 from youtubedownloader.models import (
@@ -124,6 +126,16 @@ class TestPending:
         assert isinstance(result.value, Error)
         assert isinstance(result.value.error, str)
         assert result.value.error != ""
+
+    def test_pending_sets_error_if_trying_to_download_livestream(self):
+        pending = Pending("https://www.youtube.com/watch?v=5qap5aO4i9A")
+        pending.start()
+        pending.wait()
+
+        result = pending.result
+
+        assert isinstance(result, TaskError)
+        assert result.value.error == str(DownloadingLivestreamNotSupportedError())        
 
     def test_transaction_interacts_with_model(self):
         model = PendingModelFixture()
