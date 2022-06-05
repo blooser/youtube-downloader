@@ -70,8 +70,8 @@ Rectangle {
             bottom: root.bottom
         }
 
-        pendingOptions: root.pendingOptions
-        pendingInfo: root.pendingInfo
+        itemOptions: root.pendingOptions
+        itemInfo: root.pendingInfo
 
         onChangeOutput: path => { root.changeOutput(path) }
     }

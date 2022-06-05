@@ -15,7 +15,7 @@ Flipable {
     implicitHeight: front.implicitHeight
 
     onDownloadStatusChanged: {
-        flipped = (downloadStatus === "downloading")
+       // flipped = (downloadStatus === "downloading")
     }
 
     front: DownloadStatusDetails {

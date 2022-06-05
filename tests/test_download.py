@@ -13,6 +13,7 @@ from youtubedownloader.download import (
     Error,
     ProgressData,
     Transaction,
+    Transactions,
     Options,
     
     FLAC,
@@ -165,13 +166,13 @@ class TestPending:
     @pytest.mark.parametrize(
         "output, format, expected_opts", [
             ("home", "mp4", {
-                "output_path": "home/%(title)s.%(ext)s",
+                "outtmpl": "home/%(title)s.%(ext)s",
                 "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
                 "postprocessors": [],
                 "progress_hooks": []
             }),
             ("documents", "flac", {
-                "output_path": "documents/%(title)s.%(ext)s",
+                "outtmpl": "documents/%(title)s.%(ext)s",
                 "format" : "bestaudio/best",
                 "postprocessors":[{
                     "key": 'FFmpegExtractAudio',
@@ -235,3 +236,30 @@ class TestPending:
         assert transaction1 == transaction2
         assert transaction1 != transaction3
 
+
+    def test_transactions_can_search_for_particural_item(self):
+        roles = RoleNames("url")
+        pending = Pending("url")
+        model = PendingModelFixture()
+
+        item1 = Item(roles)
+        item2 = Item(roles)
+        item3 = Item(roles)
+
+        transaction1 = Transaction(pending, model, item1)
+        transaction2 = Transaction(pending, model, item2)
+        transaction3 = Transaction(pending, model, item1)
+
+        transactions = Transactions()
+        transactions.transactions = [transaction1, transaction2, transaction3]
+
+        assert transactions.itemExists(item1)
+        assert transactions.itemExists(item2)
+        assert not transactions.itemExists(item3)
+
+
+
+
+
+
+    

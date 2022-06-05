@@ -6,11 +6,11 @@ import "../../items" as Items
 Items.YDImageButton {
     id: root
 
-    signal open()
+    signal pause()
 
-    onClicked: root.open()
+    onClicked: root.pause()
 
-    imageSource: Resources.icons.eye
+    imageSource: Resources.icons.pause
 
     width: Theme.Size.icon
     height: Theme.Size.icon

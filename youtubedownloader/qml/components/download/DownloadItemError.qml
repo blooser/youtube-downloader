@@ -17,6 +17,7 @@ Rectangle {
     property var downloadOptions
 
     signal remove()
+    signal resume()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -59,6 +60,7 @@ Rectangle {
             buttonsPolicy: buttons.DELETE
 
             onRemove: root.remove()
+            onResume: root.resume()
         }
     }
 

@@ -252,3 +252,47 @@ def test_freeze_model_serialize_data():
     model2.clean()
 
     assert not os.path.isfile(model.DATA_PATH)
+
+
+def test_data_model_can_scan():
+    model = DownloadModelFixture()
+
+    item = Item (
+        roles = RoleNames("title", "url"),
+        destination = "home",
+        status = "finished",
+        info = None,
+        options = Options(output="documents", format="mp3"),
+        progress = {}
+    )
+
+    model.items = [item]
+    pattern = dict(destination="home", status="finished")
+
+    assert model.scan(pattern)
+
+    pattern = dict(destination="home", status="paused")
+
+    assert not model.scan(pattern)
+
+
+def  test_model_exists_functions_works_correctly():
+    model = DownloadModelFixture()
+    
+    roles = RoleNames("info")
+
+    pending = Pending("https://www.youtube.com/watch?v=tLsJQ5srVQA")
+    pending.start()
+    pending.wait()
+
+    item1 = Item(roles, info=pending.result.value)
+    item2 = Item(roles, info=pending.result.value)
+    item3 = Item(roles, info=pending.result.value)
+
+    model.items = [item1, item2]
+
+    assert model.exists(item1)
+    assert model.exists(item2)
+    assert not model.exists(item3)
+
+

@@ -8,6 +8,8 @@ import ".." as Components
 
 
 Rectangle {
+    id: root
+
     property var downloadStatus
     property var downloadInfo
     property var downloadOptions

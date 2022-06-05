@@ -14,9 +14,7 @@ Items.YDProgressBar {
     property var downloadProgress
 
     signal remove()
-    signal open()
     signal resume()
-    signal pause()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -46,9 +44,10 @@ Items.YDProgressBar {
             info: root.downloadInfo
         }
 
-        DownloadStatusDetails {
-            downloadProgress: root.downloadProgress
-            downloadStatus: root.downloadStatus
+        Components.TileText {
+            Layout.preferredWidth: 65
+
+            text: root.downloadStatus
         }
 
         Components.Spacer {
@@ -68,12 +67,10 @@ Items.YDProgressBar {
         DownloadButtons {
             Layout.preferredWidth: implicitWidth
 
-            buttonsPolicy: buttons.PAUSE | buttons.DELETE
+            buttonsPolicy: buttons.RESUME | buttons.DELETE
 
-            onOpen: root.open()
             onResume: root.resume()
             onRemove: root.remove()
-            onPause: root.pause()
         }
     }
 

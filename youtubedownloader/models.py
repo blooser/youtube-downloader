@@ -172,7 +172,7 @@ class DataModel(QAbstractItemModel):
         del self.items[index]
         self.endRemoveRows()
 
-        self.itemRemoved.emit(item)
+        self.itemRemblooser@protonmail.comoved.emit(item)
 
     @Slot("QVariant")
     def pause(self, index):
@@ -197,6 +197,24 @@ class DataModel(QAbstractItemModel):
             return self.dataRules(self.items[index.row()][role], role)
         except Exception as err:
             return None
+
+    def exists(self, item):
+        return item in self.items
+
+    @Slot("QVariant")
+    def scan(self, pattern):
+        def match(item, pattern):
+            for key in pattern:
+                if item.__getattribute__(key) != pattern[key]:
+                    return False
+
+            return True
+
+        for item in self.items:
+            if match(item, pattern):
+                return True
+
+        return False
 
     def setDataRules(self, item, value, role):
         return item
@@ -312,6 +330,9 @@ class DownloadModel(FreezeDataModel):
             259: lambda x: x.to_dict(),
             260: lambda x: dict(x)
         }[role](item)
+
+
+
 
 
 class HistoryModel(QAbstractItemModel):

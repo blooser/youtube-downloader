@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.12
 import "../../items" as Items
 
 Items.YDImageButton {
+    id: root
+
     signal pause()
     signal resume()
 

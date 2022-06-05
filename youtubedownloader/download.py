@@ -214,7 +214,8 @@ class Transaction(QObject):
         self.finished.emit(self)
 
     def start(self):
-        self.model.insert(self.item)
+        if not self.model.exists(self.item):
+            self.model.insert(self.item)
 
         self.task.start()
 
@@ -311,6 +312,13 @@ class Transactions(QObject):
 
         self.transactions.append(transaction)
 
+    def itemExists(self, item):
+        class transaction_comparer:
+            def __init__(self, item):
+                self.item = item
+
+        return transaction_comparer(item) in self.transactions
+
     @Slot(QObject)
     def handleTransactionFinished(self, transaction):
         if transaction.task.result.status == "finished":
@@ -346,6 +354,8 @@ class DownloadManager(QObject):
 
         self.transactions = Transactions()
 
+        self.download_model.itemResumed.connect(self.listenForResumeDownload)
+
     @Slot(str, "QVariantMap")
     def insert(self, url, options):
         task = Pending(url)
@@ -372,6 +382,16 @@ class DownloadManager(QObject):
 
             self.transactions.start(task, self.download_model, item)
 
+    @Slot(Item)
+    def listenForResumeDownload(self, item):
+        if not self.transactions.itemExists(item):
+            task = Downloading(item[self.pending_model.ROLE_NAMES.info].url,
+                               item[self.pending_model.ROLE_NAMES.options])
+
+            self.transactions.start(task, self.download_model, item)
+
+            logger.info(f"Item {item} was resumed")
+
     @Property(QObject, constant=True)
     def pendingModel(self):
         return self.pending_model
@@ -391,7 +411,7 @@ class Options(QObject):
 
     def to_opts(self):
         return {
-            "output_path": f"{self.output}/%(title)s.%(ext)s",
+            "outtmpl": f"{self.output}/%(title)s.%(ext)s",
             "progress_hooks": self.progress_hooks,
             **self.format.to_opts()
         }

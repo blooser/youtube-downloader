@@ -38,6 +38,16 @@ Item {
         onResume: root.resume()
     }
 
+    property Component pausedComponent: DownloadItemPaused {
+        downloadStatus: root.downloadStatus
+        downloadInfo: root.downloadInfo
+        downloadOptions: root.downloadOptions
+        downloadProgress: root.downloadProgress
+
+        onRemove: root.remove()
+        onResume: root.resume()
+    }
+
     property Component finishedComponent: DownloadItemFinished {
         downloadStatus: root.downloadStatus
         downloadInfo: root.downloadInfo
@@ -61,7 +71,6 @@ Item {
         downloadOptions: root.downloadOptions
     }
 
-
     Dynamic.Changer {
         id: changer
 
@@ -72,7 +81,12 @@ Item {
 
             Change {
                 component: downloadingComponent
-                when: root.downloadStatus === "downloading" || root.downloadStatus === "paused"
+                when: root.downloadStatus === "downloading"
+            },
+
+            Change {
+                component: pausedComponent
+                when: root.downloadStatus === "paused"
             },
 
             Change {

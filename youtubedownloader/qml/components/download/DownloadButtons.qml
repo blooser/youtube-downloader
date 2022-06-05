@@ -12,12 +12,13 @@ Item {
    signal pause()
    signal remove()
 
-   property int buttonsPolicy: buttons.OPEN | buttons.PAUSE_RESUME | buttons.DELETE
+   property int buttonsPolicy: buttons.OPEN | buttons.PAUSE | buttons.RESUME | buttons.DELETE
 
    readonly property var buttons: {
        "OPEN": 1,
-       "PAUSE_RESUME": 2,
-       "DELETE": 4
+       "PAUSE": 2,
+       "RESUME": 4,
+       "DELETE": 8
    }
 
    implicitWidth: mainLayout.implicitWidth
@@ -39,14 +40,23 @@ Item {
             onOpen: root.open()
         }
 
-        Buttons.PauseResumeButton {
+        Buttons.PauseButton {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
             Layout.alignment: Qt.AlignRight
 
-            visible: root.buttonsPolicy & buttons.PAUSE_RESUME
+            visible: root.buttonsPolicy & buttons.PAUSE
 
             onPause: root.pause()
+        }
+
+        Buttons.ResumeButton {
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
+            Layout.alignment: Qt.AlignRight
+
+            visible: root.buttonsPolicy & buttons.RESUME
+
             onResume: root.resume()
         }
 
