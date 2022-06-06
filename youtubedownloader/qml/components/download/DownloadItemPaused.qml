@@ -82,5 +82,7 @@ Items.YDProgressBar {
 
         itemOptions: root.downloadOptions
         itemInfo: root.downloadInfo
+
+        z: root.z + 1
     }
 }

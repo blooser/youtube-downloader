@@ -78,5 +78,17 @@ Rectangle {
             onRemove: root.remove()
         }
     }
+
+    Components.Output {
+        anchors {
+            horizontalCenter: root.horizontalCenter
+            bottom: root.bottom
+        }
+
+        itemOptions: root.downloadOptions
+        itemInfo: root.downloadInfo
+
+        z: root.z + 1
+    }
 }
 
