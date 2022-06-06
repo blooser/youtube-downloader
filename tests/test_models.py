@@ -276,7 +276,7 @@ def test_data_model_can_scan():
     assert not model.scan(pattern)
 
 
-def  test_model_exists_functions_works_correctly():
+def test_model_exists_functions_works_correctly():
     model = DownloadModelFixture()
     
     roles = RoleNames("info")

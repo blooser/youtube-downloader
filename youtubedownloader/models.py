@@ -73,16 +73,6 @@ class Item(QObject):
 
         self.updated.emit(self.item_id)
 
-    def json(self):
-        return {
-            "roles": self.roles,
-            "destination": self.destination,
-            "status": self.status,
-            "info": dict(self.info),
-            "options": self.options.to_dict(),
-        }
-
-
 
 class RoleNotFoundError(Exception):
     """Role was not found"""
