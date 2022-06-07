@@ -78,15 +78,13 @@ ApplicationWindow {
             Layout.fillWidth: true
         }
 
-        Items.YDButton {
-            Layout.alignment: Qt.AlignHCenter
+        Components.DownloadButton {
+            Layout.fillWidth: true
+          //  Layout.alignment: Qt.AlignHCenter
 
-            icon.source: Resources.icons.download
-            visible: downloads.pendingItems
+            ready: downloads.pendingItems
 
-            text: qsTr("Download")
-
-            onClicked: downloadManager.download() // NOTE: Let's go!
+            onDownload: downloadManager.download() // Let's go!
         }
 
         Components.Downloads {

@@ -27,7 +27,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
 
             opacity: downloadItems.count
-            text: qsTr("Downloaded")
+            text: qsTr("Download")
             counter: downloadItems.count
 
             Behavior on opacity {

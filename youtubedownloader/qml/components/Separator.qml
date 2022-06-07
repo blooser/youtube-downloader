@@ -7,6 +7,6 @@ Rectangle {
     Layout.fillWidth: true
     Layout.preferredHeight: Theme.Size.borderBold
 
-    color: Theme.Colors.third
+    color: Theme.Colors.highlight
     radius: Theme.Margins.tiny
 }
