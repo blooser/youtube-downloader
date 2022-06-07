@@ -140,6 +140,7 @@ class DownloadingLivestreamNotSupportedError(Exception):
 
 class Pending(Task):
     progress = Signal(Data)
+    convert = Signal()
 
     def __init__(self, url):
         super().__init__(url)
@@ -152,7 +153,7 @@ class Pending(Task):
                 data = Data.frominfo(ydl.extract_info(self.url, download=False)) + dict(url=self.url)
 
                 if data.is_live:
-                    raise DownloadingLivestreamNotSupportedError
+                    raise DownloadingLivestreamNotSupportedError()
 
                 self.set_result(TaskFinished(data))
 
@@ -172,6 +173,7 @@ class Transaction(QObject):
 
         # NOTE: DirectConnection needed because of QThread has its own event loop
         self.task.progress.connect(self.progress, Qt.DirectConnection)
+        self.task.convert.connect(self.convert, Qt.DirectConnection)
         self.task.finished.connect(self.transactionFinished, Qt.DirectConnection)
 
         self.model.itemRemoved.connect(self.stopIfItemRemoved)
@@ -191,6 +193,10 @@ class Transaction(QObject):
     @Slot(Data)
     def progress(self, progress):
         self.item.update(dict(progress=progress, status="downloading"))
+
+    @Slot()
+    def convert(self):
+        self.item.update(dict(status="converting"))
 
     @Slot(Item)
     def stopIfItemRemoved(self, item):
@@ -247,6 +253,7 @@ class ProgressData(Data):
         "speed",
         "eta",
         "elapsed",
+        "status",
 
         "_eta_str",
         "_percent_str",
@@ -257,6 +264,7 @@ class ProgressData(Data):
 
 class Downloading(Task):
     progress = Signal(Data)
+    convert = Signal()
 
     def __init__(self, url, options):
         super().__init__(url)
@@ -272,6 +280,9 @@ class Downloading(Task):
         self.data = ProgressData(**data)
 
         self.progress.emit(self.data)
+
+        if self.data.status == "finished":
+            self.convert.emit()
 
     def run(self):
         logger.info(f"Downloading started for {self.url} with options={self.options}")

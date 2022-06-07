@@ -11,7 +11,8 @@ ProgressBar {
 
         implicitWidth: 200
         implicitHeight: 4
-        color: root.error ? Theme.Colors.error : Theme.Colors.second
+        color: root.indeterminate ? Theme.Colors.processing :
+                       root.error ? Theme.Colors.error : Theme.Colors.second
         radius: Theme.Margins.tiny
     }
 

@@ -38,6 +38,13 @@ Item {
         onResume: root.resume()
     }
 
+    property Component convertingComponent: DownloadItemConverting {
+        downloadStatus: root.downloadStatus
+        downloadInfo: root.downloadInfo
+        downloadOptions: root.downloadOptions
+        downloadProgress: root.downloadProgress
+    }
+
     property Component pausedComponent: DownloadItemPaused {
         downloadStatus: root.downloadStatus
         downloadInfo: root.downloadInfo
@@ -82,6 +89,11 @@ Item {
             Change {
                 component: downloadingComponent
                 when: root.downloadStatus === "downloading"
+            },
+
+            Change {
+                component: convertingComponent
+                when: root.downloadStatus === "converting"
             },
 
             Change {

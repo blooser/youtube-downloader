@@ -29,7 +29,8 @@ class Theme(QObject):
                 "success": "#008000",
                 "error": "#cc0000",
                 "shadowBlack": "#99000000",
-                "linkReady": "#b3b3ff"
+                "linkReady": "#b3b3ff",
+                "processing": "#8080ff"
             },
 
             "Margins": {

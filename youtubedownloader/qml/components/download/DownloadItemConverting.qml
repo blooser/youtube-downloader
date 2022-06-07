@@ -1,34 +1,27 @@
-import QtQuick 2.15
-import QtQuick.Layouts 1.15
+import QtQuick 2.14
+import QtQuick.Layouts 1.12
 
 import "../../items" as Items
-import "../dynamic" as Dynamic
-import "../buttons" as Buttons
-import "../link" as Link
+import "../link" as  Link
 import ".." as Components
 
-import youtubedownloader.component.changer
-
-
-Rectangle {
+Items.YDProgressBar {
     id: root
 
     property var downloadStatus
     property var downloadInfo
     property var downloadOptions
+    property var downloadProgress
 
     signal remove()
     signal open()
+    signal resume()
+    signal pause()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    color: Theme.Colors.success
-
-    border {
-        width: Theme.Size.border
-        color: Theme.Colors.base
-    }
+    indeterminate: true
 
     RowLayout {
         id: mainLayout
@@ -38,6 +31,8 @@ Rectangle {
             leftMargin: Theme.Margins.normal
             rightMargin: Theme.Margins.normal
         }
+
+        z: root.z + 1
 
         Link.LinkInfo {
             id: link
@@ -49,9 +44,9 @@ Rectangle {
         }
 
         Components.TileText {
-            Layout.preferredWidth: 65
+            Layout.preferredWidth: 85
 
-            text: "Finished"
+            text: root.downloadStatus
         }
 
         Components.Spacer {
@@ -64,23 +59,19 @@ Rectangle {
             text: root.downloadOptions.format
         }
 
-
         Components.Spacer {
 
         }
 
-        Buttons.OpenButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
+        DownloadButtons {
+            Layout.preferredWidth: implicitWidth
+
+            buttonsPolicy: buttons.NO_BUTTONS
 
             onOpen: root.open()
-        }
-
-        Buttons.DeleteButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
-
+            onResume: root.resume()
             onRemove: root.remove()
+            onPause: root.pause()
         }
     }
 
@@ -96,4 +87,3 @@ Rectangle {
         z: root.z + 1
     }
 }
-

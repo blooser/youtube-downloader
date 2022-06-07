@@ -18,7 +18,9 @@ Item {
        "OPEN": 1,
        "PAUSE": 2,
        "RESUME": 4,
-       "DELETE": 8
+       "DELETE": 8,
+
+       "NO_BUTTONS": 0
    }
 
    implicitWidth: mainLayout.implicitWidth
