@@ -42,7 +42,7 @@ def file_name(path) -> str:
 def find_file(path: str) -> str:
     os_path = os.path.expanduser(path)
     expected_file = glob.glob(os_path)
-    return expected_file[0] if expected_file else ""
+    return expected_file[0] if expected_file else None
 
 def collect_files(core_path: str) -> dict:
     files = {}

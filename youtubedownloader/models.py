@@ -43,7 +43,7 @@ class Item(QObject):
         super().__init__(None)
 
         self.item_id = uuid.uuid4()
-        logger.info(f"New item with id={self.item_id} created")
+        logger.debug(f"New item with id={self.item_id} created")
 
         self.roles = roles
 
@@ -389,7 +389,6 @@ class HistoryModel(DataModel):
         )
 
 
-
 class SupportedSitesModel(DataModel):
     SUPPORTED_SITES_URL = "https://ytdl-org.github.io/youtube-dl/supportedsites.html"
 
@@ -415,63 +414,16 @@ class SupportedSitesModel(DataModel):
         self.items = list(map(lambda tag: Item(roles=self.ROLE_NAMES, name=str(tag.b.string)), collect(self.SUPPORTED_SITES_URL, "li")))
 
 
-class WebTabsModel(QAbstractListModel):
-    COLUMNS: str = ("url", "title")
-    FIRST_COLUMN: int = 0
-    LAST_COLUMN: int = len(COLUMNS)
+class WebTabsModel(DataModel):
+    ROLE_NAMES = RoleNames("url", "title")
 
     def __init__(self):
-        super(WebTabsModel, self).__init__(None)
-        self.tabs = []
+        super().__init__()
 
-    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
-        return len(self.tabs)
-
-    def columnCount(self, index: QModelIndex=QModelIndex()) -> int:
-        return WebTabsModel.LAST_COLUMN
-
-    def parent(index: QModelIndex=QModelIndex()) -> QModelIndex:
-        return QModelIndex()
-
-    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
-        return {
-            256: b"url",
-            257: b"title"
-        }
-
-    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
-        return self.createIndex(row, column, parent)
-
-    def data(self, index: QModelIndex, role: int):
-        if not index.isValid():
-            return
-
-        tab = self.tabs[index.row()]
-
-        if role == 256:
-            return tab.url
-
-        elif role == 257:
-            return tab.title
-
-    def set_tabs(self, new_tabs: list) -> None:
-        if (not self.rowCount()):
-            self.beginResetModel()
-            self.tabs = new_tabs
-            self.endResetModel()
-
-        else:
-            self.beginRemoveRows(QModelIndex(), 0, len(self.tabs) - 1)
-            self.tabs.clear()
-            self.endRemoveRows()
-
-            self.beginInsertRows(QModelIndex(), 0, len(new_tabs) - 1)
-            self.tabs = new_tabs
-            self.endInsertRows()
-
-
-
-
+    def reset(self, tabs):
+        self.beginResetModel()
+        self.items = list(map(lambda tab: Item(self.ROLE_NAMES, url=tab.url, title=tab.title), tabs))
+        self.endResetModel()
 
 
 # NOTE: Proxy

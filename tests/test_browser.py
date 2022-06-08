@@ -1,7 +1,9 @@
 import pytest
 
 from youtubedownloader.browser import (
-    collect
+    collect,
+
+    Browser,
 )
 
 
@@ -15,3 +17,5 @@ def test_collect_collects_empty_if_invalid_input_data():
     items = collect("test", "body")
 
     assert len(items) == 0
+
+
