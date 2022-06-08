@@ -7,6 +7,10 @@ from PySide6.QtTest import (
     QSignalSpy
 )
 
+from PySide6.QtCore import (
+    QModelIndex
+)
+
 from youtubedownloader.download import (
     Pending,
     TaskResult,
@@ -21,12 +25,22 @@ from youtubedownloader.models import (
     DownloadModel,
     Item,
     RoleNames,
+
+    HistoryModel,
     
     RoleNotFoundError,
 )
 
 from youtubedownloader.settings import (
     Paths
+)
+
+from youtubedownloader.database import (
+    Database
+)
+
+from youtubedownloader.models import (
+    History
 )
 
 
@@ -296,3 +310,51 @@ def test_model_exists_functions_works_correctly():
     assert not model.exists(item3)
 
 
+def test_history_models_inserts_items():
+    db = Database(":memory:")
+    history_model = HistoryModel(db.session)
+
+    roles = RoleNames("info")
+
+    pending = Pending("https://www.youtube.com/watch?v=tLsJQ5srVQA")
+    pending.start()
+    pending.wait()
+
+    item1 = Item(roles, info=pending.result.value)
+    item2 = Item(roles, info=pending.result.value)
+    item3 = Item(roles, info=pending.result.value)
+
+
+    history_model.insert(item1)
+    history_model.insert(item1)
+
+    history_model.insert(item2)
+    history_model.insert(item2)
+
+    history_model.insert(item3)
+    history_model.insert(item3)
+
+    assert history_model.rowCount() == 1 
+    assert type(history_model.items[0]) == History
+    #assert history_model.data(history_model.index(0, 0), 256) == pending.url
+
+
+def test_history_models_is_able_to_remove_item():
+    db = Database(":memory:")
+    history_model = HistoryModel(db.session)
+
+    roles = RoleNames("info")
+
+    pending = Pending("https://www.youtube.com/watch?v=tLsJQ5srVQA")
+    pending.start()
+    pending.wait()
+
+    item1 = Item(roles, info=pending.result.value)
+
+    history_model.insert(item1)
+
+    assert history_model.rowCount() == 1 
+    
+    history_model.remove(pending.url)
+   
+    assert history_model.rowCount() == 0

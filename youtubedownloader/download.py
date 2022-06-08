@@ -17,7 +17,6 @@
     Slot,
     Signal,
     Property
-
 )
 
 from PySide6.QtQml import (
@@ -34,11 +33,20 @@ from PySide6.QtNetwork import (
 from youtubedownloader.models import (
     PendingModel,
     DownloadModel,
+    HistoryModel,
     Item
+)
+
+from youtubedownloader.database import (
+    Database
 )
 
 from youtubedownloader.logger import (
     create_logger
+)
+
+from youtubedownloader.settings import (
+    Paths
 )
 
 from youtubedownloader.task import (
@@ -49,10 +57,7 @@ from youtubedownloader.task import (
     TaskPause,
     TaskPaused,
     TaskStop,
-    TaskStopped
-)
-
-from youtubedownloader.task import (
+    TaskStopped,
     TaskResult
 )
 
@@ -357,6 +362,8 @@ class Transactions(QObject):
 
 
 class DownloadManager(QObject):
+    itemAboutToBeDownload = Signal(Item)
+
     def __init__(self):
         super().__init__(None)
 
@@ -387,11 +394,15 @@ class DownloadManager(QObject):
 
                 continue
 
+            self.itemAboutToBeDownload.emit(item)
+
             # TODO: Implement special Roles object for that kind of operation :)
             task = Downloading(item[self.pending_model.ROLE_NAMES.info].url,
                                item[self.pending_model.ROLE_NAMES.options])
 
             self.transactions.start(task, self.download_model, item)
+
+            # NOTE: Single insert to have more control
 
     @Slot(Item)
     def listenForResumeDownload(self, item):

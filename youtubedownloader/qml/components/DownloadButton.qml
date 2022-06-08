@@ -22,6 +22,7 @@ Item {
 
         }
 
+        // TODO: Make the separators connect if button is not visible
         Items.YDButton {
             text: qsTr("Download")
             icon.source: Resources.icons.download

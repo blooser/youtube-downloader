@@ -6,11 +6,7 @@ import "../link" as Link
 Item {
     id: root
 
-    property alias link: linkInfo.link
-    property alias titleText: linkInfo.titleText
-    property alias uploaderText: linkInfo.uploaderText
-    property alias uploaderLink: linkInfo.uploaderLink
-    property alias thumbnailSource: linkInfo.thumbnailSource
+    property alias downloadInfo: linkInfo.info
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -28,8 +24,7 @@ Item {
         }
 
         HistoryItemButtons {
-            onRemove: historyModel.remove(link)
-            onAdd: downloadManager.preDownloadRequest(link)
+            onRemove: historyModel.remove(downloadInfo.url)
         }
     }
 }

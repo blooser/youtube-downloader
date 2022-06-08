@@ -15,3 +15,5 @@ class History(Base):
     date = Column(DateTime(), server_default=func.now())
 
 
+
+

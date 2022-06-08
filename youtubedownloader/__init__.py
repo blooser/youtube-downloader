@@ -29,16 +29,21 @@ def main():
     app.setWindowIcon(QIcon(Resources.YD_LOGO))
 
     database = Database(Paths.database)
+
     download_manager = DownloadManager()
     settings = Settings()
     dialog_manager = DialogManager()
     resources = Resources()
     qpaths = QPaths()
     browsers = Browsers()
+
     supported_sites_model = SupportedSitesModel()
     history_model = HistoryModel(database.session)
+
     theme = Theme()
     #file_downloader = FileDownloader()
+
+    download_manager.itemAboutToBeDownload.connect(history_model.insert)
 
     theme.changeBaseColor(settings._themeColor) # NOTE: Before engine starts
 

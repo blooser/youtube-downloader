@@ -18,6 +18,8 @@ Item {
         anchors.fill: parent
         spacing: Theme.Margins.tiny
 
+// TODO: Allow to insert
+/*
         Items.YDImageButton {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
@@ -25,6 +27,7 @@ Item {
             imageSource: Resources.icons.plus
             onClicked: root.add()
         }
+*/
 
         Items.YDImageButton {
             Layout.preferredWidth: Theme.Size.icon

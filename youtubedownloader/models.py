@@ -122,7 +122,7 @@ class DataModel(QAbstractItemModel):
         return QModelIndex()
 
     def rowCount(self, index=QModelIndex()):
-        return self.size()
+        return len(self.items)
 
     def columnCount(self, index=QModelIndex()):
         return len(self.ROLE_NAMES)
@@ -162,7 +162,7 @@ class DataModel(QAbstractItemModel):
         del self.items[index]
         self.endRemoveRows()
 
-        self.itemRemblooser@protonmail.comoved.emit(item)
+        self.itemRemoved.emit(item)
 
     @Slot("QVariant")
     def pause(self, index):
@@ -322,101 +322,73 @@ class DownloadModel(FreezeDataModel):
         }[role](item)
 
 
+class HistoryModel(DataModel):
+    ROLE_NAMES = RoleNames("url", "title", "uploader", "uploader_url", "thumbnail", "date")
 
+    rowsChanged = Signal()
 
-
-class HistoryModel(QAbstractItemModel):
-    COLUMNS: tuple = ("url", "title", "uploader", "thumbnail", "date")
-    FIRST_COLUMN: int = 0
-    LAST_COLUMN: int = len(COLUMNS)
-
-    sizeChanged = Signal(int, arguments=["size"])
-
-    def __init__(self, session: Session):
-        super(HistoryModel, self).__init__(None)
+    def __init__(self, session):
+        super().__init__()
 
         self.session = session
-        self.items = []
 
         self.populate()
 
-    @Property(int, notify=sizeChanged)
-    def size(self) -> int:
-        return len(self.items)
+        self.rowsInserted.connect(self.rowsChanged)
+        self.rowsRemoved.connect(self.rowsChanged)
 
-    @Slot(str, str, str, str, str)
-    def add(self, url: str, title: str, uploader: str, uploader_url: str, thumbnail: str) -> None:
-        if self.session.query(History).filter_by(url=url).one_or_none() == None:
-            self.session.add(History(url=url, title=title, uploader=uploader, uploader_url=uploader_url, thumbnail=thumbnail))
-            self.session.commit()
-            self.populate()
-
-    @Slot(str)
-    def remove(self, url: str) -> None:
-        item = self.session.query(History).filter_by(url=url).one()
-        self.session.delete(item) # NOTE: Delete from database
-        self.session.commit()
-
-        index = self.items.index(item)
-        self.beginRemoveRows(QModelIndex(), index, index)
-        self.items.remove(item) # Note: Delete from model's data
-        self.endRemoveRows()
-
-        self.sizeChanged.emit(self.rowCount())
-
-    def populate(self) -> None:
-        self.beginResetModel()
-
-        self.items = []
-        for item in self.session.query(History).order_by(History.date.desc()).all():
-            self.items.append(item)
-
-        self.endResetModel()
-
-        self.sizeChanged.emit(self.rowCount())
-
-    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
-        return self.createIndex(row, column, parent)
-
-    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
-        return {
-            256: b"url",
-            257: b"title",
-            258: b"uploader",
-            259: b"uploaderUrl",
-            260: b"thumbnail",
-            261: b"date"
-        }
-
-    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
-        return len(self.items)
-
-    def columnCount(self, index: QModelIndex=QModelIndex()) -> int:
-        return SupportedSitesModel.LAST_COLUMN
-
-    def data(self, index: QModelIndex, role: int):
-        if not index.isValid():
+    def insert(self, item):
+        if self.session.query(History).filter_by(url=item.info.url).one_or_none() != None:
             return
 
-        item = self.items[index.row()]
+        history_item = self.item_to_history(item)
 
-        if role == 256:
-            return item.url
+        self.session.add(history_item)
+        self.session.commit()
 
-        elif role == 257:
-            return item.title
+        self.beginInsertRows(QModelIndex(), self.rowCount(), self.rowCount())
+        self.items.append(history_item)
+        self.endInsertRows()
 
-        elif role == 258:
-            return item.uploader
+    def populate(self):
+        self.items = self.session.query(History).all()
 
-        elif role == 259:
-            return item.uploader_url
+        logger.info(f"History model populated with {len(self.items)} items")
 
-        elif role == 260:
-            return item.thumbnail
+    @Slot(str)
+    def remove(self, url):
+        history_item = self.session.query(History).filter_by(url=url).one()
 
-        elif role == 261:
-            return item.date
+        self.session.delete(history_item)
+        self.session.commit()
+
+        index = self.items.index(history_item)
+
+        self.beginRemoveRows(QModelIndex(), index, index)
+        del self.items[index]
+        self.endRemoveRows()
+
+    def data(self, index, role):
+        if not index.isValid():
+            return None
+        try:
+            return self.items[index.row()].__getattribute__(self.ROLE_NAMES.get(role))
+        except Exception as err:
+            return None
+
+    @Property(int, notify = rowsChanged)
+    def size(self):
+        return self.rowCount()
+
+    def item_to_history(self, item):
+        return History(
+            url = item.info.url,
+            title = item.info.title,
+            uploader = item.info.uploader,
+            uploader_url = item.info.uploader_url,
+            thumbnail = item.info.thumbnail,
+        )
+
 
 
 class SupportedSitesModel(QAbstractItemModel):
@@ -475,7 +447,6 @@ class SupportedSitesModel(QAbstractItemModel):
 
         if role == 256:
             return self.sites[index.row()]
-
 
 class WebTabsModel(QAbstractListModel):
     COLUMNS: str = ("url", "title")
@@ -537,6 +508,7 @@ class WebTabsModel(QAbstractListModel):
 
 
 # NOTE: Proxy
+# TODO: Modernize this!
 
 class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
     stringChanged = Signal(str, arguments=["string"])
@@ -557,13 +529,13 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
     def componentComplete(self) -> None:
         pass
 
-    def get_role(self, role_name: str) -> int:
+    def get_role(self, role):
         role_names = self.sourceModel().roleNames()
-        for role in self.sourceModel().roleNames():
-            if role_names[role] == role_name:
-                return role
 
-        return -1
+        for key in role_names:
+            print(role_names[key], role)
+            if role == role_names[key]:
+                return key
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex=QModelIndex()) -> bool:
         index = self.sourceModel().index(source_row, 0, source_parent)

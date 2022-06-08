@@ -29,11 +29,14 @@ Item {
         delegate: HistoryItem {
             width: listView.width
 
-            link: url
-            titleText: title
-            uploaderText: uploader
-            uploaderLink: uploaderUrl
-            thumbnailSource: thumbnail
+            // NOTE: To be compatible with LinkInfo.
+            downloadInfo: {
+                "url": url,
+                "title": title,
+                "uploader": uploader,
+                "uploader_url": uploader_url,
+                "thumbnail": thumbnail
+            }
         }
 
         remove: Transition {

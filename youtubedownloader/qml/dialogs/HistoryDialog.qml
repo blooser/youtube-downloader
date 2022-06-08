@@ -17,16 +17,6 @@ YDDialog {
 
     contentItem: History.HistoryView {}
 
-    Connections {
-        target: historyModel
-
-        function onSizeChanged(size) {
-            if (size === Theme.Size.none) {
-                dialogManager.close_dialog(root.dialog)
-            }
-        }
-    }
-
     enter: Transition {
         ParallelAnimation {
             NumberAnimation { property: "x"; from: root.x + 100; to: root.x; duration: Theme.Animation.quick }
