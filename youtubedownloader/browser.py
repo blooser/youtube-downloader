@@ -10,11 +10,39 @@
 from .logger import create_logger
 from .models import WebTabsModel
 from . import paths
+from bs4 import BeautifulSoup
 
 import os, os.path, json, lz4.block, subprocess, re
+import urllib.request
+import urllib.error
 
+from youtubedownloader.logger import (
+    create_logger
+)
+
+
+logger = create_logger(__name__)
 
 YOUTUBE_PATTERN = re.compile("http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?")
+
+
+def collect(url, tag):
+    items = []
+
+    try:
+        with urllib.request.urlopen(url) as response:
+            data = response.read().decode("utf-8")
+            soup = BeautifulSoup(data, "html.parser")
+
+            items = soup.find_all(tag)
+
+        logger.info(f"Collected {len(items)} items from {url}")
+
+    except (urllib.error.URLError, ValueError) as err:
+        logger.warning(err)
+
+    return items
+
 
 def is_youtube(url: str) -> re.Match:
     return YOUTUBE_PATTERN.match(url)

@@ -23,12 +23,10 @@ from youtubedownloader.serializer import (
 )
 
 from PySide6.QtQml import QQmlParserStatus
-from bs4 import BeautifulSoup
+
 from .database.models import History
 from sqlalchemy.orm.session import Session
 
-import urllib.request
-import urllib.error
 import uuid
 import os
 import pickle
@@ -186,6 +184,7 @@ class DataModel(QAbstractItemModel):
         try:
             return self.dataRules(self.items[index.row()][role], role)
         except Exception as err:
+            print(err)
             return None
 
     def exists(self, item):
@@ -391,62 +390,30 @@ class HistoryModel(DataModel):
 
 
 
-class SupportedSitesModel(QAbstractItemModel):
+class SupportedSitesModel(DataModel):
     SUPPORTED_SITES_URL = "https://ytdl-org.github.io/youtube-dl/supportedsites.html"
 
-    COLUMNS: str = ("name")
-    FIRST_COLUMN: int = 0
-    LAST_COLUMN: int = len(COLUMNS)
+    ROLE_NAMES = RoleNames("name")
 
-    sizeChanged = Signal(int)
+    rowsChanged = Signal()
 
     def __init__(self):
-        super(SupportedSitesModel, self).__init__(None)
-        self.logger = create_logger(__name__)
-        self.sites = []
+        super().__init__()
 
-        self.collect_sites()
+        self.populate()
 
-    @Property(int, notify=sizeChanged)
-    def size(self) -> int:
-        return len(self.sites)
+        self.rowsInserted.connect(self.rowsChanged)
+        self.rowsRemoved.connect(self.rowsChanged)
 
-    def index(self, row: int, column: int, parent: QModelIndex=QModelIndex()) -> QModelIndex:
-        return self.createIndex(row, column, parent)
+    @Property(int, notify = rowsChanged)
+    def size(self):
+        return self.rowCount()
 
-    def collect_sites(self) -> None:
-        try:
-            with urllib.request.urlopen(SupportedSitesModel.SUPPORTED_SITES_URL) as response:
-                data = response.read().decode("utf-8")
-                soup = BeautifulSoup(data, "html.parser")
+    def populate(self):
+        from youtubedownloader.browser import collect
 
-                for tag in soup.find_all("li"):
-                    self.sites.append(tag.b.string)
+        self.items = list(map(lambda tag: Item(roles=self.ROLE_NAMES, name=str(tag.b.string)), collect(self.SUPPORTED_SITES_URL, "li")))
 
-            self.sizeChanged.emit(len(self.sites))
-
-            self.logger.info("Collected {sites} sites".format(sites=len(self.sites)))
-
-        except urllib.error.URLError as err:
-            self.logger.warning(str(err))
-
-    def roleNames(self, index: QModelIndex=QModelIndex()) -> dict:
-        return {
-            256: b"name"
-        }
-
-    def rowCount(self, index: QModelIndex=QModelIndex()) -> int:
-        return len(self.sites)
-
-    def columnCount(self, index: QModelIndex=QModelIndex()) -> int:
-        return SupportedSitesModel.LAST_COLUMN
-
-    def data(self, index: QModelIndex, role: int):
-        if not index.isValid():
-            return
-
-        if role == 256:
-            return self.sites[index.row()]
 
 class WebTabsModel(QAbstractListModel):
     COLUMNS: str = ("url", "title")

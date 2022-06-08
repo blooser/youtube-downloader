@@ -27,7 +27,8 @@ from youtubedownloader.models import (
     RoleNames,
 
     HistoryModel,
-    
+    SupportedSitesModel,
+
     RoleNotFoundError,
 )
 
@@ -358,3 +359,13 @@ def test_history_models_is_able_to_remove_item():
     history_model.remove(pending.url)
    
     assert history_model.rowCount() == 0
+    
+
+def test_supported_sites_model_populates_with_supported_sites():
+    model = SupportedSitesModel()
+
+    assert model.rowCount() > 1000
+    assert type(model.items[0]) == Item
+
+    data = model.data(model.index(0, 0), 256)
+    assert type(data) == str
