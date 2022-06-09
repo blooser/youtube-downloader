@@ -402,8 +402,6 @@ class DownloadManager(QObject):
 
             self.transactions.start(task, self.download_model, item)
 
-            # NOTE: Single insert to have more control
-
     @Slot(Item)
     def listenForResumeDownload(self, item):
         if not self.transactions.itemExists(item):

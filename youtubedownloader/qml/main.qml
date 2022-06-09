@@ -68,8 +68,11 @@ ApplicationWindow {
         Link.LinkInput {
             Layout.fillWidth: true
 
-            onAddLink: link => { downloadManager.insert(link, downloadOptions.options) }
-
+            onAddLink: link => {
+                    if (Regex.isUrl(link)) {
+                        downloadManager.insert(link, downloadOptions.options)
+                 }
+            }
         }
 
         Download.DownloadOptions {
@@ -80,7 +83,7 @@ ApplicationWindow {
 
         Components.DownloadButton {
             Layout.fillWidth: true
-          //  Layout.alignment: Qt.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
 
             ready: downloads.pendingItems
 

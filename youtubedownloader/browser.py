@@ -23,8 +23,6 @@ from youtubedownloader.logger import (
 
 logger = create_logger(__name__)
 
-YOUTUBE_PATTERN = re.compile("http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?")
-
 
 def collect(url, tag):
     items = []
@@ -44,10 +42,6 @@ def collect(url, tag):
     return items
 
 
-def is_youtube(url: str) -> re.Match:
-    return YOUTUBE_PATTERN.match(url)
-
-
 class BrowserTab(object):
     def __init__(self, url: str, title: str):
         self.url = url
@@ -55,6 +49,7 @@ class BrowserTab(object):
 
     def __eq__(self, other):
         return self.url == other.url
+
 
 class Browser(QObject):
     NAME = "Unknown"
@@ -110,7 +105,7 @@ class Firefox(Browser):
         super().__init__()
 
     @Slot(str)
-    def collect_tabs(self, path: str) -> None:
+    def collect_tabs(self, path: str):
         tabs = []
 
         if not os.path.isfile(path):
@@ -128,7 +123,7 @@ class Firefox(Browser):
             for tab in window.get("tabs"):
                 index = int(tab.get("index")) - 1
 
-                if (is_youtube(tab.get("entries")[index].get("url"))):
+                if (Browsers.is_youtube(tab.get("entries")[index].get("url"))):
                     tabs.append(BrowserTab(
                             tab.get("entries")[index].get("url"),
                             tab.get("entries")[index].get("title"))
@@ -140,6 +135,12 @@ class Firefox(Browser):
 # TODO: Add Google Chrome and Opera... not sure it will be possible to do this same like Firefox
 
 class Browsers(QObject):
+    PATTERN = re.compile("http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?")
+
+    @staticmethod
+    def is_youtube(url):
+        return Browsers.PATTERN.match(url)
+
     browsers_changed = Signal(list)
 
     def __init__(self):
