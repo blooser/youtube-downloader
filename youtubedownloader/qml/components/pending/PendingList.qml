@@ -10,9 +10,10 @@ Item {
     id: root
 
     property int items: pending.count
+    property bool hide: false
 
     implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight + pending.contentHeight
+    implicitHeight: mainLayout.implicitHeight + (root.hide ? 0 : pending.contentHeight)
 
     visible: pending.count
 
@@ -27,6 +28,12 @@ Item {
 
             text: qsTr("Pending")
             counter: pending.count
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: root.hide = !root.hide
+            }
 
             Behavior on opacity {
                 NumberAnimation {
@@ -45,6 +52,7 @@ Item {
             clip: true
             spacing: Theme.Margins.tiny
             model: downloadManager.pendingModel
+            visible: !root.hide
 
             delegate: PendingItem {
                 width: pending.width

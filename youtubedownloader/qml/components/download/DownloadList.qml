@@ -9,9 +9,10 @@ Item {
     id: root
 
     property int items: downloadItems.count
+    property bool hide: false
 
     implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight + downloadItems.contentHeight
+    implicitHeight: mainLayout.implicitHeight + (root.hide ? 0 : downloadItems.contentHeight)
 
     visible: downloadItems.count
 
@@ -30,6 +31,12 @@ Item {
             text: qsTr("Download")
             counter: downloadItems.count
 
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: root.hide = !root.hide
+            }
+
             Behavior on opacity {
                 NumberAnimation {
                     duration: Theme.Animation.quick
@@ -44,6 +51,7 @@ Item {
             Layout.fillHeight: true
 
             model: downloadManager.downloadModel
+            visible: !root.hide
 
             delegate: DownloadItem {
                 width: downloadItems.width

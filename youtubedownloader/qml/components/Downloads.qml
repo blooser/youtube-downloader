@@ -31,14 +31,14 @@ Flickable {
             id: pending
 
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            //Layout.fillHeight: true
         }
 
         Download.DownloadList {
             id: download
 
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            //Layout.fillHeight: true
         }
     }
 }
