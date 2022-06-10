@@ -11,6 +11,7 @@
 )
 
 import youtubedownloader
+import copy
 
 from youtubedownloader.logger import (
     create_logger
@@ -72,6 +73,40 @@ class Item(QObject):
         self.updated.emit(self.item_id)
 
 
+class Duplicate(QObject):
+    changed = Signal()
+
+    def __init__(self):
+        super().__init__()
+
+        self._url = str("")
+        self._exists = False
+
+    def scan(self, url, items):
+        for item in items:
+            self._exists = (item.info.url == url and url != "")
+
+            print(item.info.url, url, self._exists)
+
+            if self._exists:
+                self._url = url
+
+                break
+
+        if not self._exists:
+            self._url = ""
+
+        self.changed.emit()
+
+    @Property(str, notify = changed)
+    def url(self):
+        return self._url
+
+    @Property(bool, notify = changed)
+    def exists(self):
+        return self._exists
+
+
 class RoleNotFoundError(Exception):
     """Role was not found"""
 
@@ -106,6 +141,8 @@ class DataModel(QAbstractItemModel):
         super().__init__(None)
 
         self.items = []
+
+        self._duplicate = Duplicate()
 
     def __repr__(self):
         return f"<{self.__class__.__name__} items={self.rowCount()}>"
@@ -184,26 +221,14 @@ class DataModel(QAbstractItemModel):
         try:
             return self.dataRules(self.items[index.row()][role], role)
         except Exception as err:
-            print(err)
             return None
 
     def exists(self, item):
         return item in self.items
 
-    @Slot("QVariant")
-    def scan(self, pattern):
-        def match(item, pattern):
-            for key in pattern:
-                if item.__getattribute__(key) != pattern[key]:
-                    return False
-
-            return True
-
-        for item in self.items:
-            if match(item, pattern):
-                return True
-
-        return False
+    @Slot(str)
+    def scan(self, url):
+        self._duplicate.scan(url, self.items)
 
     def setDataRules(self, item, value, role):
         return item
@@ -242,6 +267,10 @@ class DataModel(QAbstractItemModel):
         )
 
         logger.info(f"Item at index={row} row updated")
+
+    @Property(QObject, constant = True)
+    def duplicate(self):
+        return self._duplicate
 
 
 class FreezeDataModel(DataModel):

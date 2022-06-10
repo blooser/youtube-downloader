@@ -20,7 +20,7 @@ Rectangle {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    color: Theme.Colors.second
+    color: downloadManager.pendingModel.duplicate.url === root.pendingInfo.url ? "orange" : Theme.Colors.second
 
     border {
         width: Theme.Size.border
@@ -74,5 +74,11 @@ Rectangle {
         itemInfo: root.pendingInfo
 
         onChangeOutput: path => { root.changeOutput(path) }
+    }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: Theme.Animation.quick
+        }
     }
 }

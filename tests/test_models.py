@@ -276,20 +276,18 @@ def test_data_model_can_scan():
         roles = RoleNames("title", "url"),
         destination = "home",
         status = "finished",
-        info = None,
+        info = Data(url = "test1"),
         options = Options(output="documents", format="mp3"),
         progress = {}
     )
 
     model.items = [item]
-    pattern = dict(destination="home", status="finished")
 
-    assert model.scan(pattern)
+    model.scan("test1")
+    assert model._duplicate._exists
 
-    pattern = dict(destination="home", status="paused")
-
-    assert not model.scan(pattern)
-
+    model.scan("test2")
+    assert not model._duplicate._exists
 
 def test_model_exists_functions_works_correctly():
     model = DownloadModelFixture()

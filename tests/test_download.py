@@ -256,10 +256,4 @@ class TestPending:
         assert transactions.itemExists(item1)
         assert transactions.itemExists(item2)
         assert not transactions.itemExists(item3)
-
-
-
-
-
-
     

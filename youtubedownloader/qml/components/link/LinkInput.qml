@@ -41,7 +41,12 @@ Item {
         focus: true
         rightPadding: Theme.Margins.big * 2 // NOTE: Because of `changeLineButton` position
 
-        onTextEdited: Settings.input = text
+        onTextEdited: {
+            Settings.input = text
+
+            downloadManager.pendingModel.scan(text)
+            downloadManager.downloadModel.scan(text)
+        }
 
         Keys.onEnterPressed: addButton.clicked()
         Keys.onReturnPressed: addButton.clicked()

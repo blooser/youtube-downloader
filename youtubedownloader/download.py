@@ -286,7 +286,7 @@ class Downloading(Task):
 
         self.progress.emit(self.data)
 
-        if self.data.status == "finished":
+        if self.data.status == "finished" and self.options.format.need_convert():
             self.convert.emit()
 
     def run(self):
@@ -460,6 +460,9 @@ class Format:
             "postprocessors": self.postprocessors
         }
 
+    def need_convert(self):
+        return self.postprocessors != []
+
     @staticmethod
     def fromstr(name):
         return {
@@ -516,6 +519,7 @@ class MP3(Format):
         "preferredcodec": 'mp3',
         "preferredquality": "320",
      }]
+
 
 
 class WAV(Format):
