@@ -1,19 +1,24 @@
 
 
-
 <div align="center">
 	<img src="https://raw.githubusercontent.com/blooser/youtube-downloader/08c713ea717a2a723d06ef4faeb19f9bbdf04784/youtubedownloader/resources/youtube-downloader-with-text.svg" width="350" height="350">
 </div>
 
-Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_interface) helper for [youtube-dl](https://github.com/ytdl-org/youtube-dl/). It provides a graphical interface to download videos from YouTube.com with conveniences like track the download, pause, or select the media format.
+Youtube downloader is a [GUI](https://en.wikipedia.org/wiki/Graphical_user_interface) helper for [youtube-dl](https://github.com/ytdl-org/youtube-dl/). It provides a graphical interface to download videos from YouTube.com and other sites with conveniences like track the download, pause, or select the media format.
 
-## Preview
+## Project status
 
-![preview](https://i.postimg.cc/c1vn9yZs/yf1.png)
+The project has been reincarnated. I rebuild the backend and starting to continue with the work, all features will be implemented making the software more comfortable to the usage.
+
+## Usage
+
+The youtube-downloader provides a friendly graphical interface for downloading media resources from the remote clients.
+
+![preview](https://i.postimg.cc/DwwBhZH6/Zrzut-ekranu-Deepin-plasmashell-20220612214913.png)
 
 ## Dependency
 
-This software is based on [PySide2](https://www.qt.io/qt-for-python) and [youtube-dl](https://github.com/ytdl-org/youtube-dl/).
+This software is based on [PySide6](https://www.qt.io/qt-for-python) and [youtube-dl](https://github.com/ytdl-org/youtube-dl/).
 
 ## Usage
 
@@ -52,4 +57,5 @@ pip install youtube-downloader
 ## License
 
 Youtube downloader is a free software released under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
 
