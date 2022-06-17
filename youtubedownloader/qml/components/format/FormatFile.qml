@@ -51,7 +51,7 @@ Item {
         id: fileFormatButton
 
         Items.YDButtonWithHelp {
-            checked: (text === Settings.fileFormat)
+            checked: (text === Settings.format)
             checkable: true
             onHelp: dialogManager.openDialog("FileFormatsDialog", {"format": text}, null)
         }
