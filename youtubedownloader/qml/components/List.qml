@@ -79,11 +79,29 @@ Item {
         }
     ]
 
-    transitions: Transition {
-        ParallelAnimation {
-            OpacityAnimator { duration: Theme.Animation.quick }
-            PropertyAnimation { property: "implicitHeight"; duration: Theme.Animation.quick }
-            PropertyAnimation { property: "height"; duration: Theme.Animation.quick }
+    transitions: [
+        Transition {
+            from: "*"; to: "hide"
+
+           SequentialAnimation {
+                OpacityAnimator { duration: Theme.Animation.quick }
+                ParallelAnimation {
+                    PropertyAnimation { property: "implicitHeight"; duration: Theme.Animation.quick }
+                    PropertyAnimation { property: "height"; duration: Theme.Animation.quick }
+                }
+           }
+        },
+
+        Transition {
+            from: "hide"; to: "*"
+
+           SequentialAnimation {
+                ParallelAnimation {
+                    PropertyAnimation { property: "implicitHeight"; duration: Theme.Animation.quick }
+                    PropertyAnimation { property: "height"; duration: Theme.Animation.quick }
+                }
+                OpacityAnimator { duration: Theme.Animation.quick }
+           }
         }
-    }
+    ]
 }

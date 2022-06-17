@@ -3,6 +3,7 @@
 import yd.items 0.1
 
 import "../../items" as Items
+import ".." as Components
 
 Item {
     id: root
@@ -47,6 +48,19 @@ Item {
         removeDisplaced: Transition {
             NumberAnimation { property: "y"; duration: Theme.Animation.quick }
         }
+
+        section.property: "date"
+        section.criteria: ViewSection.FullString
+        section.delegate: Components.TileText {
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            font.pixelSize: 10
+
+            text: section
+        }
+
     }
 
     Items.YDText {

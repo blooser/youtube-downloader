@@ -18,13 +18,6 @@ Item {
         anchors.fill: parent
         spacing: 0
 
-        Components.TileText {
-            Layout.alignment: Qt.AlignHCenter
-            font.pixelSize: 10
-
-            text: downloadInfo.date
-        }
-
         RowLayout {
             Layout.fillWidth: true
 

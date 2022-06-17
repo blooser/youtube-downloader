@@ -405,7 +405,7 @@ class HistoryModel(DataModel):
 
     def dataRules(self, item, role):
         if role == self.ROLE_NAMES.date:
-            return str(item)
+            return item.strftime("%d.%m.%Y")
 
         return item
 
