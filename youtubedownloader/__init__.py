@@ -4,7 +4,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QUrl, QResource
 from PySide6.QtWidgets import QApplication
 
-from .download import DownloadManager
+from .download import DownloadManager, Signals
 from .models import StringFilterModel, SupportedSitesModel, HistoryModel
 from .component_changer import ComponentChanger, Change
 from .dialog_manager import DialogManager
@@ -36,6 +36,7 @@ def main():
     resources = Resources()
     qpaths = QPaths()
     browsers = Browsers()
+    signals = Signals()
 
     supported_sites_model = SupportedSitesModel()
     history_model = HistoryModel(database.session)
@@ -53,6 +54,7 @@ def main():
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty("Theme", theme)
     engine.rootContext().setContextProperty("Resources", resources)
+    engine.rootContext().setContextProperty("Signals", signals)
     engine.rootContext().setContextProperty("Settings", settings)
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)

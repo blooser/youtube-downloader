@@ -26,11 +26,15 @@ Item {
         spacing: Theme.Margins.tiny
 
         StackLayout {
+            id: stackLayout
+
             Layout.fillWidth: true
 
             currentIndex: tabBar.currentIndex
 
             Repeater {
+                id: tabRepeater
+
                 model: WebBrowsers.browsers
 
                 BrowserTabs {
@@ -61,4 +65,5 @@ Item {
             }
         }
     }
+
 }

@@ -69,7 +69,11 @@ Item {
 
                 onResume: downloadManager.downloadModel.resume(index)
                 onPause: downloadManager.downloadModel.pause(index)
-                onOpen: Qt.openUrlExternally(qsTr("%1/%2.%3").arg(options.output).arg(info.title).arg(options.format))
+                onOpen: {
+                    const path = Paths.pathTo(options.output, info.title, options.format)
+
+                    Qt.openUrlExternally(path)
+                }
             }
         }
     }

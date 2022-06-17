@@ -35,7 +35,8 @@ Item {
                 "title": title,
                 "uploader": uploader,
                 "uploader_url": uploader_url,
-                "thumbnail": thumbnail
+                "thumbnail": thumbnail,
+                "date": date
             }
         }
 

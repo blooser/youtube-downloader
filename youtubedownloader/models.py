@@ -32,6 +32,7 @@ import uuid
 import os
 import pickle
 import atexit
+import datetime
 
 
 logger = create_logger("youtubedownloader.models")
@@ -85,8 +86,6 @@ class Duplicate(QObject):
     def scan(self, url, items):
         for item in items:
             self._exists = (item.info.url == url and url != "")
-
-            print(item.info.url, url, self._exists)
 
             if self._exists:
                 self._url = url
@@ -379,7 +378,7 @@ class HistoryModel(DataModel):
         self.endInsertRows()
 
     def populate(self):
-        self.items = self.session.query(History).all()
+        self.items = self.session.query(History).order_by(History.date.desc()).all()
 
         logger.info(f"History model populated with {len(self.items)} items")
 
@@ -400,9 +399,15 @@ class HistoryModel(DataModel):
         if not index.isValid():
             return None
         try:
-            return self.items[index.row()].__getattribute__(self.ROLE_NAMES.get(role))
+            return self.dataRules(self.items[index.row()].__getattribute__(self.ROLE_NAMES.get(role)), role)
         except Exception as err:
             return None
+
+    def dataRules(self, item, role):
+        if role == self.ROLE_NAMES.date:
+            return str(item)
+
+        return item
 
     @Property(int, notify = rowsChanged)
     def size(self):
@@ -481,7 +486,6 @@ class StringFilterModel(QSortFilterProxyModel, QQmlParserStatus):
         role_names = self.sourceModel().roleNames()
 
         for key in role_names:
-            print(role_names[key], role)
             if role == role_names[key]:
                 return key
 

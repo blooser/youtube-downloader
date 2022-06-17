@@ -63,21 +63,29 @@ class Browser(QObject):
         self.model = WebTabsModel()
 
         self.file_expect = paths.FileExpect()
-        self.file_expect.file_exists.connect(self.collect_tabs)
+        self.file_expect.file_exists.connect(self.fileExists)
 
         self.file_watcher = QFileSystemWatcher()
         self.file_watcher.fileChanged.connect(self.collect_tabs, Qt.QueuedConnection)
 
         self.detect()
 
-        if self.localization:
-            self.collect_tabs(self.localization)
+        if not self.localization:
+            self.file_expect.expect(self.PATH)
 
     def detect(self):
         self.localization = paths.find_file(self.PATH)
 
         if self.localization:
             logger.info(f"{self.NAME} detected")
+
+            self.collect_tabs(self.localization)
+
+    @Slot(str)
+    def fileExists(self, path):
+        self.localization = path
+
+        self.collect_tabs(self.localization)
 
     def set_tabs(self, tabs):
         self.model.reset(tabs)
@@ -86,11 +94,11 @@ class Browser(QObject):
     def collect_tabs(self, path):
         return NotImplemented
 
-    @Property(str)
+    @Property(str, constant = True)
     def name(self):
         return self.NAME
 
-    @Property(QObject)
+    @Property(QObject, constant = True)
     def tabs(self):
         return self.model
 
@@ -107,10 +115,6 @@ class Firefox(Browser):
     @Slot(str)
     def collect_tabs(self, path: str):
         tabs = []
-
-        if not os.path.isfile(path):
-            self.file_expect.observe(path)
-            return
 
         if path not in (self.file_watcher.files()):
             self.file_watcher.addPath(self.localization)

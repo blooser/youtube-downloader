@@ -7,7 +7,7 @@ Item {
     id: root
 
     signal remove()
-    signal add()
+    signal insert()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
@@ -18,16 +18,14 @@ Item {
         anchors.fill: parent
         spacing: Theme.Margins.tiny
 
-// TODO: Allow to insert
-/*
+
         Items.YDImageButton {
             Layout.preferredWidth: Theme.Size.icon
             Layout.preferredHeight: Theme.Size.icon
 
             imageSource: Resources.icons.plus
-            onClicked: root.add()
+            onClicked: root.insert()
         }
-*/
 
         Items.YDImageButton {
             Layout.preferredWidth: Theme.Size.icon

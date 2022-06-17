@@ -2,6 +2,7 @@
 import QtQuick.Layouts 1.14
 
 import "../link" as Link
+import "../" as Components
 
 Item {
     id: root
@@ -11,20 +12,34 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    RowLayout {
+    ColumnLayout {
         id: mainLayout
 
         anchors.fill: parent
-        spacing: Theme.Margins.small
+        spacing: 0
 
-        Link.LinkInfo {
-            id: linkInfo
+        Components.TileText {
+            Layout.alignment: Qt.AlignHCenter
+            font.pixelSize: 10
 
-            Layout.fillWidth: true
+            text: downloadInfo.date
         }
 
-        HistoryItemButtons {
-            onRemove: historyModel.remove(downloadInfo.url)
+        RowLayout {
+            Layout.fillWidth: true
+
+            spacing: Theme.Margins.small
+
+            Link.LinkInfo {
+                id: linkInfo
+
+                Layout.fillWidth: true
+            }
+
+            HistoryItemButtons {
+                onRemove: historyModel.remove(downloadInfo.url)
+                onInsert: Signals.emitInsert(downloadInfo.url)
+            }
         }
     }
 }

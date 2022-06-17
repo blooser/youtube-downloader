@@ -27,6 +27,7 @@ Rectangle {
             Layout.fillWidth: true
 
             placeholderText: qsTr("Search")
+
             focus: true
         }
 

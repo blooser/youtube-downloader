@@ -5,6 +5,7 @@ TextField {
     id: root
 
     color: Theme.Colors.text
+    placeholderTextColor: Theme.Colors.placeholder
 
     property bool icon: false
     property url iconSource

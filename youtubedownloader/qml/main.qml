@@ -124,6 +124,14 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: Signals
+
+        function onInsert(url) {
+            downloadManager.insert(url, downloadOptions.options)
+        }
+    }
+
     QtObject {
             id: dialogCreator
 

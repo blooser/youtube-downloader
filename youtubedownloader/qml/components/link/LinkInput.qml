@@ -32,7 +32,6 @@ Item {
         id: link
 
         placeholderText: qsTr("Enter supported link")
-        placeholderTextColor: Theme.Colors.placeholder
 
         validator: RegularExpressionValidator {
             regularExpression: Regex.URL_REGEX

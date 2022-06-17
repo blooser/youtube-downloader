@@ -530,3 +530,19 @@ class WAV(Format):
         "preferredcodec": 'wav',
     }]
 
+
+
+class Signals(QObject):
+    insert = Signal(str)
+    remove = Signal(str)
+
+    def __init__(self):
+        super().__init__()
+
+    @Slot(str)
+    def emitInsert(self, url):
+        self.insert.emit(url)
+
+    @Slot(str)
+    def emitRemove(self, url):
+        self.remove.emit(url)

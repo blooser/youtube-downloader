@@ -4,11 +4,17 @@
     QFileInfo,
     QLocale,
     QUrl,
+    Qt,
+
     Slot,
     Signal
 )
 
+from youtubedownloader.logger import create_logger
+
 import sys, os, pathlib, os.path, glob
+
+logger = create_logger(__name__)
 
 OS_FILE_PREFIX: dict = {
     "linux": "file://",
@@ -77,6 +83,10 @@ class QPaths(QObject):
     def getFileType(self, format: str) -> str:
         return get_file_type(format)
 
+    @Slot(str, str, str, result="QString")
+    def pathTo(self, output, title, format):
+        return f"{output}/{title}.{format}"
+
     @Slot(str, result="QString")
     def getPathType(self, path: str) -> str:
         if path.startswith("/") or path.startswith("file://"):
@@ -96,23 +106,35 @@ class QPaths(QObject):
 
 
 class FileExpect(QObject):
-    file_exists = Signal(str, arguments=["file"])
+    TIMEOUT = 500
+
+    file_exists = Signal(str)
 
     def __init__(self):
-        super(FileExpect, self).__init__(None)
+        super().__init__()
 
-        self.file = str()
-        self.timer = QTimer()
-        self.timer.setInterval(500)
+        self.path = str()
+        self.timer = QTimer(self)
+        self.timer.setInterval(self.TIMEOUT)
 
         self.timer.timeout.connect(self.check_file_exists)
 
-    def observe(self, file: str) -> None:
-        self.file = file
+    def expect(self, path):
+        self.path = path
         self.timer.start()
 
+        logger.info(f"Watching: {path}")
+
     @Slot()
-    def check_file_exists(self) -> None:
-        if os.path.isfile(self.file):
-            self.file_exists.emit(self.file)
+    def check_file_exists(self):
+
+        file = find_file(self.path)
+
+        if os.path.isfile(file):
+            self.file_exists.emit(file)
             self.timer.stop()
+
+            logger.info(f"File {file} found!")
+        else:
+            self.timer.start()
+
