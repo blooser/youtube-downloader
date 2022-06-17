@@ -30,7 +30,7 @@ Items.YDPopup {
 
             text: format
 
-            //enabled: !downloadManager.exists(link, optionsWithNewFormat(format))
+            enabled: root.options.format !== format
 
             onClicked: {
                 root.formatSelected(format)

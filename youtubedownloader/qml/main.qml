@@ -46,7 +46,6 @@ ApplicationWindow {
         property alias height: root.height
     }
 
-
     ColumnLayout {
         id: mainLayout
 
