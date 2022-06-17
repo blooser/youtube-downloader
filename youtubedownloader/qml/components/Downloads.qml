@@ -10,8 +10,8 @@ import "../items" as Items
 Flickable {
     id: root
 
-    property int pendingItems: pending.items
-    property int downloadItems: download.items
+    property int pendingItems: pending.count
+    property int downloadItems: download.count
 
     implicitHeight: mainLayout.implicitHeight
     contentHeight: implicitHeight

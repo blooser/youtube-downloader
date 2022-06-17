@@ -5,76 +5,32 @@ import QtQuick.Layouts 1.14
 import ".." as Components
 import "../../items" as Items
 
-Item {
+Components.List {
     id: root
 
-    property int items: downloadItems.count
-    property bool hide: false
+    label: qsTr("Download")
+    model: downloadManager.downloadModel
 
-    implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight + (root.hide ? 0 : downloadItems.contentHeight)
+    delegate: DownloadItem {
+        width: root.width
 
-    visible: downloadItems.count
+        downloadStatus: status
+        downloadInfo: info
+        downloadOptions: options
+        downloadProgress: progress
 
-    ColumnLayout {
-        id: mainLayout
-
-        anchors.fill: parent
-
-        spacing: Theme.Margins.tiny
-
-        Components.DownloadsLabel {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter
-
-            opacity: downloadItems.count
-            text: qsTr("Download")
-            counter: downloadItems.count
-
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: root.hide = !root.hide
-            }
-
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: Theme.Animation.quick
-                }
-            }
+        onRemove: {
+            dialogManager.openDialog("ConfirmDeleteDialog", { "info": info }, () => {
+                downloadManager.downloadModel.remove(index)
+            })
         }
 
-        Items.YDList {
-            id: downloadItems
+        onResume: downloadManager.downloadModel.resume(index)
+        onPause: downloadManager.downloadModel.pause(index)
+        onOpen: {
+            const path = Paths.pathTo(options.output, info.title, options.format)
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            model: downloadManager.downloadModel
-            visible: !root.hide
-
-            delegate: DownloadItem {
-                width: downloadItems.width
-
-                downloadStatus: status
-                downloadInfo: info
-                downloadOptions: options
-                downloadProgress: progress
-
-                onRemove: {
-                    dialogManager.openDialog("ConfirmDeleteDialog", { "info": info }, () => {
-                        downloadManager.downloadModel.remove(index)
-                    })
-                }
-
-                onResume: downloadManager.downloadModel.resume(index)
-                onPause: downloadManager.downloadModel.pause(index)
-                onOpen: {
-                    const path = Paths.pathTo(options.output, info.title, options.format)
-
-                    Qt.openUrlExternally(path)
-                }
-            }
+            Qt.openUrlExternally(path)
         }
     }
 }

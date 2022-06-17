@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.14
 
 
 ListView {
+    id: root
+
     boundsBehavior: Flickable.StopAtBounds
     clip: true
     spacing: Theme.Margins.tiny
@@ -18,6 +20,8 @@ ListView {
     removeDisplaced: Transition {
         PropertyAnimation { property: "y"; duration: Theme.Animation.quick}
     }
+
+
 }
 
 
