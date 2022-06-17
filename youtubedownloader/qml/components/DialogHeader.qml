@@ -8,13 +8,16 @@ Item {
 
     property alias text: textItem.text
 
-    implicitWidth: mainLayout.implicitWidth
-    implicitHeight: mainLayout.implicitHeight
+    implicitWidth: mainLayout.implicitWidth + 10
+    implicitHeight: mainLayout.implicitHeight + 10
 
     ColumnLayout {
         id: mainLayout
 
-        anchors.fill: parent
+        anchors {
+            fill: root
+            margins: 5
+        }
 
         Items.YDText {
             id: textItem

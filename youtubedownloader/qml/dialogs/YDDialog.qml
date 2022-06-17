@@ -39,6 +39,7 @@ Dialog {
 
     footer: DialogButtonBox {
         delegate: Items.YDButton {}
+        alignment: Qt.AlignHCenter
         background: null
     }
 
