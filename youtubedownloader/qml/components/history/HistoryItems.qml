@@ -51,16 +51,11 @@ Item {
 
         section.property: "date"
         section.criteria: ViewSection.FullString
-        section.delegate: Components.TileText {
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-            }
-
-            font.pixelSize: 10
+        section.delegate: Components.ListSection {
+            width: parent.width
 
             text: section
         }
-
     }
 
     Items.YDText {
