@@ -43,11 +43,17 @@ Dialog {
     }
 
     enter: Transition {
-        NumberAnimation { property: "opacity"; to: 1; duration: 250 }
+        ParallelAnimation {
+            NumberAnimation { property: "opacity"; to: 1; duration: 250 }
+            PropertyAnimation { property: "scale"; from: 0.75; to: 1 }
+        }
     }
 
     exit: Transition {
-        NumberAnimation { property: "opacity"; to: 0; duration: 250 }
+         ParallelAnimation {
+            NumberAnimation { property: "opacity"; to: 0; duration: 250 }
+            PropertyAnimation { property: "scale"; from: 1; to: 0.75 }
+         }
     }
 
     onClosed: dialogManager.closeDialog(dialog)
