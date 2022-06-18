@@ -53,7 +53,6 @@ Item {
         section.criteria: ViewSection.FullString
         section.delegate: Components.ListSection {
             width: parent.width
-
             text: section
         }
     }

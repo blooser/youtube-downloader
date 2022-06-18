@@ -56,6 +56,7 @@ class Browser(QObject):
     PATH = "Unknown"
 
     tabsChanged = Signal()
+    detectedChanged = Signal(bool)
 
     def __init__(self):
         super().__init__(None)
@@ -66,33 +67,52 @@ class Browser(QObject):
         self.file_expect.file_exists.connect(self.fileExists)
 
         self.file_watcher = QFileSystemWatcher()
-        self.file_watcher.fileChanged.connect(self.collect_tabs, Qt.QueuedConnection)
+        self.file_watcher.fileChanged.connect(self.browser_tabs_changed, Qt.QueuedConnection)
 
+        self._detected = False
         self.detect()
 
-        if not self.localization:
-            self.file_expect.expect(self.PATH)
-
     def detect(self):
-        self.localization = paths.find_file(self.PATH)
-
-        if self.localization:
+        if localization := self.find():
             logger.info(f"{self.NAME} detected")
 
-            self.collect_tabs(self.localization)
+            self.browser_tabs_changed(localization)
 
-    @Slot(str)
-    def fileExists(self, path):
-        self.localization = path
+            self._detected = True
+            self.detectedChanged.emit(self._detected)
 
-        self.collect_tabs(self.localization)
+            return
+
+        self.file_expect.expect(self.PATH)
+
+    def find(self):
+        return paths.find_file(self.PATH)
 
     def set_tabs(self, tabs):
         self.model.reset(tabs)
 
-    @Slot(str)
     def collect_tabs(self, path):
         return NotImplemented
+
+    def wait_for(self, path):
+        while not os.path.isfile(path):
+            continue
+
+    @Slot(str)
+    def fileExists(self, path):
+        self._detected = True
+        self.detectedChanged.emit(self._detected)
+
+        self.browser_tabs_changed(path)
+
+    @Slot(str)
+    def browser_tabs_changed(self, path):
+        # NOTE: This slot is a little bit faster than the filesystem operation
+        self.wait_for(path)
+
+        self.file_watcher.addPath(path)
+
+        self.collect_tabs(path)
 
     @Property(str, constant = True)
     def name(self):
@@ -101,6 +121,10 @@ class Browser(QObject):
     @Property(QObject, constant = True)
     def tabs(self):
         return self.model
+
+    @Property(bool, notify = detectedChanged)
+    def detected(self):
+        return self._detected
 
 
 class Firefox(Browser):
@@ -112,14 +136,10 @@ class Firefox(Browser):
     def __init__(self):
         super().__init__()
 
-    @Slot(str)
-    def collect_tabs(self, path: str):
+    def collect_tabs(self, path):
         tabs = []
 
-        if path not in (self.file_watcher.files()):
-            self.file_watcher.addPath(self.localization)
-
-        with open(self.localization, "rb") as tabs_file:
+        with open(path, "rb") as tabs_file:
             mozilla_magic = tabs_file.read(Firefox.MOZILLA_MAGIC_NUMBER)
             j_data = json.loads(lz4.block.decompress(tabs_file.read()).decode("utf-8"))
 
@@ -145,7 +165,7 @@ class Browsers(QObject):
     def is_youtube(url):
         return Browsers.PATTERN.match(url)
 
-    browsers_changed = Signal(list)
+    browsersChanged = Signal(list)
 
     def __init__(self):
         super(Browsers, self).__init__(None)
@@ -154,18 +174,19 @@ class Browsers(QObject):
 
         self.populate()
 
+    @Slot(bool)
+    def browserChanged(self, detected):
+        self.browsersChanged.emit(self._browsers)
+
     @Slot()
     def populate(self) -> None:
         for browser in [Firefox()]:
-            if browser.localization:
-                self._browsers.append(browser)
+            browser.detectedChanged.connect(self.browserChanged)
+            self._browsers.append(browser)
 
-        if len(self._browsers) == 0:
-            logger.warning("No any browser found")
-        else:
-            self.browsers_changed.emit(self.browsers)
+        self.browsersChanged.emit(self.browsers)
 
-    @Property("QVariantList", notify=browsers_changed)
-    def browsers(self) -> list:
-        return self._browsers
+    @Property("QVariantList", notify=browsersChanged)
+    def browsers(self):
+        return list(filter(lambda x: x._detected, self._browsers))
 

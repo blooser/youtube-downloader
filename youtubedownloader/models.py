@@ -373,12 +373,12 @@ class HistoryModel(DataModel):
         self.session.add(history_item)
         self.session.commit()
 
-        self.beginInsertRows(QModelIndex(), self.rowCount(), self.rowCount())
-        self.items.append(history_item)
-        self.endInsertRows()
+        self.populate()
 
     def populate(self):
+        self.beginResetModel()
         self.items = self.session.query(History).order_by(History.date.desc()).all()
+        self.endResetModel()
 
         logger.info(f"History model populated with {len(self.items)} items")
 
