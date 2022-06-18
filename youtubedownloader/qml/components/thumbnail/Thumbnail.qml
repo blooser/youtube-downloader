@@ -1,36 +1,84 @@
 ﻿import QtQuick 2.14
+import QtQuick.Layouts 1.15
 
 import yd.items 0.1
 
+import youtubedownloader.download
+
+
 import "../../items" as Items
 import "../dynamic" as Dynamic
+import "../buttons" as Buttons
 
-Items.YDImage {
+Item {
     id: root
+
+    implicitWidth: mainLayout.implicitWidth
+    implicitHeight: mainLayout.implicitHeight
+
+    property url source
 
     signal close()
 
-    fillMode: Image.Stretch
+    ColumnLayout {
+        id: mainLayout
 
-    MouseArea {
         anchors.fill: parent
-        onClicked: root.close()
-    }
+        spacing: Theme.Margins.big
 
-    Component {
-        id: preDownload
+        Items.YDImage {
+            fillMode: Image.Stretch
+            source: root.source
 
-        ThumbnailPreDownload {
-            anchors {
-                bottom: root.bottom
-                bottomMargin: Theme.Margins.tiny
-                horizontalCenter: root.horizontalCenter
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.close()
             }
+        }
 
-            visible: (root.status === Image.Ready)
-            url: root.source
-            dimension: "%1 x %2".arg(root.width).arg(root.height)
+        ThumbnailDownloadButton {
+            Layout.alignment: Qt.AlignHCenter
+
+            visible: !downloader.downloading
+
+            onDownload: (path) => {
+                downloader.download(root.source, path)
+            }
+        }
+
+        ThumbnailDownloadingProgress {
+            id: downloadingProgress
+
+            Layout.fillWidth: true
+            Layout.preferredHeight: 24
+
+            visible: downloader.downloading
+
+            to: 100
+            value: downloader.progress
+            from: 0
+
+            destination: downloader.destination
+        }
+
+        ThumbnailOpen {
+            id: thumbnailOpen
+
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: Theme.Size.icon
+            Layout.preferredHeight: Theme.Size.icon
+
+            onOpen: Qt.openUrlExternally(downloader.destination)
+
+            state: downloader.progress >= 100 ? "in" : "out"
+
         }
     }
 
+    ThumbnailDownloader {
+        id: downloader
+    }
 }
+
+
+

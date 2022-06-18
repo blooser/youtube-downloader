@@ -51,17 +51,20 @@ Item {
         id: fileFormatButton
 
         Items.YDButtonWithHelp {
+            property string url
+
             checked: (text === Settings.format)
             checkable: true
-            onHelp: dialogManager.openDialog("FileFormatsDialog", {"format": text}, null)
+            onHelp: Qt.openUrlExternally(url)
         }
     }
 
     Component.onCompleted: {
         let descriptionModel = Qt.createComponent("FormatFileDescriptionModel.qml").createObject(root)
         for (let index = 0; index < descriptionModel.count; ++index) {
+            let url = descriptionModel.get(index).readMore
             let format = descriptionModel.get(index).format
-            buttonGroup.buttons.push(fileFormatButton.createObject(parentByFileFormat[Paths.getFileType(format)], {"text": format}))
+            buttonGroup.buttons.push(fileFormatButton.createObject(parentByFileFormat[Paths.getFileType(format)], {"url": url, "text": format}))
         }
     }
 }

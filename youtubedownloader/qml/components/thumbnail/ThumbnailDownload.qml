@@ -1,52 +1,38 @@
-﻿import QtQuick 2.14
+import QtQuick 2.14
+import "../dynamic" as Dynamic
 
-import "../../items" as Items
-import ".." as Components
-import "../../util/numbers.js" as Numbers
+
+import youtubedownloader.component.changer
 
 Item {
     id: root
 
-    property alias to: progress.to
-    property alias value: progress.value
+    implicitWidth: changer.implicitWidth
+    implicitHeight: changer.implicitHeight
 
-    property alias outputUrl: outputUrl.url
-
-    Components.OutputUrl {
-        id: outputUrl
-
-        anchors {
-            left: progress.left
-            right: progress.right
-            bottom: progress.top
-            bottomMargin: Theme.Margins.small
-        }
-
-        opacity: (url !== "" && progress.value === progress.to && progress.to !== 0)
-
-        Behavior on opacity {
-            NumberAnimation { duration: Theme.Animation.quick }
+    property Component downloadButtonComponent: ThumbnailDownloadButton {
+        onDownload: (path) => {
+            console.log("Downloading ", path)
         }
     }
 
-    Items.YDProgressBar {
-        id: progress
+    property Component downloadingComponent: ThumbnailDownloading {
 
-        implicitHeight: Theme.Margins.big
+    }
 
-        anchors {
-            left: root.left
-            right: root.right
-            bottom: root.bottom
-            margins: Theme.Margins.big
-        }
+    Dynamic.Changer {
+        id: changer
 
-        Items.YDText {
-            z: parent.z + 1
-            anchors.centerIn: parent
-            style: Text.Outline
-            styleColor: Theme.Colors.textStyle
-            text: qsTr(Numbers.progress(progress.value, progress.to))
-        }
+        changes: [
+            Change {
+                component: downloadButtonComponent
+                when: true
+            },
+
+            Change {
+                component: downloadingComponent
+                when: false
+            }
+        ]
     }
 }

@@ -10,7 +10,7 @@ FolderDialog {
     title: qsTr("Select directory")
 
     // TODO: Fix that because of no currentFolder property found
-   // currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+    currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
 
     onAccepted: () => {
         callback(root.folder)

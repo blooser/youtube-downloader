@@ -63,7 +63,7 @@ class ComponentChanger(QObject):
     currentComponentChanged = Signal(QQmlComponent)
 
     def __init__(self):
-        super(ComponentChanger, self).__init__(None)
+        super().__init__()
 
         self._current_component = None
         self._changes = []

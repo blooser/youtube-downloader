@@ -5,6 +5,7 @@ ProgressBar {
     id: root
 
     property bool error: false
+    property double radius: Theme.Margins.tiny
 
     background: Rectangle {
         id: backgroundRect
@@ -13,7 +14,7 @@ ProgressBar {
         implicitHeight: 4
         color: root.indeterminate ? Theme.Colors.processing :
                        root.error ? Theme.Colors.error : Theme.Colors.second
-        radius: Theme.Margins.tiny
+        radius: root.radius
     }
 
     contentItem: Item {
@@ -24,7 +25,7 @@ ProgressBar {
             width: root.visualPosition * parent.width
             height: parent.height
             color: Theme.Colors.success
-            radius: Theme.Margins.tiny
+            radius: root.radius
             visible: !root.error
         }
     }

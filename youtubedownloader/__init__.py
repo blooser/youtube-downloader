@@ -4,7 +4,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QUrl, QResource
 from PySide6.QtWidgets import QApplication
 
-from .download import DownloadManager, Signals
+from .download import DownloadManager, Signals, ThumbnailDownloader
 from .models import StringFilterModel, SupportedSitesModel, HistoryModel
 from .component_changer import ComponentChanger, Change
 from .dialog_manager import DialogManager
@@ -37,6 +37,7 @@ def main():
     qpaths = QPaths()
     browsers = Browsers()
     signals = Signals()
+   # thumbnail_downloader = ThumbnailDownloader()
 
     supported_sites_model = SupportedSitesModel()
     history_model = HistoryModel(database.session)
@@ -59,7 +60,7 @@ def main():
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("Paths", qpaths)
-    #engine.rootContext().setContextProperty("fileDownloader", file_downloader)
+   # engine.rootContext().setContextProperty("thumbnailDownloader", thumbnail_downloader)
     engine.rootContext().setContextProperty("supportedSitesModel", supported_sites_model)
     engine.rootContext().setContextProperty("historyModel", history_model)
     engine.rootContext().setContextProperty("WebBrowsers", browsers)

@@ -21,7 +21,9 @@
 
 from PySide6.QtQml import (
     QQmlApplicationEngine,
-    QQmlContext
+    QQmlContext,
+    QmlElement,
+
 )
 
 from PySide6.QtNetwork import (
@@ -546,3 +548,52 @@ class Signals(QObject):
     @Slot(str)
     def emitRemove(self, url):
         self.remove.emit(url)
+
+
+QML_IMPORT_NAME = "youtubedownloader.download"
+QML_IMPORT_MAJOR_VERSION = 1
+
+
+@QmlElement
+class ThumbnailDownloader(QObject):
+    progressChanged = Signal(int)
+    downloadingChanged = Signal(bool)
+    destinationChanged = Signal(str)
+
+    def __init__(self):
+        super().__init__()
+
+        self.percent = 0
+
+        self._downloading = False
+        self._destination = ""
+
+    def track(self, block_number, read_size, total_file_size):
+        self.percent = int(((block_number * read_size) / total_file_size) * 100)
+        self.progressChanged.emit(self.percent)
+
+        logger.debug(f"Downloading: {self.percent}%")
+
+    @Slot(str, str)
+    def download(self, url, destination):
+        logger.info(f"Downloading {url} to {destination}")
+
+        self._destination = destination
+        self.destinationChanged.emit(self._destination)
+
+        urllib.request.urlretrieve(url, self._destination, reporthook=self.track)
+
+        self._downloading = True
+        self.downloadingChanged.emit(self._downloading)
+
+    @Property(int, notify = progressChanged)
+    def progress(self):
+        return self.percent
+
+    @Property(bool, notify = downloadingChanged)
+    def downloading(self):
+        return self._downloading
+
+    @Property(str, notify = destinationChanged)
+    def destination(self):
+        return self._destination
