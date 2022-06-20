@@ -35,7 +35,7 @@ import atexit
 import datetime
 
 
-logger = create_logger("youtubedownloader.models")
+logger = create_logger(__name__)
 
 
 class Item(QObject):
@@ -45,6 +45,7 @@ class Item(QObject):
         super().__init__(None)
 
         self.item_id = uuid.uuid4()
+
         logger.debug(f"New item with id={self.item_id} created")
 
         self.roles = roles
@@ -300,20 +301,20 @@ class PendingModel(FreezeDataModel):
 
     def dataRules(self, item, role):
         return {
-            256: lambda x: x,
-            257: lambda x: x,
-            258: lambda x: dict(x),
+            self.ROLE_NAMES.destination: lambda x: x,
+            self.ROLE_NAMES.status: lambda x: x,
+            self.ROLE_NAMES.info: lambda x: dict(x),
             # TODO: Make it solid! :)
-            259: lambda x: x.to_dict()
+            self.ROLE_NAMES.options: lambda x: x.to_dict()
         }[role](item)
 
     def setDataRules(self, item, value, role):
         return {
-            256: lambda x: x,
-            257: lambda x: x,
-            258: lambda x: x,
+            self.ROLE_NAMES.destination: lambda x: x,
+            self.ROLE_NAMES.status: lambda x: x,
+            self.ROLE_NAMES.info: lambda x: x,
             # FIXME: Deal with circular imports here
-            259: lambda x: youtubedownloader.download.Options(**value.toVariant())
+            self.ROLE_NAMES.options: lambda x: youtubedownloader.download.Options(**value.toVariant())
         }[role](item)
 
     def item(self, destination=None,
@@ -340,12 +341,12 @@ class DownloadModel(FreezeDataModel):
 
     def dataRules(self, item, role):
         return {
-            256: lambda x: x,
-            257: lambda x: x,
-            258: lambda x: dict(x),
+            self.ROLE_NAMES.destination: lambda x: x,
+            self.ROLE_NAMES.status: lambda x: x,
+            self.ROLE_NAMES.info: lambda x: dict(x),
             # TODO: Make it solid! :)
-            259: lambda x: x.to_dict(),
-            260: lambda x: dict(x)
+            self.ROLE_NAMES.options: lambda x: x.to_dict(),
+            self.ROLE_NAMES.progress: lambda x: dict(x)
         }[role](item)
 
 

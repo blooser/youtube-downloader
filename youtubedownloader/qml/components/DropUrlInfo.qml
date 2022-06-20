@@ -12,24 +12,9 @@ Item {
     ColumnLayout {
         id: mainLayout
 
-        anchors.fill: parent
+        anchors.fill: root
         spacing: Theme.Margins.big
 
-        Items.YDText {
-            id: dropTextInfo
-
-            Layout.fillWidth: true
-
-            text: qsTr("Drop your mouse to add new download")
-
-            font {
-                pixelSize: Theme.FontSize.big
-                bold: true
-            }
-
-            style: Text.Raised
-            styleColor: Theme.Colors.textStyle
-        }
 
         Items.YDImage {
             id: animatedArrow

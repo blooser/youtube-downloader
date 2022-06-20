@@ -102,9 +102,8 @@ ApplicationWindow {
 
         opacity: downloads.downloadItems || downloads.pendingItems ? Theme.Visible.off : Theme.Visible.disabled
 
-        text: "Drag youtube's thumbnail and drop in youtube-downloader's area"
+        text: "Drag youtube's thumbnail and drop in youtube downloader's area"
     }
-
 
     DropArea {
         anchors.fill: parent
@@ -116,9 +115,10 @@ ApplicationWindow {
             }
         }
 
-        onDropped: {
-            for (const droppedUrl of drop.urls) {
-                downloadManager.insert(droppedUrl, downloadOptions.options)
+        onDropped: (drop) => {
+               for (const droppedUrl of drop.urls) {
+                   if (Regex.isUrl(droppedUrl.toString()))
+                       downloadManager.insert(droppedUrl, downloadOptions.options)
             }
         }
     }

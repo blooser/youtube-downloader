@@ -26,4 +26,8 @@ YDDialog {
     background: null
 
     contentItem: Components.DropUrlInfo {}
+
+    enter: null
+    exit: null
+
 }
