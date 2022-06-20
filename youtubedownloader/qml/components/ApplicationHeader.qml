@@ -28,11 +28,6 @@ Items.YDToolBar {
                 enabled: (historyModel.size !== Theme.Capacity.empty)
                 onClicked: root.history()
             }
-
-            Items.YDToolButton {
-                text: qsTr("Theme")
-                onClicked: root.theme()
-            }
         }
 
         Items.YDText {

@@ -42,18 +42,15 @@ def main():
     supported_sites_model = SupportedSitesModel()
     history_model = HistoryModel(database.session)
 
-    theme = Theme()
     #file_downloader = FileDownloader()
 
     download_manager.itemAboutToBeDownload.connect(history_model.insert)
-
-    theme.changeBaseColor(settings._themeColor) # NOTE: Before engine starts
 
     qmlRegisterType(StringFilterModel, "yd.items", 0, 1, "StringFilterModel")
 
     qml_file = os.path.join(os.path.dirname(__file__), "qml/main.qml")
     engine = QQmlApplicationEngine()
-    engine.rootContext().setContextProperty("Theme", theme)
+    engine.rootContext().setContextProperty("Theme", Theme)
     engine.rootContext().setContextProperty("Resources", resources)
     engine.rootContext().setContextProperty("Signals", signals)
     engine.rootContext().setContextProperty("Settings", settings)
