@@ -51,17 +51,17 @@ Item {
                 }
 
                 Components.IconText {
-                    text: info.duration
+                    text: Utility.msToHuman(info.duration)
                     iconSource: Resources.icons.time
                 }
 
                 Components.IconText {
-                    text: info.view_count
+                    text: Utility.bigNumberToHuman(info.view_count)
                     iconSource: Resources.icons.eye
                 }
 
                 Components.IconText {
-                    text: info.upload_date
+                    text: Utility.dateToHuman(info.upload_date)
                     iconSource: Resources.icons.calendar
                 }
             }

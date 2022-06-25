@@ -14,6 +14,7 @@ from .paths import QPaths
 from .settings import Settings, Paths
 from .database import Database
 from .browser import Browsers
+from .utility import Utility
 from .version import __version__
 
 import os, sys
@@ -31,6 +32,7 @@ def main():
     database = Database(Paths.database)
 
     download_manager = DownloadManager()
+    utility = Utility()
     settings = Settings()
     dialog_manager = DialogManager()
     resources = Resources()
@@ -57,7 +59,7 @@ def main():
     engine.rootContext().setContextProperty("downloadManager", download_manager)
     engine.rootContext().setContextProperty("dialogManager", dialog_manager)
     engine.rootContext().setContextProperty("Paths", qpaths)
-   # engine.rootContext().setContextProperty("thumbnailDownloader", thumbnail_downloader)
+    engine.rootContext().setContextProperty("Utility", utility)
     engine.rootContext().setContextProperty("supportedSitesModel", supported_sites_model)
     engine.rootContext().setContextProperty("historyModel", history_model)
     engine.rootContext().setContextProperty("WebBrowsers", browsers)
