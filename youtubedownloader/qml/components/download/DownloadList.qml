@@ -28,7 +28,11 @@ Components.List {
         onResume: downloadManager.downloadModel.resume(index)
         onPause: downloadManager.downloadModel.pause(index)
         onOpen: {
-            const path = Paths.pathTo(options.output, info.title, options.format)
+            const path = Paths.pathTo(options.output,
+                                      info.filename,
+                                      options.format)
+
+            console.log(path)
 
             Qt.openUrlExternally(path)
         }

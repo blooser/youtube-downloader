@@ -7,6 +7,7 @@ from PySide6.QtCore import (
 
 import datetime
 import time
+import re
 
 
 class Utility(QObject):

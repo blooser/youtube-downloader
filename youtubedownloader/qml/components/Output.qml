@@ -23,7 +23,7 @@ Rectangle {
         padding: Theme.Size.borderBold
 
         text: qsTr("%1/%2.%3").arg(root.itemOptions.output)
-                              .arg(root.itemInfo.title)
+                              .arg(root.itemInfo.filename)
                               .arg(root.itemOptions.format)
     }
 }

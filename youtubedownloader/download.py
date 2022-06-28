@@ -111,7 +111,8 @@ class Data(Mappable):
         "upload_date",
         "view_count",
         "like_count",
-        "is_live"
+        "is_live",
+        "filename"
     ]
 
     def __init__(self, **kwargs):
@@ -157,9 +158,12 @@ class Pending(Task):
 
         try:
             with youtube_dl.YoutubeDL() as ydl:
-                data = Data.frominfo(ydl.extract_info(self.url, download=False)) + dict(url=self.url)
+                info = ydl.extract_info(self.url, download=False)
+                filename = ydl.prepare_filename(info)[:-16]
 
-                if data.is_live:
+                data = Data.frominfo(info) + dict(url=self.url, filename=filename)
+
+                if hasattr(data, "is_live") and data.is_live:
                     raise DownloadingLivestreamNotSupportedError()
 
                 self.set_result(TaskFinished(data))
