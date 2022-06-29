@@ -26,4 +26,9 @@ Rectangle {
                               .arg(root.itemInfo.filename)
                               .arg(root.itemOptions.format)
     }
+
+    MouseArea {
+        anchors.fill: root
+        onClicked: Utility.openFileExplorer(root.itemOptions.output)
+    }
 }

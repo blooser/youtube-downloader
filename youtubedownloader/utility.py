@@ -7,6 +7,7 @@ from PySide6.QtCore import (
 
 import datetime
 import time
+import subprocess
 
 
 class Utility(QObject):
@@ -27,9 +28,9 @@ class Utility(QObject):
         if not date:
             return ""
 
-        t_date = datetime.datetime.strptime(date, "%Y%M%d")
+        t_date = datetime.datetime.strptime(date, "%Y%m%d")
 
-        return t_date.strftime("%-M %B %Y")
+        return t_date.strftime("%-d %B %Y")
 
     @Slot(str, result=str)
     def bigNumberToHuman(self, number):
@@ -37,5 +38,9 @@ class Utility(QObject):
             return ""
 
         return format(int(number), ",")
+
+    @Slot(str)
+    def openFileExplorer(self, path):
+        subprocess.Popen(["xdg-open", path])
 
 
