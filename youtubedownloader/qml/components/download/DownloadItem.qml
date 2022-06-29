@@ -78,6 +78,15 @@ Item {
         downloadOptions: root.downloadOptions
     }
 
+    property Component missingComponent: DownloadItemMissing {
+        downloadStatus: root.downloadStatus
+        downloadInfo: root.downloadInfo
+        downloadOptions: root.downloadOptions
+
+        onRemove: root.remove()
+        onResume: root.resume()
+    }
+
     Dynamic.Changer {
         id: changer
 
@@ -114,6 +123,11 @@ Item {
             Change {
                 component: waitingComponent
                 when: root.downloadStatus === "waiting"
+            },
+
+            Change {
+                component: missingComponent
+                when: root.downloadStatus === "missing"
             }
         ]
     }

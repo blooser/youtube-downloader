@@ -71,7 +71,7 @@ import atexit
 import urllib.request
 
 
-logger = create_logger("youtubedownloader.download")
+logger = create_logger(__name__)
 
 
 
@@ -159,7 +159,7 @@ class Pending(Task):
         try:
             with youtube_dl.YoutubeDL() as ydl:
                 info = ydl.extract_info(self.url, download=False)
-                filename = ydl.prepare_filename(info)[:-16]
+                filename = ydl.prepare_filename(info)[:-16] # NOTE: Ignore '-<id>' attached by youtube-dl
 
                 data = Data.frominfo(info) + dict(url=self.url, filename=filename)
 
@@ -382,6 +382,14 @@ class DownloadManager(QObject):
 
     @Slot(str, "QVariantMap")
     def insert(self, url, options):
+        index = url.find("&list")
+
+        if index != -1:
+            url = url[:index] # NOTE: Ignore playlist
+
+        if self.pending_model.scan(url) or self.download_model.scan(url):
+            return
+
         task = Pending(url)
 
         item = self.pending_model.item(options=Options(**options))
@@ -483,6 +491,9 @@ class Format:
 
     def __repr__(self):
         return f"<{self.name.upper()}>"
+
+    def __str__(self):
+        return self.name
 
     def __eq__(self, other):
         return self.name == other.name

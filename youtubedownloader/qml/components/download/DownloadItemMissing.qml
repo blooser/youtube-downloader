@@ -3,11 +3,8 @@ import QtQuick.Layouts 1.15
 
 import "../../items" as Items
 import "../dynamic" as Dynamic
-import "../buttons" as Buttons
 import "../link" as Link
 import ".." as Components
-
-import youtubedownloader.component.changer
 
 
 Rectangle {
@@ -18,12 +15,13 @@ Rectangle {
     property var downloadOptions
 
     signal remove()
-    signal open()
+    signal resume()
 
     implicitWidth: mainLayout.implicitWidth
     implicitHeight: mainLayout.implicitHeight
 
-    color: downloadManager.downloadModel.duplicate.url === root.downloadInfo.url ? "orange" : Theme.Colors.success
+    opacity: Theme.Visible.disabled
+    color: Theme.Colors.error
 
     border {
         width: Theme.Size.border
@@ -45,13 +43,13 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            info: root.downloadInfo
+            info: downloadInfo
         }
 
         Components.TileText {
             Layout.preferredWidth: 65
 
-            text: "Finished"
+            text: "missing"
         }
 
         Components.Spacer {
@@ -64,41 +62,17 @@ Rectangle {
             text: root.downloadOptions.format
         }
 
-
         Components.Spacer {
 
         }
 
-        Buttons.OpenButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
+        DownloadButtons {
+            Layout.preferredWidth: implicitWidth
 
-            onOpen: root.open()
-        }
+            buttonsPolicy: buttons.RESUME | buttons.DELETE
 
-        Buttons.DeleteButton {
-            Layout.preferredWidth: Theme.Size.icon
-            Layout.preferredHeight: Theme.Size.icon
-
+            onResume: root.resume()
             onRemove: root.remove()
-        }
-    }
-
-    Components.Output {
-        anchors {
-            horizontalCenter: root.horizontalCenter
-            bottom: root.bottom
-        }
-
-        itemOptions: root.downloadOptions
-        itemInfo: root.downloadInfo
-
-        z: root.z + 1
-    }
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Theme.Animation.quick
         }
     }
 }

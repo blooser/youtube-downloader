@@ -12,7 +12,7 @@ Components.Output {
     MouseArea {
         anchors.fill: parent
 
-        onClicked: dialogManager.openDialog("SelectDirectoryDialog", { "folder": root.itemOptions.output }, function(selectedFolder){
+        onClicked: dialogManager.openDialog("SelectDirectoryDialog", { }, function(selectedFolder){
             let path = Paths.cleanPath(selectedFolder)
 
             root.changeOutput(path)

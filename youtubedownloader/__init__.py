@@ -27,7 +27,7 @@ def main():
     app.setApplicationName("youtube downloader")
     app.setApplicationVersion(__version__)
     app.setOrganizationName("blooser")
-    app.setWindowIcon(QIcon(Resources.YD_LOGO))
+    app.setWindowIcon(QIcon(Resources.LOGO))
 
     database = Database(Paths.database)
 

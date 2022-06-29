@@ -26,16 +26,16 @@ class DialogManager(QObject):
 
         self.dialogs = paths.collect_files(Paths.dialogs)
 
-        logger.info("Loaded {dialogs} dialogs".format(dialogs=len(self.dialogs)))
+        logger.debug("Loaded {dialogs} dialogs".format(dialogs=len(self.dialogs)))
 
     @Slot(str, "QVariantMap" ,"QVariant")
     def openDialog(self, dialog: str, properties, callback) -> None:
-        logger.info("Opening {dialog}".format(dialog=dialog))
+        logger.debug("Opening {dialog}".format(dialog=dialog))
 
         self.open.emit(self.dialogs[dialog], properties, callback)
 
     @Slot(str)
     def closeDialog(self, dialog: str) -> None:
-        logger.info("Closing {dialog}".format(dialog=dialog))
+        logger.debug("Closing {dialog}".format(dialog=dialog))
 
         self.close.emit(dialog)

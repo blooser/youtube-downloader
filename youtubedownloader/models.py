@@ -4,6 +4,7 @@
     QAbstractListModel,
     QModelIndex,
     Qt,
+    QTimer,
     QObject,
     Property,
     Signal,
@@ -12,6 +13,7 @@
 
 import youtubedownloader
 import copy
+import os.path
 
 from youtubedownloader.logger import (
     create_logger
@@ -75,6 +77,36 @@ class Item(QObject):
         self.updated.emit(self.item_id)
 
 
+class ItemIsMissing:
+    def __init__(self):
+        ...
+
+    def __call__(self, item):
+        if item.status != "ready" or item.status == "missing":
+            return item
+
+        output = item.options.output
+        format = item.options.format
+        filename = item.info.filename
+
+        path = f"{output}/{filename}.{format}"
+
+        if not os.path.isfile(path):
+            item.status = "missing"
+
+        return item
+
+
+class ItemTransform:
+    def __init__(self, callback, items):
+        self.callback = callback
+        self.items = items
+
+    def __iter__(self):
+        for item in self.items:
+            yield self.callback(item)
+
+
 class Duplicate(QObject):
     changed = Signal()
 
@@ -84,6 +116,10 @@ class Duplicate(QObject):
         self._url = str("")
         self._exists = False
 
+        self.timer = QTimer()
+        self.timer.setInterval(2000)
+        self.timer.timeout.connect(self.clear)
+
     def scan(self, url, items):
         for item in items:
             self._exists = (item.info.url == url and url != "")
@@ -91,10 +127,21 @@ class Duplicate(QObject):
             if self._exists:
                 self._url = url
 
+                self.timer.start()
+
                 break
 
         if not self._exists:
             self._url = ""
+
+        self.changed.emit()
+
+        return self
+
+    @Slot()
+    def clear(self):
+        self._url = ""
+        self._exists = False
 
         self.changed.emit()
 
@@ -228,7 +275,7 @@ class DataModel(QAbstractItemModel):
 
     @Slot(str)
     def scan(self, url):
-        self._duplicate.scan(url, self.items)
+        return self._duplicate.scan(url, self.items)._exists
 
     def setDataRules(self, item, value, role):
         return item
@@ -289,6 +336,7 @@ class FreezeDataModel(DataModel):
 
     def load(self):
         items = Serializer(Item).from_json(self.DATA_PATH)
+
         self.insert(*items)
 
 
@@ -338,6 +386,14 @@ class DownloadModel(FreezeDataModel):
 
     def __init__(self):
         super().__init__()
+
+    def load(self):
+        items = Serializer(Item).from_json(self.DATA_PATH)
+
+        # NOTE: Find all missing items and change its `status=missing`
+        transform = ItemTransform(ItemIsMissing(), items)
+
+        self.insert(*list(transform))
 
     def dataRules(self, item, role):
         return {

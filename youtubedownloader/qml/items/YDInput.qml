@@ -42,7 +42,9 @@ TextField {
                 verticalCenter: parent.verticalCenter
             }
 
-            onClicked: root.iconClicked()
+            onClicked: {
+                root.iconClicked()
+            }
         }
     }
 }

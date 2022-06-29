@@ -12,23 +12,24 @@ import sys, os, pathlib
 from .. import paths
 from ..logger import create_logger
 
+logger = create_logger(__name__)
+
 class Resources(QObject):
-    CORE_PATH: str = os.path.dirname(__file__)
-    YD_LOGO: str = os.path.join(CORE_PATH, "youtube-downloader.svg")
+    CORE_PATH = os.path.dirname(__file__)
+    LOGO = os.path.join(CORE_PATH, "youtube-downloader.svg")
 
     def __init__(self):
-        super(Resources, self).__init__(None)
+        super().__init__()
 
-        self.logger = create_logger(__name__)
-        self.logger.info("YD Logo loaded {status}".format(status=os.path.exists(Resources.YD_LOGO)))
+        logger.info("YD Logo loaded {status}".format(status=os.path.exists(self.LOGO)))
 
-        self.icon_paths = paths.collect_files(os.path.join(Resources.CORE_PATH, "icons"))
-        self.logger.info("Loaded {icons} icons".format(icons=len(self.icon_paths)))
+        self._icons = paths.collect_files(os.path.join(self.CORE_PATH, "icons"))
+        logger.info("Loaded {icons} icons".format(icons=len(self._icons)))
 
     @Property("QVariantMap", constant=True)
-    def icons(self) -> dict:
-        return self.icon_paths
+    def icons(self):
+        return self._icons
 
     @Property("QUrl", constant=True)
-    def logo(self) -> str:
-        return os.path.join(paths.FILE_PREFIX, Resources.YD_LOGO)
+    def logo(self):
+        return os.path.join(paths.FILE_PREFIX, self.LOGO)
